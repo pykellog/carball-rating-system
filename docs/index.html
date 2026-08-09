@@ -45,7 +45,7 @@
             color: var(--text-light);
             margin: 0;
             padding: 15px 5px;
-            padding-bottom: 80px; /* Karşılaştırma paneli için ekstra boşluk */
+            padding-bottom: 80px;
         }
 
         .container {
@@ -62,7 +62,6 @@
             flex-direction: column;
         }
 
-        /* Header Area */
         .header {
             display: flex;
             justify-content: space-between;
@@ -115,17 +114,10 @@
             transition: all 0.3s ease;
             border: 1px solid #485460;
         }
-        .github-btn:hover {
-            background: var(--neon-green) !important;
-            color: #000 !important;
-            border-color: var(--neon-green) !important;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
-        }
+        .github-btn:hover { background: var(--neon-green) !important; color: #000 !important; border-color: var(--neon-green) !important; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4); }
         .github-btn:hover svg { fill: #000; }
         .github-btn svg { fill: white; height: 16px; width: 16px; transition: fill 0.3s; }
 
-        /* TACTICAL HUD */
         .stadium-announcement {
             background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.15), transparent);
             border-top: 1px solid rgba(0, 255, 136, 0.4);
@@ -146,86 +138,28 @@
         .stadium-announcement .highlight { color: var(--neon-green); text-shadow: 0 0 8px rgba(0, 255, 136, 0.6); font-weight: 600; }
         @keyframes pulse-glow { 0% { box-shadow: 0 0 0px transparent inset; } 50% { box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset; } 100% { box-shadow: 0 0 0px transparent inset; } }
 
-        /* Search Box */
-        .search-box {
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-        }
-        .search-box input {
-            width: 100%;
-            max-width: 500px;
-            padding: 10px 20px;
-            font-size: 14px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: 1px solid rgba(0, 255, 136, 0.4);
-            border-radius: 30px;
-            outline: none;
-            transition: 0.3s;
-            font-family: 'Inter', sans-serif;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5) inset;
-        }
+        .search-box { margin-bottom: 15px; display: flex; justify-content: center; }
+        .search-box input { width: 100%; max-width: 500px; padding: 10px 20px; font-size: 14px; background: rgba(0, 0, 0, 0.7); color: white; border: 1px solid rgba(0, 255, 136, 0.4); border-radius: 30px; outline: none; transition: 0.3s; font-family: 'Inter', sans-serif; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.5) inset; }
         .search-box input:focus { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); background: rgba(0, 0, 0, 0.9); }
 
-        /* Table Area */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); }
         .table-responsive::-webkit-scrollbar { height: 6px; }
         .table-responsive::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
         .table-responsive::-webkit-scrollbar-thumb { background: var(--neon-green); border-radius: 10px; }
 
-        table.dataTable {
-            font-family: 'Inter', sans-serif !important;
-            font-size: 11.5px !important;
-            width: 100% !important;
-            border-collapse: collapse !important;
-            margin: 0 !important;
-            table-layout: auto;
-        }
-
-        table.dataTable td, table.dataTable th {
-            padding: 5px 3px !important;
-            white-space: nowrap;
-            border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-            text-align: center !important;
-        }
-        
-        table.dataTable th.col-nick, table.dataTable th.col-sitename, table.dataTable th.col-role,
-        table.dataTable td.nick-col, table.dataTable td.sitename-col, table.dataTable td.role-col {
-            text-align: left !important;
-        }
-
-        table.dataTable th {
-            font-family: 'Teko', sans-serif;
-            font-size: 16px !important;
-            font-weight: 500;
-            background: #09130b !important;
-            color: var(--line-white) !important;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-        }
+        table.dataTable { font-family: 'Inter', sans-serif !important; font-size: 11.5px !important; width: 100% !important; border-collapse: collapse !important; margin: 0 !important; table-layout: auto; }
+        table.dataTable td, table.dataTable th { padding: 5px 3px !important; white-space: nowrap; border-bottom: 1px solid rgba(255,255,255,0.05) !important; text-align: center !important; }
+        table.dataTable th.col-nick, table.dataTable th.col-sitename, table.dataTable th.col-role, table.dataTable td.nick-col, table.dataTable td.sitename-col, table.dataTable td.role-col { text-align: left !important; }
+        table.dataTable th { font-family: 'Teko', sans-serif; font-size: 16px !important; font-weight: 500; background: #09130b !important; color: var(--line-white) !important; letter-spacing: 0.5px; cursor: pointer; }
         table.dataTable th:hover { color: var(--neon-green) !important; }
-
         table.dataTable thead th { background-image: none !important; }
         table.dataTable thead th::before, table.dataTable thead th::after { display: none !important; content: "" !important; }
         
         table.dataTable tbody tr { background-color: rgba(20, 20, 20, 0.6) !important; color: #ecf0f1; transition: all 0.2s ease; cursor: pointer; }
         table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
-        
         table.dataTable tbody tr:hover { background-color: var(--pitch-light) !important; color: white !important; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset; }
         
-        /* OYUNCU SEÇİLDİĞİNDE SATIRIN PARLAMASI */
-        table.dataTable tbody tr.selected-player {
-            background-color: rgba(0, 255, 136, 0.15) !important;
-            border-left: 4px solid var(--neon-green) !important;
-            box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.3) !important;
-        }
+        table.dataTable tbody tr.selected-player { background-color: rgba(0, 255, 136, 0.15) !important; border-left: 4px solid var(--neon-green) !important; box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.3) !important; }
 
         table.dataTable td a { color: #3498db; text-decoration: none; font-weight: 600; }
         table.dataTable td a:hover { color: var(--neon-green); text-decoration: underline; }
@@ -236,16 +170,7 @@
         .rating-col { font-weight: 800; color: var(--neon-green) !important; font-size: 13px; text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);}
         .role-col { font-size: 10px; color: #95a5a6; text-transform: uppercase; font-weight: 600; letter-spacing: 0px;}
         
-        .badge {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); }
         .badge-S { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; border-color: #f39c12; }
         .badge-A { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: #fff; }
         .badge-B { background: linear-gradient(135deg, #3498db, #2980b9); color: #fff; }
@@ -261,48 +186,21 @@
         .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--highlight) !important; color: black !important; border-color: var(--highlight) !important; font-weight: bold; }
 
         /* ========================================================
-           KARŞILAŞTIRMA PANELİ & ARENASI (FUT CARDS)
+           KARŞILAŞTIRMA PANELİ & ARENASI
            ======================================================== */
-        
-        /* Floating Dock */
-        #compareDock {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(10, 15, 12, 0.95);
-            border: 2px solid var(--neon-green);
-            border-bottom: none;
-            border-radius: 15px 15px 0 0;
-            padding: 10px 30px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            box-shadow: 0 -5px 25px rgba(0, 255, 136, 0.4);
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
+        #compareDock { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 12, 0.95); border: 2px solid var(--neon-green); border-bottom: none; border-radius: 15px 15px 0 0; padding: 10px 30px; display: flex; align-items: center; gap: 20px; box-shadow: 0 -5px 25px rgba(0, 255, 136, 0.4); transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; backdrop-filter: blur(10px); }
         #compareDock.active { bottom: 0; }
         #compareDock .dock-text { color: white; font-family: 'Teko', sans-serif; font-size: 22px; letter-spacing: 1px; }
         #compareDock .dock-count { color: var(--neon-green); font-weight: bold; font-size: 28px; }
         
-        .btn-dock {
-            padding: 8px 20px; border-radius: 30px; font-weight: bold; font-family: 'Inter', sans-serif;
-            font-size: 13px; cursor: pointer; border: none; transition: 0.3s;
-        }
+        .btn-dock { padding: 8px 20px; border-radius: 30px; font-weight: bold; font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; border: none; transition: 0.3s; }
         .btn-compare { background: var(--neon-green); color: #000; box-shadow: 0 0 15px rgba(0, 255, 136, 0.5); }
         .btn-compare:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 255, 136, 0.8); }
         .btn-clear { background: transparent; color: #e74c3c; border: 1px solid #e74c3c; }
         .btn-clear:hover { background: #e74c3c; color: white; }
 
-        /* The Arena Modal */
-        #arenaModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 10, 8, 0.95); backdrop-filter: blur(15px);
-            z-index: 9999; display: none; overflow-y: auto; padding: 40px 20px;
-        }
-        .arena-header { text-align: center; margin-bottom: 40px; }
+        #arenaModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 10, 8, 0.95); backdrop-filter: blur(15px); z-index: 9999; display: none; overflow-y: auto; padding: 60px 20px 40px 20px; }
+        .arena-header { text-align: center; margin-bottom: 50px; }
         .arena-header h2 { font-family: 'Teko', sans-serif; font-size: 50px; color: white; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); margin-bottom: 5px;}
         .arena-header p { color: #bdc3c7; font-size: 16px; }
         .btn-close-arena { position: absolute; top: 20px; right: 30px; font-size: 40px; color: white; cursor: pointer; transition: 0.3s; line-height: 1; }
@@ -313,22 +211,45 @@
         /* FUT Style Card */
         .fut-card {
             background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
-            border-radius: 20px; width: 280px; padding: 25px 20px;
+            border-radius: 20px; width: 280px; padding: 35px 20px 25px 20px; /* Üst padding artırıldı rozet için */
             text-align: center; position: relative;
             border: 2px solid #333; transition: transform 0.4s, box-shadow 0.4s;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            margin-top: 15px; /* Rozetin taşması için boşluk */
         }
         .fut-card:hover { transform: translateY(-10px) scale(1.02); }
 
-        /* Card Ranks (Gold, Silver, Bronze, Normal) */
-        .rank-gold { border-color: #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.3), inset 0 0 20px rgba(241, 196, 15, 0.1); }
-        .rank-gold::before { content: "👑 MATCH MVP"; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #f1c40f; color: #000; padding: 4px 15px; border-radius: 20px; font-weight: bold; font-size: 12px; letter-spacing: 1px; animation: glow-gold 1.5s infinite alternate; }
+        /* YENİ: KART SIRA ROZETLERİ (RANK BADGES) */
+        .card-rank-badge {
+            position: absolute;
+            top: -22px; /* Kartın dışına taşır */
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Teko', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            padding: 2px 25px;
+            border-radius: 30px;
+            line-height: 1.2;
+            letter-spacing: 1px;
+            z-index: 10;
+            border: 2px solid #fff;
+            white-space: nowrap;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+        }
         
+        .badge-rank-1 { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; border-color: #ffeaa7; box-shadow: 0 0 20px #f1c40f, inset 0 0 10px rgba(255,255,255,0.5); animation: glow-gold 1.5s infinite alternate;}
+        .badge-rank-2 { background: linear-gradient(135deg, #bdc3c7, #7f8c8d); color: #000; border-color: #ecf0f1; box-shadow: 0 0 15px #bdc3c7; }
+        .badge-rank-3 { background: linear-gradient(135deg, #d35400, #c0392b); color: #fff; border-color: #e67e22; box-shadow: 0 0 15px #d35400; }
+        .badge-rank-other { background: linear-gradient(135deg, #1a252f, #000); color: var(--neon-green); border-color: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
+
+        @keyframes glow-gold { from { box-shadow: 0 0 10px #f1c40f; } to { box-shadow: 0 0 25px #f1c40f, 0 0 15px #fff; } }
+
+        /* Card Ranks Colors (Borders and Glows) */
+        .rank-gold { border-color: #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.3), inset 0 0 20px rgba(241, 196, 15, 0.1); }
         .rank-silver { border-color: #bdc3c7; box-shadow: 0 0 30px rgba(189, 195, 199, 0.2); }
         .rank-bronze { border-color: #d35400; box-shadow: 0 0 30px rgba(211, 84, 0, 0.2); }
         .rank-normal { border-color: var(--neon-green); box-shadow: 0 0 20px rgba(0, 255, 136, 0.1); }
-
-        @keyframes glow-gold { from { box-shadow: 0 0 10px #f1c40f; } to { box-shadow: 0 0 25px #f1c40f, 0 0 10px #fff; } }
 
         /* Card Content */
         .card-rating { font-family: 'Teko', sans-serif; font-size: 65px; line-height: 1; font-weight: 700; color: white; margin-bottom: 0px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
@@ -336,20 +257,17 @@
         .card-tier { font-size: 12px; letter-spacing: 2px; color: #7f8fa6; text-transform: uppercase; margin-bottom: 15px; }
         .card-nick { font-size: 24px; font-weight: 700; color: white; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; }
         
-        /* Stat Bars inside Card */
         .stat-row { display: flex; flex-direction: column; text-align: left; margin-bottom: 12px; }
         .stat-label { font-size: 11px; color: #bdc3c7; font-weight: 600; display: flex; justify-content: space-between; margin-bottom: 3px; }
         .stat-val { color: white; font-weight: bold; }
         .stat-bar-bg { width: 100%; background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; overflow: hidden; }
         .stat-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease-out; }
         
-        /* Bar Colors */
         .bar-goals { background: #e74c3c; }
         .bar-assists { background: #3498db; }
         .bar-saves { background: #2ecc71; }
         .bar-winrate { background: #f1c40f; }
 
-        /* Footer */
         .footer { margin-top: 15px; text-align: center; color: #7f8fa6; font-size: 12px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px; flex-shrink: 0; font-family: 'Teko', sans-serif; font-size: 18px; letter-spacing: 1px; }
         .footer a { color: var(--neon-green); text-decoration: none; }
         .footer a:hover { text-decoration: underline; text-shadow: 0 0 5px var(--neon-green); }
@@ -367,7 +285,7 @@
             .header h1 { font-size: 24px; text-align: center; justify-content: center;}
             .header { justify-content: center; gap: 10px; }
             #compareDock { width: 95%; flex-direction: column; gap: 10px; padding: 15px; }
-            .fut-card { width: 100%; max-width: 300px; }
+            .fut-card { width: 100%; max-width: 300px; margin-top: 25px; }
         }
     </style>
     <script data-goatcounter="https://pykellog.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -390,7 +308,7 @@
 
     <div class="stadium-announcement">
         <span>⚡</span>
-        <span><span class="highlight">TACTICAL HUD:</span> Click on player rows to select them for a Head-to-Head Comparison!</span>
+        <span><span class="highlight">TACTICAL HUD:</span> Click on player rows to select them for a Head-to-Head Comparison (Max 6)!</span>
         <span>⚡</span>
     </div>
 
@@ -448,12 +366,10 @@
     </div>
 </div>
 
-<!-- ==========================================
-     COMPARISON DOCK (Aşağıdan Çıkan Panel) 
-     ========================================== -->
+<!-- COMPARISON DOCK -->
 <div id="compareDock">
     <div class="dock-text">
-        <span class="dock-count" id="selCount">0</span> PLAYERS SELECTED
+        <span class="dock-count" id="selCount">0</span> PLAYERS SELECTED <span style="font-size:14px; color:#7f8fa6;">(Max 6)</span>
     </div>
     <div style="display:flex; gap: 10px;">
         <button class="btn-dock btn-compare" onclick="openArena()">COMPARE NOW ⚔️</button>
@@ -461,9 +377,7 @@
     </div>
 </div>
 
-<!-- ==========================================
-     THE COMPARISON ARENA (Modal) 
-     ========================================== -->
+<!-- THE COMPARISON ARENA -->
 <div id="arenaModal">
     <span class="btn-close-arena" onclick="closeArena()">&times;</span>
     <div class="arena-header">
@@ -475,7 +389,6 @@
     </div>
 </div>
 
-<!-- jQuery + DataTables -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
@@ -603,9 +516,6 @@ async function loadData() {
     }
 }
 
-// ==========================================
-// SEÇİM VE KARŞILAŞTIRMA SİSTEMİ (JS)
-// ==========================================
 $(document).ready(function() {
     loadData();
 
@@ -617,6 +527,11 @@ $(document).ready(function() {
             $(this).removeClass('selected-player');
             selectedPlayers = selectedPlayers.filter(p => p !== nick);
         } else {
+            // YENİ: 6 OYUNCU SINIRI KONTROLÜ
+            if (selectedPlayers.length >= 6) {
+                alert("⚠️ TACTICAL LIMIT REACHED: You can only select up to 6 players for comparison!");
+                return;
+            }
             $(this).addClass('selected-player');
             selectedPlayers.push(nick);
         }
@@ -646,7 +561,7 @@ function openArena() {
         return;
     }
     
-    // YENİ SIRALAMA MOTORU (Impact + Eff, sonra Raw Skill)
+    // Impact + Eff'e göre büyükten küçüğe sırala (Eşitlik varsa Raw Skill)
     let compData = selectedPlayers.map(nick => globalPlayers.find(p => p['Nick'] === nick));
     
     compData.sort((a, b) => {
@@ -660,11 +575,7 @@ function openArena() {
         const skillB = parseFloat(b['Raw_Skill'] || 0);
         const totalB = impB + effB;
 
-        // 1. Kural: Toplam Etki ve Verimliliğe Bak
-        if (totalB !== totalA) {
-            return totalB - totalA; 
-        }
-        // 2. Kural: Eşitlik varsa Raw Skill'e bak
+        if (totalB !== totalA) return totalB - totalA; 
         return skillB - skillA;
     });
 
@@ -676,12 +587,32 @@ function openArena() {
     const arena = document.getElementById('arenaCards');
     arena.innerHTML = '';
 
-    // Kartları Oluştur
+    // Kartları Oluştur ve Sıra Rozetlerini Ekles
     compData.forEach((p, index) => {
         let rankClass = "rank-normal";
-        if(index === 0) rankClass = "rank-gold";
-        else if(index === 1) rankClass = "rank-silver";
-        else if(index === 2) rankClass = "rank-bronze";
+        let badgeClass = "";
+        let rankText = "";
+
+        // ROZET TANIMLAMALARI
+        if(index === 0) { 
+            rankClass = "rank-gold"; 
+            badgeClass = "badge-rank-1"; 
+            rankText = "👑 1ST PLACE"; 
+        }
+        else if(index === 1) { 
+            rankClass = "rank-silver"; 
+            badgeClass = "badge-rank-2"; 
+            rankText = "🥈 2ND PLACE"; 
+        }
+        else if(index === 2) { 
+            rankClass = "rank-bronze"; 
+            badgeClass = "badge-rank-3"; 
+            rankText = "🥉 3RD PLACE"; 
+        }
+        else {
+            badgeClass = "badge-rank-other";
+            rankText = `#${index + 1} PLACE`;
+        }
 
         const gPct = Math.min((parseFloat(p['Goals_PG'] || 0) / maxGoals) * 100, 100);
         const aPct = Math.min((parseFloat(p['Assists_PG'] || 0) / maxAssists) * 100, 100);
@@ -690,6 +621,7 @@ function openArena() {
 
         const cardHTML = `
             <div class="fut-card ${rankClass}">
+                <div class="card-rank-badge ${badgeClass}">${rankText}</div>
                 <div class="card-rating">${escapeHtml(p['Raw_Skill'] || '0')}</div>
                 <div class="card-raw-label">RAW SKILL</div>
                 <div class="card-tier">${escapeHtml(p['Tier'] || 'E-TIER')} • ${escapeHtml(p['Role'] || 'UNKNOWN')}</div>
