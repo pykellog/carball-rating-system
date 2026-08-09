@@ -50,11 +50,28 @@
             padding: 4px 16px;
             border-radius: 20px;
         }
+        .github-btn {
+            background: #2c3e50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            border: 1px solid #34495e;
+        }
         .github-btn:hover {
             background: #3498db !important;
             border-color: #3498db !important;
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        .github-btn svg {
+            fill: white;
         }
         .note {
             background: #eaf4ff;
@@ -92,34 +109,33 @@
             width: 100%;
         }
         table.dataTable {
-            font-size: 13px !important;
+            font-size: 12px !important;
             width: 100% !important;
         }
         table.dataTable td, 
         table.dataTable th {
-            padding: 6px 6px !important;
+            padding: 4px 5px !important;
             white-space: nowrap;
         }
         table.dataTable th {
-            font-size: 12px !important;
+            font-size: 11px !important;
             font-weight: 700;
             background: #2c3e50;
             color: white;
             position: relative;
             cursor: help;
         }
-        /* Tooltip için altı çizili efekt */
         table.dataTable th[title] {
             border-bottom: 1px dashed rgba(255,255,255,0.3);
         }
         table.dataTable td {
-            font-size: 13px !important;
+            font-size: 12px !important;
         }
         .badge {
             display: inline-block;
-            padding: 1px 10px;
+            padding: 1px 8px;
             border-radius: 30px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.2px;
         }
@@ -144,68 +160,73 @@
         .footer a:hover { text-decoration: underline; }
         .dataTables_wrapper .dataTables_filter { display: none; }
         .dataTables_wrapper .dataTables_length { display: none; }
-        .dataTables_wrapper .dataTables_info { font-size: 13px !important; padding: 6px 0 !important; }
-        .dataTables_wrapper .dataTables_paginate { font-size: 13px !important; }
+        .dataTables_wrapper .dataTables_info { font-size: 12px !important; padding: 4px 0 !important; }
+        .dataTables_wrapper .dataTables_paginate { font-size: 12px !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button {
-            padding: 3px 10px !important;
+            padding: 2px 8px !important;
         }
         .rank-col { font-weight: 600; color: #2c3e50; }
         .nick-col { font-weight: 600; color: #2c3e50; }
         .rating-col { font-weight: 700; color: #2980b9; }
-        .role-col { font-size: 12px; }
-        /* Column widths */
+        .role-col { font-size: 11px; }
+        /* Column widths - optimized for 32 columns */
         .col-rank { width: 2%; }
-        .col-nick { width: 8%; min-width: 70px; }
-        .col-userid { width: 4%; }
-        .col-rating { width: 3%; }
-        .col-skill { width: 4%; }
-        .col-multiplier { width: 3%; }
-        .col-role { width: 10%; min-width: 80px; }
-        .col-tier { width: 4%; }
-        .col-matches { width: 3%; }
-        .col-wins { width: 3%; }
-        .col-losses { width: 3%; }
-        .col-winrate { width: 3%; }
-        .col-wlratio { width: 3%; }
-        .col-goalspg { width: 3%; }
-        .col-assistspg { width: 3%; }
-        .col-savespg { width: 3%; }
-        .col-ogpg { width: 3%; }
-        .col-totalgoals { width: 3%; }
-        .col-totalassists { width: 3%; }
-        .col-totalsaves { width: 3%; }
-        .col-totalog { width: 3%; }
-        .col-mvpcount { width: 3%; }
-        .col-mvpwin { width: 3%; }
-        .col-offensive { width: 3%; }
-        .col-defensive { width: 3%; }
-        .col-playmaker { width: 3%; }
-        .col-efficiency { width: 3%; }
-        .col-impact { width: 3%; }
-        .col-gkindex { width: 3%; }
-        .col-defenserel { width: 3%; }
-        .col-totalactions { width: 4%; }
+        .col-nick { width: 7%; min-width: 60px; }
+        .col-sitename { width: 7%; min-width: 60px; }
+        .col-userid { width: 3.5%; }
+        .col-rating { width: 2.5%; }
+        .col-skill { width: 3.5%; }
+        .col-multiplier { width: 2.5%; }
+        .col-role { width: 9%; min-width: 70px; }
+        .col-tier { width: 3.5%; }
+        .col-matches { width: 2.5%; }
+        .col-wins { width: 2.5%; }
+        .col-losses { width: 2.5%; }
+        .col-winrate { width: 2.5%; }
+        .col-wlratio { width: 2.5%; }
+        .col-goalspg { width: 2.5%; }
+        .col-assistspg { width: 2.5%; }
+        .col-savespg { width: 2.5%; }
+        .col-ogpg { width: 2.5%; }
+        .col-totalgoals { width: 2.5%; }
+        .col-totalassists { width: 2.5%; }
+        .col-totalsaves { width: 2.5%; }
+        .col-totalog { width: 2.5%; }
+        .col-mvpcount { width: 2.5%; }
+        .col-mvpwin { width: 2.5%; }
+        .col-offensive { width: 2.5%; }
+        .col-defensive { width: 2.5%; }
+        .col-playmaker { width: 2.5%; }
+        .col-efficiency { width: 2.5%; }
+        .col-impact { width: 2.5%; }
+        .col-gkindex { width: 2.5%; }
+        .col-defenserel { width: 2.5%; }
+        .col-totalactions { width: 3.5%; }
 
         @media (max-width: 1200px) {
-            table.dataTable { font-size: 11px !important; }
-            table.dataTable td { font-size: 11px !important; }
-            table.dataTable th { font-size: 10px !important; }
-            .role-col { font-size: 10px; }
-            .badge { font-size: 9px; padding: 1px 6px; }
-            .col-nick { min-width: 60px; }
-            .col-role { min-width: 65px; }
+            table.dataTable { font-size: 10px !important; }
+            table.dataTable td { font-size: 10px !important; }
+            table.dataTable th { font-size: 9px !important; }
+            .role-col { font-size: 9px; }
+            .badge { font-size: 8px; padding: 1px 5px; }
+            .col-nick { min-width: 50px; }
+            .col-sitename { min-width: 50px; }
+            .col-role { min-width: 55px; }
         }
         @media (max-width: 768px) {
-            table.dataTable { font-size: 9px !important; }
-            table.dataTable td { font-size: 9px !important; }
-            table.dataTable th { font-size: 8px !important; }
-            table.dataTable td, table.dataTable th { padding: 3px 3px !important; }
-            .badge { font-size: 7px; padding: 1px 4px; }
-            .col-nick { min-width: 40px; }
-            .col-role { min-width: 40px; }
-            .header h1 { font-size: 16px; }
-            .header .info { font-size: 11px; }
-            .search-box input { font-size: 13px; padding: 6px 12px; }
+            table.dataTable { font-size: 8px !important; }
+            table.dataTable td { font-size: 8px !important; }
+            table.dataTable th { font-size: 7px !important; }
+            table.dataTable td, table.dataTable th { padding: 2px 3px !important; }
+            .badge { font-size: 6px; padding: 1px 3px; }
+            .col-nick { min-width: 35px; }
+            .col-sitename { min-width: 35px; }
+            .col-role { min-width: 35px; }
+            .header h1 { font-size: 14px; }
+            .header .info { font-size: 10px; }
+            .search-box input { font-size: 12px; padding: 5px 10px; }
+            .github-btn { font-size: 10px; padding: 4px 10px; }
+            .github-btn svg { height: 12px; width: 12px; }
         }
     </style>
     <script data-goatcounter="https://pykellog.goatcounter.com/count"
@@ -242,13 +263,14 @@
         <input type="text" id="customSearch" placeholder="🔍 Search player nickname... (e.g. fycnamed)">
     </div>
 
-    <!-- TABLE - WITH TOOLTIP HEADERS -->
+    <!-- TABLE - WITH SITENAME COLUMN -->
     <div class="table-responsive">
         <table id="playersTable" class="display compact stripe" style="width:100%">
             <thead>
                 <tr>
                     <th class="col-rank" title="Rank position">#</th>
                     <th class="col-nick" title="Player nickname">Nick</th>
+                    <th class="col-sitename" title="Site username">Site</th>
                     <th class="col-userid" title="User ID">ID</th>
                     <th class="col-rating" title="Final rating score">⭐</th>
                     <th class="col-skill" title="Raw skill score">Skill</th>
@@ -290,6 +312,10 @@
     <div class="footer">
         Data sourced from <strong>FFS Gaming</strong> MTA server.
         <span id="footerUpdate">-</span>
+        <br>
+        <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer">
+            🔗 View on GitHub / GitHub'da Görüntüle
+        </a>
     </div>
 </div>
 
@@ -385,12 +411,14 @@ async function loadData() {
 
             // ESCAPE NICKNAME to prevent HTML injection
             const safeNick = escapeHtml(player['Nick'] || '?');
+            const safeSiteName = escapeHtml(player['SiteName'] || '?');
             const safeRole = escapeHtml(player['Role'] || '?');
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="rank-col">${index + 1}</td>
                 <td class="nick-col" title="${safeNick}">${safeNick}</td>
+                <td class="sitename-col" title="${safeSiteName}">${safeSiteName}</td>
                 <td><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" title="FFS Gaming profilini aç">${escapeHtml(player['UserID'] || '?')}</a></td>
                 <td class="rating-col">${escapeHtml(player['Rating'] || '?')}</td>
                 <td>${escapeHtml(player['Raw_Skill'] || '?')}</td>
@@ -461,7 +489,7 @@ async function loadData() {
         console.error('Error:', error);
         document.getElementById('tableBody').innerHTML = `
             <tr>
-                <td colspan="31" style="padding: 30px; color: #e74c3c; text-align: center;">
+                <td colspan="32" style="padding: 30px; color: #e74c3c; text-align: center;">
                     ⚠️ Error loading data<br>
                     <small style="color: #888;">${error.message}</small>
                 </td>
