@@ -44,13 +44,13 @@
             font-family: 'Inter', sans-serif;
             color: var(--text-light);
             margin: 0;
-            padding: 15px 5px; /* Daha geniş alan için padding azaltıldı */
+            padding: 15px 5px;
         }
 
         /* The Main Scoreboard Panel - Maksimum Genişlik */
         .container {
             width: 100%;
-            max-width: 100%; /* Tam ekran genişliği */
+            max-width: 100%;
             margin: 0 auto;
             padding: 15px;
             background: var(--scoreboard-bg);
@@ -68,7 +68,6 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            border-bottom: 4px solid var(--line-white);
             padding-bottom: 10px;
             margin-bottom: 15px;
             flex-shrink: 0;
@@ -126,7 +125,7 @@
         .github-btn:hover svg { fill: #000; }
         .github-btn svg { fill: white; height: 16px; width: 16px; transition: fill 0.3s; }
 
-        /* YENİ EFSANEVİ STADYUM ANONS TABELASI (Eski Note'un yerine) */
+        /* YENİ EFSANEVİ STADYUM ANONS TABELASI */
         .stadium-announcement {
             background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.15), transparent);
             border-top: 1px solid rgba(0, 255, 136, 0.4);
@@ -187,20 +186,20 @@
         /* Table Container - Kaydırma SIFIRLANDI */
         .table-responsive {
             width: 100%;
-            overflow-x: auto; /* Sadece telefonda gerekirse çıksın */
+            overflow-x: auto;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        /* Telefonda çıkacak olası scrollbar için neon tasarım (PC'de görünmez) */
+        /* Telefonda çıkacak olası scrollbar için neon tasarım */
         .table-responsive::-webkit-scrollbar { height: 6px; }
         .table-responsive::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
         .table-responsive::-webkit-scrollbar-thumb { background: var(--neon-green); border-radius: 10px; }
 
-        /* DATATABLES DARK STADIUM OVERRIDES - SIKIŞTIRMA MÜHENDİSLİĞİ */
+        /* DATATABLES DARK STADIUM OVERRIDES */
         table.dataTable {
             font-family: 'Inter', sans-serif !important;
-            font-size: 11.5px !important; /* Bir tık küçültüldü ki sığsın */
+            font-size: 11.5px !important;
             width: 100% !important;
             border-collapse: collapse !important;
             margin: 0 !important;
@@ -209,10 +208,10 @@
         /* Tüm hücreleri ortala ve daralt */
         table.dataTable td, 
         table.dataTable th {
-            padding: 5px 3px !important; /* Boşluklar minimuma indirildi */
+            padding: 5px 3px !important;
             white-space: nowrap;
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            text-align: center !important; /* Sayılar ortada daha az yer kaplar */
+            text-align: center !important;
         }
         /* İsim ve Rol kısımları sola dayalı kalsın */
         table.dataTable td.nick-col,
@@ -224,7 +223,7 @@
         /* Table Headers */
         table.dataTable th {
             font-family: 'Teko', sans-serif;
-            font-size: 16px !important; /* Başlıklar dar ve uzun font */
+            font-size: 16px !important;
             font-weight: 500;
             background: #09130b !important;
             color: var(--line-white) !important;
@@ -238,11 +237,10 @@
         table.dataTable tbody tr { background-color: rgba(20, 20, 20, 0.6) !important; color: #ecf0f1; transition: all 0.15s; }
         table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
         
-        /* Hover Spotlight */
+        /* Hover Spotlight (Sorun yaratan kod silindi) */
         table.dataTable tbody tr:hover {
             background-color: var(--pitch-light) !important;
             color: white !important;
-            transform: scale(1.002); /* Büyüme efekti daraltıldı (taşmaması için) */
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset;
         }
         
@@ -256,7 +254,7 @@
         .rating-col { font-weight: 800; color: var(--neon-green) !important; font-size: 13px; text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);}
         .role-col { font-size: 10px; color: #95a5a6; text-transform: uppercase; font-weight: 600; letter-spacing: 0px;}
         
-        /* Badges (FUT Style Tier Ratings - Daha kompakt) */
+        /* Badges */
         .badge {
             display: inline-block;
             padding: 2px 6px;
@@ -305,7 +303,7 @@
         .footer a { color: var(--neon-green); text-decoration: none; }
         .footer a:hover { text-decoration: underline; text-shadow: 0 0 5px var(--neon-green); }
 
-        /* Responsive Design - Tablet & Mobile */
+        /* Responsive Design */
         @media (max-width: 1400px) {
             table.dataTable { font-size: 10px !important; }
             table.dataTable th { font-size: 14px !important; padding: 4px 2px !important; }
