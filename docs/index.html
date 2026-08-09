@@ -125,7 +125,7 @@
         .github-btn:hover svg { fill: #000; }
         .github-btn svg { fill: white; height: 16px; width: 16px; transition: fill 0.3s; }
 
-        /* YENİ EFSANEVİ STADYUM ANONS TABELASI */
+        /* EFSANEVİ STADYUM ANONS TABELASI */
         .stadium-announcement {
             background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.15), transparent);
             border-top: 1px solid rgba(0, 255, 136, 0.4);
@@ -183,7 +183,7 @@
             background: rgba(0, 0, 0, 0.9);
         }
 
-        /* Table Container - Kaydırma SIFIRLANDI */
+        /* Table Container */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -205,9 +205,9 @@
             margin: 0 !important;
             table-layout: auto;
         }
-        /* Tüm hücreleri ortala ve daralt */
-        table.dataTable td, 
-        table.dataTable th {
+
+        /* Veri Hücreleri (Ortalanmış) */
+        table.dataTable td {
             padding: 5px 3px !important;
             white-space: nowrap;
             border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -220,24 +220,37 @@
             text-align: left !important;
         }
 
-        /* Table Headers */
+        /* Sütun Başlıkları (Sola Yaslı, Yeşil Çizgisiz) */
         table.dataTable th {
+            padding: 5px 3px !important;
+            white-space: nowrap;
+            text-align: left !important; /* Sola yaslandı */
             font-family: 'Teko', sans-serif;
             font-size: 16px !important;
             font-weight: 500;
             background: #09130b !important;
             color: var(--line-white) !important;
             letter-spacing: 0.5px;
-            border-bottom: 3px solid var(--neon-green) !important;
+            border-bottom: 1px solid rgba(255,255,255,0.05) !important; /* Yeşil çizgi yerine uyumlu şeffaf ince çizgi */
             cursor: pointer;
         }
         table.dataTable th:hover { color: var(--neon-green) !important; }
+
+        /* DataTables Default Sıralama Oklarını (♦/Ok) Gizleme */
+        table.dataTable thead th {
+            background-image: none !important;
+        }
+        table.dataTable thead th::before,
+        table.dataTable thead th::after {
+            display: none !important;
+            content: "" !important;
+        }
         
         /* Table Rows */
         table.dataTable tbody tr { background-color: rgba(20, 20, 20, 0.6) !important; color: #ecf0f1; transition: all 0.15s; }
         table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
         
-        /* Hover Spotlight (Sorun yaratan kod silindi) */
+        /* Hover Spotlight (Kaydırma hatası düzeltildi) */
         table.dataTable tbody tr:hover {
             background-color: var(--pitch-light) !important;
             color: white !important;
