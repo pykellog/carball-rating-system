@@ -183,7 +183,7 @@
             background: #c0392b;
         }
         .compare-btn {
-            background: #3498db;
+            background: #2d5a27;
             color: white;
             border: none;
             border-radius: 30px;
@@ -194,7 +194,7 @@
             transition: 0.3s;
         }
         .compare-btn:hover {
-            background: #2980b9;
+            background: #1a472a;
             transform: scale(1.05);
         }
         .compare-btn:disabled {
@@ -241,14 +241,14 @@
             to { opacity: 1; }
         }
         @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
+            from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
         .modal-content {
             background: linear-gradient(145deg, #1a472a, #2d5a27);
             border-radius: 20px;
-            padding: 25px 30px;
-            max-width: 95%;
+            padding: 20px 25px;
+            max-width: 92%;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
@@ -263,9 +263,9 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 85%;
-            height: 75%;
-            border: 2px dashed rgba(255,255,255,0.08);
+            width: 80%;
+            height: 70%;
+            border: 2px dashed rgba(255,255,255,0.06);
             border-radius: 50%;
             pointer-events: none;
         }
@@ -277,9 +277,9 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            font-size: 20px;
+            width: 34px;
+            height: 34px;
+            font-size: 18px;
             cursor: pointer;
             z-index: 10;
             transition: 0.3s;
@@ -295,180 +295,115 @@
         .modal-title {
             text-align: center;
             color: #fff;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
             letter-spacing: 2px;
         }
         .modal-title span {
             background: linear-gradient(135deg, #f1c40f, #f39c12);
-            padding: 2px 15px;
+            padding: 2px 14px;
             border-radius: 30px;
             color: #1a472a;
-            font-size: 14px;
-            margin-left: 10px;
+            font-size: 13px;
+            margin-left: 8px;
         }
-        /* Oyuncu kartları grid */
-        .compare-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
+
+        /* Karşılaştırma Tablosu - Soldan Sağa */
+        .compare-table-wrapper {
+            overflow-x: auto;
+            margin-top: 10px;
         }
-        .player-card {
-            background: rgba(255,255,255,0.07);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 18px 15px 20px;
-            border: 1px solid rgba(255,255,255,0.12);
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 600px;
         }
-        .player-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255,255,255,0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .player-card .card-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.4);
+        .compare-table thead th {
+            background: rgba(255,255,255,0.08);
             color: #f1c40f;
-            padding: 2px 10px;
+            padding: 10px 12px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            border-bottom: 2px solid rgba(241, 196, 15, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .compare-table thead th .player-name-header {
+            font-size: 14px;
+            color: #fff;
+        }
+        .compare-table thead th .player-role-header {
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
+            font-weight: 400;
+            display: block;
+        }
+        .compare-table thead th .player-tier-header {
+            display: inline-block;
+            padding: 1px 10px;
             border-radius: 30px;
             font-size: 10px;
             font-weight: 700;
-            border: 1px solid rgba(241, 196, 15, 0.3);
+            margin-top: 4px;
         }
-        .player-card .player-name {
-            color: #fff;
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        .player-card .player-role {
-            color: rgba(255,255,255,0.6);
-            font-size: 11px;
-            margin-bottom: 12px;
-            font-weight: 400;
-        }
-        .player-card .player-tier {
-            display: inline-block;
-            padding: 1px 12px;
-            border-radius: 30px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        .player-card .tier-S { background: #e74c3c; color: #fff; }
-        .player-card .tier-A { background: #e84393; color: #fff; }
-        .player-card .tier-B { background: #6c5ce7; color: #fff; }
-        .player-card .tier-C { background: #0984e3; color: #fff; }
-        .player-card .tier-D { background: #00b894; color: #fff; }
-        .player-card .tier-E { background: #636e72; color: #fff; }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 3px 0;
+        .compare-table tbody tr {
             border-bottom: 1px solid rgba(255,255,255,0.06);
-            font-size: 11px;
+            transition: 0.2s;
         }
-        .stat-row .stat-label {
+        .compare-table tbody tr:hover {
+            background: rgba(255,255,255,0.04);
+        }
+        .compare-table tbody td {
+            padding: 6px 12px;
+            text-align: center;
+            color: rgba(255,255,255,0.85);
+            font-size: 12px;
+        }
+        .compare-table tbody td.stat-label {
+            text-align: left;
             color: rgba(255,255,255,0.5);
+            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            background: rgba(255,255,255,0.03);
         }
-        .stat-row .stat-value {
-            color: #fff;
+        .compare-table tbody td .stat-value {
             font-weight: 600;
         }
-        .stat-row .stat-value.best {
+        .compare-table tbody td .stat-value.best {
             color: #f1c40f;
-            text-shadow: 0 0 15px rgba(241, 196, 15, 0.3);
+            text-shadow: 0 0 20px rgba(241, 196, 15, 0.2);
         }
-        .stat-row .stat-value.worst {
+        .compare-table tbody td .stat-value.worst {
             color: #e74c3c;
-            opacity: 0.6;
+            opacity: 0.5;
         }
-        /* Rating büyük gösterim */
-        .player-card .big-rating {
-            text-align: center;
-            margin: 8px 0 12px;
-        }
-        .player-card .big-rating .number {
-            font-size: 32px;
+        .compare-table tbody td .rating-big {
+            font-size: 22px;
             font-weight: 800;
             color: #f1c40f;
-            text-shadow: 0 0 30px rgba(241, 196, 15, 0.2);
+            text-shadow: 0 0 30px rgba(241, 196, 15, 0.15);
         }
-        .player-card .big-rating .label {
-            font-size: 10px;
-            color: rgba(255,255,255,0.4);
-            display: block;
-            margin-top: -4px;
-        }
-        /* Karşılaştırma istatistik çubukları */
-        .stat-bar-container {
-            margin-top: 6px;
-        }
-        .stat-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 3px;
-        }
-        .stat-bar .bar-label {
-            color: rgba(255,255,255,0.5);
-            font-size: 9px;
-            min-width: 30px;
-            text-align: right;
-        }
-        .stat-bar .bar-track {
-            flex: 1;
-            height: 5px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .stat-bar .bar-fill {
-            height: 100%;
-            border-radius: 10px;
-            background: linear-gradient(90deg, #f1c40f, #f39c12);
-            transition: width 0.8s ease;
-        }
-        .stat-bar .bar-fill.blue { background: linear-gradient(90deg, #3498db, #2980b9); }
-        .stat-bar .bar-fill.green { background: linear-gradient(90deg, #2ecc71, #27ae60); }
-        .stat-bar .bar-fill.purple { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
-        .stat-bar .bar-fill.red { background: linear-gradient(90deg, #e74c3c, #c0392b); }
-        .stat-bar .bar-value {
-            color: #fff;
-            font-size: 9px;
-            min-width: 35px;
-            font-weight: 600;
-        }
-        /* Footer */
+        /* Tier renkleri */
+        .tier-S { background: #e74c3c; color: #fff; }
+        .tier-A { background: #e84393; color: #fff; }
+        .tier-B { background: #6c5ce7; color: #fff; }
+        .tier-C { background: #0984e3; color: #fff; }
+        .tier-D { background: #00b894; color: #fff; }
+        .tier-E { background: #636e72; color: #fff; }
+
         .compare-footer {
             text-align: center;
-            margin-top: 18px;
-            color: rgba(255,255,255,0.3);
+            margin-top: 15px;
+            color: rgba(255,255,255,0.25);
             font-size: 11px;
             border-top: 1px solid rgba(255,255,255,0.06);
-            padding-top: 12px;
-        }
-        /* Scrollbar */
-        .modal-content::-webkit-scrollbar {
-            width: 6px;
-        }
-        .modal-content::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-        }
-        .modal-content::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
+            padding-top: 10px;
         }
 
         .table-responsive {
@@ -583,9 +518,11 @@
             .col-nick { min-width: 50px; }
             .col-sitename { min-width: 50px; }
             .col-role { min-width: 55px; }
-            .compare-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-            .modal-content { padding: 20px; }
-            .player-card .big-rating .number { font-size: 26px; }
+            .modal-content { padding: 15px 18px; }
+            .compare-table { font-size: 11px; }
+            .compare-table thead th { font-size: 11px; padding: 8px 8px; }
+            .compare-table tbody td { padding: 4px 8px; font-size: 11px; }
+            .compare-table tbody td .rating-big { font-size: 18px; }
         }
         @media (max-width: 768px) {
             table.dataTable { font-size: 9px !important; }
@@ -604,19 +541,20 @@
             .compare-panel { padding: 6px 10px; }
             .compare-player-tag { font-size: 10px; padding: 2px 8px; }
             .compare-btn { font-size: 10px; padding: 3px 10px; }
-            .modal-content { padding: 15px; max-width: 98%; }
-            .modal-title { font-size: 16px; }
-            .compare-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .player-card { padding: 12px 10px; }
-            .player-card .player-name { font-size: 13px; }
-            .player-card .big-rating .number { font-size: 22px; }
-            .stat-row { font-size: 9px; }
-            .stat-bar .bar-label { font-size: 7px; min-width: 20px; }
-            .stat-bar .bar-value { font-size: 7px; min-width: 25px; }
-            .modal-close-btn { width: 30px; height: 30px; font-size: 16px; }
+            .modal-content { padding: 12px; max-width: 98%; }
+            .modal-title { font-size: 15px; }
+            .compare-table { font-size: 9px; min-width: 400px; }
+            .compare-table thead th { font-size: 9px; padding: 5px 5px; }
+            .compare-table thead th .player-name-header { font-size: 11px; }
+            .compare-table tbody td { padding: 3px 5px; font-size: 9px; }
+            .compare-table tbody td .rating-big { font-size: 14px; }
+            .modal-close-btn { width: 28px; height: 28px; font-size: 14px; }
         }
         @media (max-width: 480px) {
-            .compare-grid { grid-template-columns: 1fr; }
+            .compare-table { font-size: 8px; min-width: 320px; }
+            .compare-table thead th { font-size: 8px; padding: 4px 4px; }
+            .compare-table tbody td { padding: 2px 4px; font-size: 8px; }
+            .compare-table tbody td .rating-big { font-size: 12px; }
         }
     </style>
     <script data-goatcounter="https://pykellog.goatcounter.com/count"
@@ -680,8 +618,15 @@
             <div class="modal-title">
                 ⚽ Player Comparison <span>vs</span>
             </div>
-            <div class="compare-grid" id="modalCompareGrid">
-                <!-- Dynamically populated -->
+            <div class="compare-table-wrapper">
+                <table class="compare-table" id="compareTable">
+                    <thead id="compareTableHead">
+                        <!-- Dynamically populated -->
+                    </thead>
+                    <tbody id="compareTableBody">
+                        <!-- Dynamically populated -->
+                    </tbody>
+                </table>
             </div>
             <div class="compare-footer">
                 <span>🏟️ FFS Gaming CarBall • Best values highlighted in gold</span>
@@ -848,55 +793,25 @@ function updateComparePanel() {
 }
 
 // ============================================================
-// MODAL (POPUP) KARŞILAŞTIRMA EKRANI
+// MODAL KARŞILAŞTIRMA - TABLO FORMATI (Soldan Sağa)
 // ============================================================
 
 function openCompareModal() {
     if (compareList.length < 2) return;
     
     const modal = document.getElementById('compareModal');
-    const grid = document.getElementById('modalCompareGrid');
-    grid.innerHTML = '';
+    const thead = document.getElementById('compareTableHead');
+    const tbody = document.getElementById('compareTableBody');
     
-    // Tüm istatistik anahtarları
-    const allStatKeys = [
-        'Rank', 'Rating', 'Raw_Skill', 'Multiplier', 'Role', 'Tier',
-        'Matches', 'Wins', 'Losses', 'Win_Rate', 'Win_Loss_Ratio',
-        'Goals_PG', 'Assists_PG', 'Saves_PG', 'OwnGoals_PG',
-        'Total_Goals', 'Total_Assists', 'Total_Saves', 'Total_OwnGoals',
-        'MVP_Count', 'MVP_Per_Win', 'Offensive_Ratio', 'Defensive_Ratio',
-        'Playmaker_Ratio', 'Efficiency', 'Impact', 'Goalkeeping_Index',
-        'Defense_Reliability', 'Total_Actions'
-    ];
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
     
-    // Her istatistik için en iyi ve en kötü değerleri bul
-    const statBests = {};
-    const statWorsts = {};
-    
-    allStatKeys.forEach(key => {
-        const values = compareList.map(p => {
-            const val = p[key] !== undefined ? p[key] : null;
-            return { player: p, raw: val, num: parseFloat(val) };
-        }).filter(v => v.raw !== '' && v.raw !== null && v.raw !== undefined && !isNaN(v.num));
-        
-        if (values.length > 0) {
-            const lowIsGood = ['OwnGoals_PG', 'Total_OwnGoals', 'Losses'].includes(key);
-            if (lowIsGood) {
-                statBests[key] = Math.min(...values.map(v => v.num));
-                statWorsts[key] = Math.max(...values.map(v => v.num));
-            } else {
-                statBests[key] = Math.max(...values.map(v => v.num));
-                statWorsts[key] = Math.min(...values.map(v => v.num));
-            }
-        }
-    });
-    
-    // Her oyuncu için kart oluştur
-    compareList.forEach((player, idx) => {
-        const card = document.createElement('div');
-        card.className = 'player-card';
-        
-        const tier = player['Tier'] || 'E-Tier';
+    // Başlık satırı - Oyuncu isimleri
+    let headerHtml = '<tr><th>Stat</th>';
+    compareList.forEach(player => {
+        const safeNick = escapeHtml(player.Nick || '?');
+        const safeRole = escapeHtml(player.Role || '?');
+        const tier = player.Tier || 'E-Tier';
         let tierClass = 'E';
         if (tier.includes('S')) tierClass = 'S';
         else if (tier.includes('A')) tierClass = 'A';
@@ -904,57 +819,103 @@ function openCompareModal() {
         else if (tier.includes('C')) tierClass = 'C';
         else if (tier.includes('D')) tierClass = 'D';
         
-        const safeNick = escapeHtml(player['Nick'] || '?');
-        const safeRole = escapeHtml(player['Role'] || '?');
+        headerHtml += `
+            <th>
+                <span class="player-name-header">${safeNick}</span>
+                <span class="player-role-header">${safeRole}</span>
+                <span class="player-tier-header tier-${tierClass}">${escapeHtml(tier)}</span>
+            </th>
+        `;
+    });
+    headerHtml += '</tr>';
+    thead.innerHTML = headerHtml;
+    
+    // İstatistik listesi
+    const statList = [
+        { key: 'Rank', label: 'Rank' },
+        { key: 'Rating', label: 'Rating' },
+        { key: 'Raw_Skill', label: 'Raw Skill' },
+        { key: 'Multiplier', label: 'Multiplier' },
+        { key: 'Matches', label: 'Matches' },
+        { key: 'Wins', label: 'Wins' },
+        { key: 'Losses', label: 'Losses' },
+        { key: 'Win_Rate', label: 'Win Rate' },
+        { key: 'Win_Loss_Ratio', label: 'W/L Ratio' },
+        { key: 'Goals_PG', label: 'Goals/G' },
+        { key: 'Assists_PG', label: 'Assists/G' },
+        { key: 'Saves_PG', label: 'Saves/G' },
+        { key: 'OwnGoals_PG', label: 'OG/G' },
+        { key: 'Total_Goals', label: 'Total Goals' },
+        { key: 'Total_Assists', label: 'Total Assists' },
+        { key: 'Total_Saves', label: 'Total Saves' },
+        { key: 'Total_OwnGoals', label: 'Total OG' },
+        { key: 'MVP_Count', label: 'MVP Count' },
+        { key: 'MVP_Per_Win', label: 'MVP/Win %' },
+        { key: 'Offensive_Ratio', label: 'Offensive %' },
+        { key: 'Defensive_Ratio', label: 'Defensive %' },
+        { key: 'Playmaker_Ratio', label: 'Playmaker %' },
+        { key: 'Efficiency', label: 'Efficiency' },
+        { key: 'Impact', label: 'Impact' },
+        { key: 'Goalkeeping_Index', label: 'GK Index' },
+        { key: 'Defense_Reliability', label: 'Defense Rel.' },
+        { key: 'Total_Actions', label: 'Total Actions' }
+    ];
+    
+    // Her istatistik için en iyi ve en kötü değerleri bul
+    const statBests = {};
+    const statWorsts = {};
+    
+    statList.forEach(stat => {
+        const values = compareList.map(p => {
+            const val = p[stat.key] !== undefined ? p[stat.key] : null;
+            return { player: p, raw: val, num: parseFloat(val) };
+        }).filter(v => v.raw !== '' && v.raw !== null && v.raw !== undefined && !isNaN(v.num));
         
-        let statsHtml = '';
-        // Ana istatistikler
-        const mainStats = [
-            { key: 'Matches', label: 'Matches' },
-            { key: 'Win_Rate', label: 'Win Rate' },
-            { key: 'Goals_PG', label: 'Goals/G' },
-            { key: 'Assists_PG', label: 'Assists/G' },
-            { key: 'Saves_PG', label: 'Saves/G' },
-            { key: 'MVP_Per_Win', label: 'MVP/Win' },
-            { key: 'Efficiency', label: 'Efficiency' },
-            { key: 'Impact', label: 'Impact' }
-        ];
+        if (values.length > 0) {
+            const lowIsGood = ['OwnGoals_PG', 'Total_OwnGoals', 'Losses'].includes(stat.key);
+            if (lowIsGood) {
+                statBests[stat.key] = Math.min(...values.map(v => v.num));
+                statWorsts[stat.key] = Math.max(...values.map(v => v.num));
+            } else {
+                statBests[stat.key] = Math.max(...values.map(v => v.num));
+                statWorsts[stat.key] = Math.min(...values.map(v => v.num));
+            }
+        }
+    });
+    
+    // Veri satırları
+    statList.forEach(stat => {
+        let rowHtml = `<tr><td class="stat-label">${stat.label}</td>`;
         
-        mainStats.forEach(stat => {
+        compareList.forEach(player => {
             const val = player[stat.key] !== undefined ? player[stat.key] : '?';
-            const display = val !== '?' && !isNaN(parseFloat(val)) && ['Win_Rate', 'MVP_Per_Win', 'Offensive_Ratio', 'Defensive_Ratio', 'Playmaker_Ratio', 'Goalkeeping_Index'].includes(stat.key) 
-                ? val + '%' 
-                : val;
-            const isBest = statBests[stat.key] !== undefined && parseFloat(val) === statBests[stat.key];
-            const isWorst = statWorsts[stat.key] !== undefined && parseFloat(val) === statWorsts[stat.key];
-            let valClass = '';
-            if (isBest && val !== '?' && !isNaN(parseFloat(val))) valClass = 'best';
-            if (isWorst && val !== '?' && !isNaN(parseFloat(val))) valClass = 'worst';
+            let display = val;
             
-            statsHtml += `
-                <div class="stat-row">
-                    <span class="stat-label">${stat.label}</span>
-                    <span class="stat-value ${valClass}">${escapeHtml(String(display))}</span>
-                </div>
-            `;
+            // Yüzde ekle
+            if (['Win_Rate', 'MVP_Per_Win', 'Offensive_Ratio', 'Defensive_Ratio', 'Playmaker_Ratio', 'Goalkeeping_Index'].includes(stat.key)) {
+                if (display !== '?' && !isNaN(parseFloat(display))) {
+                    display = display + '%';
+                }
+            }
+            
+            // Rating özel gösterim
+            let valueHtml = '';
+            if (stat.key === 'Rating' && val !== '?' && !isNaN(parseFloat(val))) {
+                valueHtml = `<span class="rating-big">${escapeHtml(String(display))}</span>`;
+            } else {
+                const isBest = statBests[stat.key] !== undefined && parseFloat(val) === statBests[stat.key] && val !== '?' && !isNaN(parseFloat(val));
+                const isWorst = statWorsts[stat.key] !== undefined && parseFloat(val) === statWorsts[stat.key] && val !== '?' && !isNaN(parseFloat(val));
+                let className = '';
+                if (isBest) className = 'best';
+                if (isWorst) className = 'worst';
+                valueHtml = `<span class="stat-value ${className}">${escapeHtml(String(display))}</span>`;
+            }
+            
+            rowHtml += `<td>${valueHtml}</td>`;
         });
         
-        // Rating
-        const rating = player['Rating'] || '?';
-        
-        card.innerHTML = `
-            <div class="card-badge">#${idx + 1}</div>
-            <div class="player-name">${safeNick}</div>
-            <div class="player-role">${safeRole}</div>
-            <span class="player-tier tier-${tierClass}">${escapeHtml(tier)}</span>
-            <div class="big-rating">
-                <span class="number">${escapeHtml(String(rating))}</span>
-                <span class="label">RATING</span>
-            </div>
-            ${statsHtml}
-        `;
-        
-        grid.appendChild(card);
+        rowHtml += '</tr>';
+        tbody.innerHTML += rowHtml;
     });
     
     modal.classList.add('active');
