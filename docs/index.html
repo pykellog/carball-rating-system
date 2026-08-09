@@ -206,32 +206,33 @@
             table-layout: auto;
         }
 
-        /* Veri Hücreleri (Ortalanmış) */
-        table.dataTable td {
+        /* Başlıklar ve Veri Hücreleri (Genel Olarak Ortalanmış) */
+        table.dataTable td,
+        table.dataTable th {
             padding: 5px 3px !important;
             white-space: nowrap;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            text-align: center !important;
+            border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+            text-align: center !important; /* Her şeyi ortala */
         }
-        /* İsim ve Rol kısımları sola dayalı kalsın */
+
+        /* Sadece Nick, User ve Role başlıkları ve verileri sola dayalı kalsın */
+        table.dataTable th.col-nick,
+        table.dataTable th.col-sitename,
+        table.dataTable th.col-role,
         table.dataTable td.nick-col,
         table.dataTable td.sitename-col,
         table.dataTable td.role-col {
             text-align: left !important;
         }
 
-        /* Sütun Başlıkları (Sola Yaslı, Yeşil Çizgisiz) */
+        /* Sütun Başlıkları Ekstra Stilleri */
         table.dataTable th {
-            padding: 5px 3px !important;
-            white-space: nowrap;
-            text-align: center;
             font-family: 'Teko', sans-serif;
             font-size: 16px !important;
             font-weight: 500;
             background: #09130b !important;
             color: var(--line-white) !important;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255,255,255,0.05) !important; /* Yeşil çizgi yerine uyumlu şeffaf ince çizgi */
             cursor: pointer;
         }
         table.dataTable th:hover { color: var(--neon-green) !important; }
@@ -250,7 +251,7 @@
         table.dataTable tbody tr { background-color: rgba(20, 20, 20, 0.6) !important; color: #ecf0f1; transition: all 0.15s; }
         table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
         
-        /* Hover Spotlight (Kaydırma hatası düzeltildi) */
+        /* Hover Spotlight */
         table.dataTable tbody tr:hover {
             background-color: var(--pitch-light) !important;
             color: white !important;
