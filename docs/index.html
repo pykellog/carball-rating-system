@@ -10,7 +10,7 @@
     <!-- Google Fonts for Sports Theme -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -34,7 +34,6 @@
         html, body {
             width: 100%;
             min-height: 100%;
-            /* Football Pitch Pattern Background */
             background: repeating-linear-gradient(
                 90deg,
                 var(--pitch-dark),
@@ -45,15 +44,15 @@
             font-family: 'Inter', sans-serif;
             color: var(--text-light);
             margin: 0;
-            padding: 20px 10px;
+            padding: 15px 5px; /* Daha geniş alan için padding azaltıldı */
         }
 
-        /* The Main Scoreboard Panel */
+        /* The Main Scoreboard Panel - Maksimum Genişlik */
         .container {
             width: 100%;
-            max-width: 98%;
+            max-width: 100%; /* Tam ekran genişliği */
             margin: 0 auto;
-            padding: 20px 25px;
+            padding: 15px;
             background: var(--scoreboard-bg);
             backdrop-filter: blur(10px);
             border: 2px solid rgba(0, 255, 136, 0.3);
@@ -69,7 +68,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            border-bottom: 4px solid var(--line-white); /* Pitch line */
+            border-bottom: 4px solid var(--line-white);
             padding-bottom: 10px;
             margin-bottom: 15px;
             flex-shrink: 0;
@@ -89,11 +88,7 @@
             gap: 10px;
         }
 
-        .header h1::before {
-            content: "⚽";
-            font-size: 30px;
-            filter: drop-shadow(0 0 5px white);
-        }
+        .header h1::before { content: "⚽"; font-size: 30px; filter: drop-shadow(0 0 5px white); }
 
         .header .info {
             color: #bdc3c7;
@@ -131,174 +126,157 @@
         .github-btn:hover svg { fill: #000; }
         .github-btn svg { fill: white; height: 16px; width: 16px; transition: fill 0.3s; }
 
-        /* Notification / Note Area */
-        .note {
-            background: rgba(0, 255, 136, 0.05);
-            border-left: 4px solid var(--neon-green);
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-size: 13px;
+        /* YENİ EFSANEVİ STADYUM ANONS TABELASI (Eski Note'un yerine) */
+        .stadium-announcement {
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.15), transparent);
+            border-top: 1px solid rgba(0, 255, 136, 0.4);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.4);
             color: #dcdde1;
+            text-align: center;
+            padding: 8px 15px;
+            font-family: 'Teko', sans-serif;
+            font-size: 22px;
+            letter-spacing: 1.5px;
             margin-bottom: 15px;
-            flex-shrink: 0;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            gap: 10px;
+            animation: pulse-glow 2.5s infinite;
         }
-        .note strong { color: var(--neon-green); }
-        .note .tip { color: #f39c12; font-weight: 600; }
+        .stadium-announcement .highlight {
+            color: var(--neon-green);
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+            font-weight: 600;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0px transparent inset; }
+            50% { box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset; }
+            100% { box-shadow: 0 0 0px transparent inset; }
+        }
 
         /* Custom Search Box */
         .search-box {
             margin-bottom: 15px;
             flex-shrink: 0;
-            position: relative;
+            display: flex;
+            justify-content: center;
         }
         .search-box input {
             width: 100%;
-            max-width: 400px;
-            padding: 10px 18px;
+            max-width: 500px;
+            padding: 10px 20px;
             font-size: 14px;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.4);
             border-radius: 30px;
             outline: none;
             transition: 0.3s;
             font-family: 'Inter', sans-serif;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5) inset;
         }
         .search-box input::placeholder { color: #7f8fa6; }
         .search-box input:focus {
             border-color: var(--neon-green);
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            background: rgba(0, 0, 0, 0.9);
         }
 
-        /* Table Container */
+        /* Table Container - Kaydırma SIFIRLANDI */
         .table-responsive {
-            overflow-x: auto;
             width: 100%;
-            flex: 1;
-            min-height: 0;
+            overflow-x: auto; /* Sadece telefonda gerekirse çıksın */
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
+        
+        /* Telefonda çıkacak olası scrollbar için neon tasarım (PC'de görünmez) */
+        .table-responsive::-webkit-scrollbar { height: 6px; }
+        .table-responsive::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
+        .table-responsive::-webkit-scrollbar-thumb { background: var(--neon-green); border-radius: 10px; }
 
-        /* DATATABLES DARK STADIUM OVERRIDES */
+        /* DATATABLES DARK STADIUM OVERRIDES - SIKIŞTIRMA MÜHENDİSLİĞİ */
         table.dataTable {
             font-family: 'Inter', sans-serif !important;
-            font-size: 12px !important;
+            font-size: 11.5px !important; /* Bir tık küçültüldü ki sığsın */
             width: 100% !important;
             border-collapse: collapse !important;
             margin: 0 !important;
+            table-layout: auto;
         }
+        /* Tüm hücreleri ortala ve daralt */
         table.dataTable td, 
         table.dataTable th {
-            padding: 8px 6px !important;
+            padding: 5px 3px !important; /* Boşluklar minimuma indirildi */
             white-space: nowrap;
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: center !important; /* Sayılar ortada daha az yer kaplar */
         }
+        /* İsim ve Rol kısımları sola dayalı kalsın */
+        table.dataTable td.nick-col,
+        table.dataTable td.sitename-col,
+        table.dataTable td.role-col {
+            text-align: left !important;
+        }
+
         /* Table Headers */
         table.dataTable th {
             font-family: 'Teko', sans-serif;
-            font-size: 17px !important;
+            font-size: 16px !important; /* Başlıklar dar ve uzun font */
             font-weight: 500;
             background: #09130b !important;
             color: var(--line-white) !important;
             letter-spacing: 0.5px;
-            border-bottom: 3px solid var(--neon-green) !important; /* Grass line */
+            border-bottom: 3px solid var(--neon-green) !important;
             cursor: pointer;
         }
-        table.dataTable th[title] {
-            text-decoration: none;
-        }
-        table.dataTable th:hover {
-            color: var(--neon-green) !important;
-        }
+        table.dataTable th:hover { color: var(--neon-green) !important; }
         
-        /* Table Rows (Alternating cut grass effect) */
+        /* Table Rows */
         table.dataTable tbody tr { background-color: rgba(20, 20, 20, 0.6) !important; color: #ecf0f1; transition: all 0.15s; }
         table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
         
-        /* The Hover Spotlight Effect */
+        /* Hover Spotlight */
         table.dataTable tbody tr:hover {
             background-color: var(--pitch-light) !important;
             color: white !important;
-            transform: scale(1.005);
+            transform: scale(1.002); /* Büyüme efekti daraltıldı (taşmaması için) */
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset;
         }
         
-        /* Links inside table */
         table.dataTable td a { color: #3498db; text-decoration: none; font-weight: 600; }
         table.dataTable td a:hover { color: var(--neon-green); text-decoration: underline; }
 
         /* Specific Columns styling */
-        .rank-col { font-weight: 800; color: #f1c40f !important; font-size: 14px; text-align: center;}
-        .nick-col { font-weight: 700; color: #fff; font-size: 13px;}
-        .rating-col { font-weight: 800; color: var(--neon-green) !important; font-size: 14px; text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);}
-        .role-col { font-size: 11px; color: #95a5a6; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;}
+        .rank-col { font-weight: 800; color: #f1c40f !important; font-size: 13px; }
+        .nick-col { font-weight: 700; color: #fff; font-size: 12px; }
+        .sitename-col { font-size: 11.5px; color: #bdc3c7;}
+        .rating-col { font-weight: 800; color: var(--neon-green) !important; font-size: 13px; text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);}
+        .role-col { font-size: 10px; color: #95a5a6; text-transform: uppercase; font-weight: 600; letter-spacing: 0px;}
         
-        /* Badges (FUT Style Tier Ratings) */
+        /* Badges (FUT Style Tier Ratings - Daha kompakt) */
         .badge {
             display: inline-block;
-            padding: 3px 10px;
+            padding: 2px 6px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 800;
-            letter-spacing: 0.5px;
             text-transform: uppercase;
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .badge-S { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; text-shadow: none; border-color: #f39c12; }
+        .badge-S { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; border-color: #f39c12; }
         .badge-A { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: #fff; }
         .badge-B { background: linear-gradient(135deg, #3498db, #2980b9); color: #fff; }
         .badge-C { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; }
         .badge-D { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; }
         .badge-E { background: linear-gradient(135deg, #7f8c8d, #34495e); color: #fff; }
 
-        /* Column Widths */
-        .col-rank { width: 2%; }
-        .col-nick { width: 7%; min-width: 60px; }
-        .col-sitename { width: 7%; min-width: 60px; }
-        .col-userid { width: 3.5%; }
-        .col-rating { width: 2.5%; }
-        .col-skill { width: 3.5%; }
-        .col-multiplier { width: 2.5%; }
-        .col-role { width: 9%; min-width: 70px; }
-        .col-tier { width: 3.5%; }
-        .col-matches { width: 2.5%; }
-        .col-wins { width: 2.5%; }
-        .col-losses { width: 2.5%; }
-        .col-winrate { width: 2.5%; }
-        .col-wlratio { width: 2.5%; }
-        .col-goalspg { width: 2.5%; }
-        .col-assistspg { width: 2.5%; }
-        .col-savespg { width: 2.5%; }
-        .col-ogpg { width: 2.5%; }
-        .col-totalgoals { width: 2.5%; }
-        .col-totalassists { width: 2.5%; }
-        .col-totalsaves { width: 2.5%; }
-        .col-totalog { width: 2.5%; }
-        .col-mvpcount { width: 2.5%; }
-        .col-mvpwin { width: 2.5%; }
-        .col-offensive { width: 2.5%; }
-        .col-defensive { width: 2.5%; }
-        .col-playmaker { width: 2.5%; }
-        .col-efficiency { width: 2.5%; }
-        .col-impact { width: 2.5%; }
-        .col-gkindex { width: 2.5%; }
-        .col-defenserel { width: 2.5%; }
-        .col-totalactions { width: 3.5%; }
-
-        /* DataTables Pagination & Info Dark Mode fix */
-        .dataTables_wrapper .dataTables_filter { display: none; }
-        .dataTables_wrapper .dataTables_length { display: none; }
-        .dataTables_wrapper .dataTables_info { 
-            color: #7f8fa6 !important; 
-            font-size: 13px !important; 
-            padding-top: 15px !important; 
-        }
+        /* DataTables Pagination & Info */
+        .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_length { display: none; }
+        .dataTables_wrapper .dataTables_info { color: #7f8fa6 !important; font-size: 13px !important; padding-top: 15px !important; }
         .dataTables_wrapper .dataTables_paginate { margin-top: 10px !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             color: #dcdde1 !important;
@@ -308,17 +286,8 @@
             margin: 0 3px !important;
             padding: 4px 10px !important;
         }
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background: var(--neon-green) !important;
-            color: black !important;
-            border-color: var(--neon-green) !important;
-        }
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background: var(--highlight) !important;
-            color: black !important;
-            border-color: var(--highlight) !important;
-            font-weight: bold;
-        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--neon-green) !important; color: black !important; border-color: var(--neon-green) !important; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--highlight) !important; color: black !important; border-color: var(--highlight) !important; font-weight: bold; }
 
         /* Footer */
         .footer {
@@ -330,33 +299,25 @@
             padding-top: 15px;
             flex-shrink: 0;
             font-family: 'Teko', sans-serif;
-            font-size: 16px;
+            font-size: 18px;
             letter-spacing: 1px;
         }
-        .footer a {
-            color: var(--neon-green);
-            text-decoration: none;
-        }
+        .footer a { color: var(--neon-green); text-decoration: none; }
         .footer a:hover { text-decoration: underline; text-shadow: 0 0 5px var(--neon-green); }
 
-        /* Responsive Design Adjustments */
-        @media (max-width: 1200px) {
-            table.dataTable { font-size: 11px !important; }
-            table.dataTable th { font-size: 14px !important; }
-            .badge { font-size: 10px; padding: 2px 6px; }
-            .header h1 { font-size: 28px; }
+        /* Responsive Design - Tablet & Mobile */
+        @media (max-width: 1400px) {
+            table.dataTable { font-size: 10px !important; }
+            table.dataTable th { font-size: 14px !important; padding: 4px 2px !important; }
+            table.dataTable td { padding: 4px 2px !important; }
+            .badge { font-size: 9px; padding: 1px 4px; }
         }
         @media (max-width: 768px) {
-            .note { flex-direction: column; text-align: center; gap: 5px; }
-            .note .tip { float: none; display: block; margin-top: 2px; }
-            table.dataTable { font-size: 10px !important; }
-            table.dataTable th { font-size: 12px !important; padding: 5px 3px !important; }
-            table.dataTable td { padding: 5px 3px !important; }
-            .badge { font-size: 8px; padding: 2px 4px; }
-            .header { justify-content: center; gap: 10px; text-align: center; }
-            .header h1 { font-size: 24px; }
-            .header .info { font-size: 14px; }
-            .search-box input { max-width: 100%; }
+            .stadium-announcement { font-size: 16px; flex-direction: column; padding: 5px; }
+            table.dataTable { font-size: 9px !important; }
+            table.dataTable th { font-size: 12px !important; }
+            .header h1 { font-size: 24px; text-align: center; justify-content: center;}
+            .header { justify-content: center; gap: 10px; }
         }
     </style>
     <script data-goatcounter="https://pykellog.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -366,35 +327,37 @@
 <div class="container">
     <!-- HEADER -->
     <div class="header">
-        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: center;">
+        <div>
             <h1 style="margin: 0;">FFS Gaming CarBall Rankings</h1>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;">
+            <div class="info">
+                🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp;
+                ⏱️ Last whistle: <span id="lastUpdate">-</span>
+            </div>
             <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer" class="github-btn">
                 <svg height="16" viewBox="0 0 16 16" width="16">
                     <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
                 </svg>
-                View on GitHub
+                GitHub
             </a>
-        </div>
-        <div class="info">
-            🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp;
-            ⏱️ Last whistle: <span id="lastUpdate">-</span>
         </div>
     </div>
 
-    <!-- NOTE -->
-    <div class="note">
-        <span>💡 Official Stats from <strong>FFS Gaming</strong> CarBall Server.</span>
-        <span class="tip">🔍 Quick Search / Click headers to sort stats!</span>
+    <!-- TACTICAL ANNOUNCEMENT BOARD -->
+    <div class="stadium-announcement">
+        <span>⚡</span>
+        <span><span class="highlight">TACTICAL HUD:</span> Type in the search box to scout a player, or click headers to sort statistics!</span>
+        <span>⚡</span>
     </div>
 
     <!-- SEARCH -->
     <div class="search-box">
-        <input type="text" id="customSearch" placeholder="🔍 Search player nickname... (e.g. fycnamed)">
+        <input type="text" id="customSearch" placeholder="🔍 Scout a player... (e.g. fycnamed)">
     </div>
 
     <!-- TABLE -->
     <div class="table-responsive">
-        <!-- Removed 'stripe' class since we manually stripe it in css to control dark mode colors -->
         <table id="playersTable" class="display compact" style="width:100%">
             <thead>
                 <tr>
@@ -545,7 +508,7 @@ async function loadData() {
                 <td class="rank-col">${index + 1}</td>
                 <td class="nick-col" title="${safeNick}">${safeNick}</td>
                 <td class="sitename-col" title="${safeSiteName}">${safeSiteName}</td>
-                <td><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" title="FFS Gaming profilini aç">${escapeHtml(player['UserID'] || '?')}</a></td>
+                <td><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer">${escapeHtml(player['UserID'] || '?')}</a></td>
                 <td class="rating-col">${escapeHtml(player['Rating'] || '?')}</td>
                 <td>${escapeHtml(player['Raw_Skill'] || '?')}</td>
                 <td>${escapeHtml(player['Multiplier'] || '?')}</td>
