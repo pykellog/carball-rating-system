@@ -111,6 +111,149 @@
             border-color: #3498db;
             box-shadow: 0 0 0 3px rgba(52,152,219,0.15);
         }
+        
+        /* ====================================================== */
+        /* KARŞILAŞTIRMA PANELİ STILLERİ */
+        /* ====================================================== */
+        .compare-panel {
+            background: #f8f9fa;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            display: none;
+        }
+        .compare-panel.active {
+            display: block;
+        }
+        .compare-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .compare-panel-header h3 {
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        .compare-panel-header .close-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 2px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .compare-panel-header .close-btn:hover {
+            background: #c0392b;
+        }
+        .compare-players {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .compare-player-tag {
+            background: #ecf0f1;
+            border-radius: 30px;
+            padding: 3px 12px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .compare-player-tag .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        .compare-player-tag .remove-btn:hover {
+            background: #c0392b;
+        }
+        .compare-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 4px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .compare-btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        .compare-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .compare-clear-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 4px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .compare-clear-btn:hover {
+            background: #7f8c8d;
+        }
+        .compare-result {
+            margin-top: 10px;
+            overflow-x: auto;
+            display: none;
+        }
+        .compare-result.active {
+            display: block;
+        }
+        .compare-result table {
+            font-size: 11px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .compare-result th,
+        .compare-result td {
+            border: 1px solid #ddd;
+            padding: 4px 8px;
+            text-align: center;
+        }
+        .compare-result th {
+            background: #2c3e50;
+            color: white;
+            font-size: 10px;
+        }
+        .compare-result .stat-label {
+            background: #ecf0f1;
+            font-weight: 600;
+            text-align: left;
+        }
+        .compare-result .best-stat {
+            background: #d4edda;
+            font-weight: 700;
+        }
+        .compare-result .worst-stat {
+            background: #f8d7da;
+        }
+        /* ====================================================== */
+
         .table-responsive {
             overflow-x: auto;
             width: 100%;
@@ -179,7 +322,8 @@
         .nick-col { font-weight: 600; color: #2c3e50; }
         .rating-col { font-weight: 700; color: #2980b9; }
         .role-col { font-size: 11px; }
-        /* Column widths - optimized for 32 columns */
+
+        /* Column widths */
         .col-rank { width: 2%; }
         .col-nick { width: 7%; min-width: 60px; }
         .col-sitename { width: 7%; min-width: 60px; }
@@ -237,6 +381,12 @@
             .search-box input { font-size: 12px; padding: 5px 10px; }
             .github-btn { font-size: 10px; padding: 4px 10px; }
             .github-btn svg { height: 12px; width: 12px; }
+            .compare-panel { padding: 6px 10px; }
+            .compare-player-tag { font-size: 10px; padding: 2px 8px; }
+            .compare-btn { font-size: 10px; padding: 3px 10px; }
+            .compare-result table { font-size: 9px; }
+            .compare-result th,
+            .compare-result td { padding: 2px 4px; }
         }
     </style>
     <script data-goatcounter="https://pykellog.goatcounter.com/count"
@@ -271,6 +421,27 @@
     <!-- SEARCH -->
     <div class="search-box">
         <input type="text" id="customSearch" placeholder="🔍 Search player nickname... (e.g. fycnamed)">
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- KARŞILAŞTIRMA PANELİ -->
+    <!-- ====================================================== -->
+    <div class="compare-panel" id="comparePanel">
+        <div class="compare-panel-header">
+            <h3>📊 Player Comparison / Oyuncu Karşılaştırma <span style="font-size: 11px; color: #7f8c8d; font-weight: normal;">(max 6)</span></h3>
+            <button class="close-btn" onclick="closeCompare()">✕ Close</button>
+        </div>
+        <div class="compare-players" id="comparePlayers">
+            <!-- Selected players will appear here -->
+        </div>
+        <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+            <button class="compare-btn" id="compareBtn" onclick="showComparison()" disabled>🔍 Compare</button>
+            <button class="compare-clear-btn" onclick="clearCompare()">✕ Clear All</button>
+            <span style="font-size: 11px; color: #7f8c8d;" id="compareCount">0 players selected</span>
+        </div>
+        <div class="compare-result" id="compareResult">
+            <!-- Comparison table will be inserted here -->
+        </div>
     </div>
 
     <!-- TABLE -->
@@ -335,6 +506,8 @@
 
 <script>
 let dataTable;
+let allPlayers = [];
+let compareList = [];
 
 function escapeHtml(text) {
     if (!text) return '?';
@@ -367,6 +540,177 @@ function parseQuotedCSV(line) {
     result.push(current.trim());
     return result;
 }
+
+// ============================================================
+// KARŞILAŞTIRMA FONKSİYONLARI
+// ============================================================
+
+function addToCompare(nick) {
+    const player = allPlayers.find(p => p.Nick === nick);
+    if (!player) return;
+    
+    // Zaten ekli mi kontrol et
+    if (compareList.some(p => p.Nick === nick)) {
+        return;
+    }
+    
+    // Maksimum 6 oyuncu
+    if (compareList.length >= 6) {
+        alert('You can compare up to 6 players at once.');
+        return;
+    }
+    
+    compareList.push(player);
+    updateComparePanel();
+}
+
+function removeFromCompare(nick) {
+    compareList = compareList.filter(p => p.Nick !== nick);
+    updateComparePanel();
+    if (compareList.length === 0) {
+        document.getElementById('compareResult').classList.remove('active');
+    }
+}
+
+function clearCompare() {
+    compareList = [];
+    updateComparePanel();
+    document.getElementById('compareResult').classList.remove('active');
+}
+
+function closeCompare() {
+    document.getElementById('comparePanel').classList.remove('active');
+}
+
+function updateComparePanel() {
+    const container = document.getElementById('comparePlayers');
+    const countSpan = document.getElementById('compareCount');
+    const compareBtn = document.getElementById('compareBtn');
+    
+    container.innerHTML = '';
+    
+    compareList.forEach(player => {
+        const tag = document.createElement('span');
+        tag.className = 'compare-player-tag';
+        const safeNick = escapeHtml(player.Nick || '?');
+        tag.innerHTML = `
+            ${safeNick}
+            <button class="remove-btn" onclick="removeFromCompare('${player.Nick.replace(/'/g, "\\'")}')">×</button>
+        `;
+        container.appendChild(tag);
+    });
+    
+    countSpan.textContent = `${compareList.length} players selected`;
+    compareBtn.disabled = compareList.length < 2;
+    
+    // Paneli göster
+    if (compareList.length > 0) {
+        document.getElementById('comparePanel').classList.add('active');
+    } else {
+        document.getElementById('comparePanel').classList.remove('active');
+    }
+}
+
+function showComparison() {
+    if (compareList.length < 2) return;
+    
+    const container = document.getElementById('compareResult');
+    container.classList.add('active');
+    
+    // Stat listesi
+    const stats = [
+        { key: 'Rank', label: 'Rank' },
+        { key: 'Rating', label: 'Rating' },
+        { key: 'Raw_Skill', label: 'Raw Skill' },
+        { key: 'Multiplier', label: 'Multiplier' },
+        { key: 'Role', label: 'Role' },
+        { key: 'Tier', label: 'Tier' },
+        { key: 'Matches', label: 'Matches' },
+        { key: 'Wins', label: 'Wins' },
+        { key: 'Losses', label: 'Losses' },
+        { key: 'Win_Rate', label: 'Win Rate' },
+        { key: 'Win_Loss_Ratio', label: 'W/L Ratio' },
+        { key: 'Goals_PG', label: 'Goals/G' },
+        { key: 'Assists_PG', label: 'Assists/G' },
+        { key: 'Saves_PG', label: 'Saves/G' },
+        { key: 'OwnGoals_PG', label: 'OG/G' },
+        { key: 'Total_Goals', label: 'Total Goals' },
+        { key: 'Total_Assists', label: 'Total Assists' },
+        { key: 'Total_Saves', label: 'Total Saves' },
+        { key: 'Total_OwnGoals', label: 'Total OG' },
+        { key: 'MVP_Count', label: 'MVP Count' },
+        { key: 'MVP_Per_Win', label: 'MVP/Win %' },
+        { key: 'Offensive_Ratio', label: 'Offensive %' },
+        { key: 'Defensive_Ratio', label: 'Defensive %' },
+        { key: 'Playmaker_Ratio', label: 'Playmaker %' },
+        { key: 'Efficiency', label: 'Efficiency' },
+        { key: 'Impact', label: 'Impact' },
+        { key: 'Goalkeeping_Index', label: 'GK Index' },
+        { key: 'Defense_Reliability', label: 'Defense Rel.' },
+        { key: 'Total_Actions', label: 'Total Actions' }
+    ];
+    
+    let html = '<table>';
+    // Header
+    html += '<thead><tr><th>Stat</th>';
+    compareList.forEach(p => {
+        const safeNick = escapeHtml(p.Nick || '?');
+        html += `<th>${safeNick}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+    
+    // Her istatistik için satır
+    stats.forEach(stat => {
+        html += `<tr><td class="stat-label">${stat.label}</td>`;
+        
+        // Değerleri topla (sayısal karşılaştırma için)
+        const values = compareList.map(p => {
+            const val = p[stat.key] !== undefined ? p[stat.key] : '?';
+            return { player: p, raw: val, num: parseFloat(val) };
+        });
+        
+        // En iyi ve en kötü değerleri bul (sayısal olanlar için)
+        const numValues = values.filter(v => !isNaN(v.num) && v.raw !== '');
+        let bestVal = null;
+        let worstVal = null;
+        
+        if (numValues.length > 0) {
+            // Bazı stat'lerde düşük iyidir (OG/G, OwnGoals vb.)
+            const lowIsGood = ['OwnGoals_PG', 'Total_OwnGoals', 'Losses'].includes(stat.key);
+            if (lowIsGood) {
+                bestVal = Math.min(...numValues.map(v => v.num));
+                worstVal = Math.max(...numValues.map(v => v.num));
+            } else {
+                bestVal = Math.max(...numValues.map(v => v.num));
+                worstVal = Math.min(...numValues.map(v => v.num));
+            }
+        }
+        
+        values.forEach(v => {
+            let display = v.raw !== '' && v.raw !== undefined ? v.raw : '?';
+            // Yüzde ekle
+            if (['Win_Rate', 'MVP_Per_Win', 'Offensive_Ratio', 'Defensive_Ratio', 'Playmaker_Ratio', 'Goalkeeping_Index'].includes(stat.key)) {
+                if (display !== '?' && !isNaN(parseFloat(display))) {
+                    display = display + '%';
+                }
+            }
+            let className = '';
+            if (bestVal !== null && !isNaN(v.num) && v.num === bestVal) {
+                className = 'best-stat';
+            } else if (worstVal !== null && !isNaN(v.num) && v.num === worstVal) {
+                className = 'worst-stat';
+            }
+            html += `<td class="${className}">${escapeHtml(String(display))}</td>`;
+        });
+        
+        html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+// ============================================================
 
 async function loadData() {
     try {
@@ -404,6 +748,8 @@ async function loadData() {
             throw new Error('No data rows found.');
         }
 
+        allPlayers = players;
+
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
 
@@ -423,7 +769,11 @@ async function loadData() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="rank-col">${index + 1}</td>
-                <td class="nick-col" title="${safeNick}">${safeNick}</td>
+                <td class="nick-col" title="${safeNick}">
+                    <a href="#" onclick="addToCompare('${player['Nick'].replace(/'/g, "\\'")}'); return false;" style="color: #3498db; text-decoration: none; cursor: pointer;" title="Click to add to comparison">
+                        ${safeNick}
+                    </a>
+                </td>
                 <td class="sitename-col" title="${safeSiteName}">${safeSiteName}</td>
                 <td><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" title="FFS Gaming profilini aç">${escapeHtml(player['UserID'] || '?')}</a></td>
                 <td class="rating-col">${escapeHtml(player['Rating'] || '?')}</td>
@@ -480,7 +830,6 @@ async function loadData() {
 
         document.getElementById('playerCount').textContent = players.length;
 
-        // Cache-Busting for metadata.json
         try {
             const cacheBuster = new Date().getTime();
             const metaRes = await fetch('data/metadata.json?t=' + cacheBuster);
