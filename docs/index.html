@@ -474,8 +474,12 @@ async function loadData() {
 
         document.getElementById('playerCount').textContent = players.length;
 
+        // ================================================================
+        // CACHE-BUSTING: metadata.json dosyasını her seferinde tazele
+        // ================================================================
         try {
-            const metaRes = await fetch('data/metadata.json');
+            const cacheBuster = new Date().getTime();
+            const metaRes = await fetch('data/metadata.json?t=' + cacheBuster);
             if (metaRes.ok) {
                 const meta = await metaRes.json();
                 document.getElementById('lastUpdate').textContent = meta.lastUpdate || 'Unknown';
