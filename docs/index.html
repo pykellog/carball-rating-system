@@ -111,301 +111,6 @@
             border-color: #3498db;
             box-shadow: 0 0 0 3px rgba(52,152,219,0.15);
         }
-        
-        /* ====================================================== */
-        /* KARŞILAŞTIRMA PANELİ STILLERİ */
-        /* ====================================================== */
-        .compare-panel {
-            background: #f8f9fa;
-            border: 2px solid #3498db;
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin-bottom: 10px;
-            flex-shrink: 0;
-            display: none;
-        }
-        .compare-panel.active {
-            display: block;
-        }
-        .compare-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .compare-panel-header h3 {
-            font-size: 14px;
-            color: #2c3e50;
-        }
-        .compare-panel-header .close-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 2px 12px;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .compare-panel-header .close-btn:hover {
-            background: #c0392b;
-        }
-        .compare-players {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-        .compare-player-tag {
-            background: #ecf0f1;
-            border-radius: 30px;
-            padding: 3px 12px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .compare-player-tag .remove-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            font-size: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-        .compare-player-tag .remove-btn:hover {
-            background: #c0392b;
-        }
-        .compare-btn {
-            background: #2d5a27;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 4px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .compare-btn:hover {
-            background: #1a472a;
-            transform: scale(1.05);
-        }
-        .compare-btn:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .compare-clear-btn {
-            background: #95a5a6;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 4px 12px;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .compare-clear-btn:hover {
-            background: #7f8c8d;
-        }
-
-        /* ====================================================== */
-        /* MODAL (POPUP) KARŞILAŞTIRMA EKRANI - FUTBOL TEMALI */
-        /* ====================================================== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .modal-content {
-            background: linear-gradient(145deg, #1a472a, #2d5a27);
-            border-radius: 20px;
-            padding: 20px 25px;
-            max-width: 92%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            border: 3px solid #4a7c59;
-            animation: slideUp 0.4s ease;
-        }
-        /* Saha çizgileri efekti */
-        .modal-content::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            height: 70%;
-            border: 2px dashed rgba(255,255,255,0.06);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        .modal-close-btn {
-            position: sticky;
-            top: 0;
-            float: right;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 34px;
-            height: 34px;
-            font-size: 18px;
-            cursor: pointer;
-            z-index: 10;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
-        }
-        .modal-close-btn:hover {
-            transform: rotate(90deg) scale(1.1);
-            background: #c0392b;
-        }
-        .modal-title {
-            text-align: center;
-            color: #fff;
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            letter-spacing: 2px;
-        }
-        .modal-title span {
-            background: linear-gradient(135deg, #f1c40f, #f39c12);
-            padding: 2px 14px;
-            border-radius: 30px;
-            color: #1a472a;
-            font-size: 13px;
-            margin-left: 8px;
-        }
-
-        /* Karşılaştırma Tablosu - Soldan Sağa */
-        .compare-table-wrapper {
-            overflow-x: auto;
-            margin-top: 10px;
-        }
-        .compare-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            min-width: 600px;
-        }
-        .compare-table thead th {
-            background: rgba(255,255,255,0.08);
-            color: #f1c40f;
-            padding: 10px 12px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 700;
-            border-bottom: 2px solid rgba(241, 196, 15, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 5;
-        }
-        .compare-table thead th .player-name-header {
-            font-size: 14px;
-            color: #fff;
-        }
-        .compare-table thead th .player-role-header {
-            font-size: 10px;
-            color: rgba(255,255,255,0.5);
-            font-weight: 400;
-            display: block;
-        }
-        .compare-table thead th .player-tier-header {
-            display: inline-block;
-            padding: 1px 10px;
-            border-radius: 30px;
-            font-size: 10px;
-            font-weight: 700;
-            margin-top: 4px;
-        }
-        .compare-table tbody tr {
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            transition: 0.2s;
-        }
-        .compare-table tbody tr:hover {
-            background: rgba(255,255,255,0.04);
-        }
-        .compare-table tbody td {
-            padding: 6px 12px;
-            text-align: center;
-            color: rgba(255,255,255,0.85);
-            font-size: 12px;
-        }
-        .compare-table tbody td.stat-label {
-            text-align: left;
-            color: rgba(255,255,255,0.5);
-            font-weight: 600;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-            background: rgba(255,255,255,0.03);
-        }
-        .compare-table tbody td .stat-value {
-            font-weight: 600;
-        }
-        .compare-table tbody td .stat-value.best {
-            color: #f1c40f;
-            text-shadow: 0 0 20px rgba(241, 196, 15, 0.2);
-        }
-        .compare-table tbody td .stat-value.worst {
-            color: #e74c3c;
-            opacity: 0.5;
-        }
-        .compare-table tbody td .rating-big {
-            font-size: 22px;
-            font-weight: 800;
-            color: #f1c40f;
-            text-shadow: 0 0 30px rgba(241, 196, 15, 0.15);
-        }
-        /* Tier renkleri */
-        .tier-S { background: #e74c3c; color: #fff; }
-        .tier-A { background: #e84393; color: #fff; }
-        .tier-B { background: #6c5ce7; color: #fff; }
-        .tier-C { background: #0984e3; color: #fff; }
-        .tier-D { background: #00b894; color: #fff; }
-        .tier-E { background: #636e72; color: #fff; }
-
-        .compare-footer {
-            text-align: center;
-            margin-top: 15px;
-            color: rgba(255,255,255,0.25);
-            font-size: 11px;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            padding-top: 10px;
-        }
-
         .table-responsive {
             overflow-x: auto;
             width: 100%;
@@ -474,8 +179,7 @@
         .nick-col { font-weight: 600; color: #2c3e50; }
         .rating-col { font-weight: 700; color: #2980b9; }
         .role-col { font-size: 11px; }
-
-        /* Column widths */
+        /* Column widths - optimized for 32 columns */
         .col-rank { width: 2%; }
         .col-nick { width: 7%; min-width: 60px; }
         .col-sitename { width: 7%; min-width: 60px; }
@@ -518,11 +222,6 @@
             .col-nick { min-width: 50px; }
             .col-sitename { min-width: 50px; }
             .col-role { min-width: 55px; }
-            .modal-content { padding: 15px 18px; }
-            .compare-table { font-size: 11px; }
-            .compare-table thead th { font-size: 11px; padding: 8px 8px; }
-            .compare-table tbody td { padding: 4px 8px; font-size: 11px; }
-            .compare-table tbody td .rating-big { font-size: 18px; }
         }
         @media (max-width: 768px) {
             table.dataTable { font-size: 9px !important; }
@@ -538,23 +237,6 @@
             .search-box input { font-size: 12px; padding: 5px 10px; }
             .github-btn { font-size: 10px; padding: 4px 10px; }
             .github-btn svg { height: 12px; width: 12px; }
-            .compare-panel { padding: 6px 10px; }
-            .compare-player-tag { font-size: 10px; padding: 2px 8px; }
-            .compare-btn { font-size: 10px; padding: 3px 10px; }
-            .modal-content { padding: 12px; max-width: 98%; }
-            .modal-title { font-size: 15px; }
-            .compare-table { font-size: 9px; min-width: 400px; }
-            .compare-table thead th { font-size: 9px; padding: 5px 5px; }
-            .compare-table thead th .player-name-header { font-size: 11px; }
-            .compare-table tbody td { padding: 3px 5px; font-size: 9px; }
-            .compare-table tbody td .rating-big { font-size: 14px; }
-            .modal-close-btn { width: 28px; height: 28px; font-size: 14px; }
-        }
-        @media (max-width: 480px) {
-            .compare-table { font-size: 8px; min-width: 320px; }
-            .compare-table thead th { font-size: 8px; padding: 4px 4px; }
-            .compare-table tbody td { padding: 2px 4px; font-size: 8px; }
-            .compare-table tbody td .rating-big { font-size: 12px; }
         }
     </style>
     <script data-goatcounter="https://pykellog.goatcounter.com/count"
@@ -589,49 +271,6 @@
     <!-- SEARCH -->
     <div class="search-box">
         <input type="text" id="customSearch" placeholder="🔍 Search player nickname... (e.g. fycnamed)">
-    </div>
-
-    <!-- ====================================================== -->
-    <!-- KARŞILAŞTIRMA PANELİ -->
-    <!-- ====================================================== -->
-    <div class="compare-panel" id="comparePanel">
-        <div class="compare-panel-header">
-            <h3>📊 Player Comparison / Oyuncu Karşılaştırma <span style="font-size: 11px; color: #7f8c8d; font-weight: normal;">(max 6)</span></h3>
-            <button class="close-btn" onclick="closeCompare()">✕ Close</button>
-        </div>
-        <div class="compare-players" id="comparePlayers">
-            <!-- Selected players will appear here -->
-        </div>
-        <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-            <button class="compare-btn" id="compareBtn" onclick="openCompareModal()" disabled>⚽ Compare</button>
-            <button class="compare-clear-btn" onclick="clearCompare()">✕ Clear All</button>
-            <span style="font-size: 11px; color: #7f8c8d;" id="compareCount">0 players selected</span>
-        </div>
-    </div>
-
-    <!-- ====================================================== -->
-    <!-- MODAL KARŞILAŞTIRMA EKRANI - FUTBOL TEMALI -->
-    <!-- ====================================================== -->
-    <div class="modal-overlay" id="compareModal">
-        <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeCompareModal()">✕</button>
-            <div class="modal-title">
-                ⚽ Player Comparison <span>vs</span>
-            </div>
-            <div class="compare-table-wrapper">
-                <table class="compare-table" id="compareTable">
-                    <thead id="compareTableHead">
-                        <!-- Dynamically populated -->
-                    </thead>
-                    <tbody id="compareTableBody">
-                        <!-- Dynamically populated -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="compare-footer">
-                <span>🏟️ FFS Gaming CarBall • Best values highlighted in gold</span>
-            </div>
-        </div>
     </div>
 
     <!-- TABLE -->
@@ -696,8 +335,6 @@
 
 <script>
 let dataTable;
-let allPlayers = [];
-let compareList = [];
 
 function escapeHtml(text) {
     if (!text) return '?';
@@ -730,218 +367,6 @@ function parseQuotedCSV(line) {
     result.push(current.trim());
     return result;
 }
-
-// ============================================================
-// KARŞILAŞTIRMA FONKSİYONLARI
-// ============================================================
-
-function addToCompare(nick) {
-    const player = allPlayers.find(p => p.Nick === nick);
-    if (!player) return;
-    
-    if (compareList.some(p => p.Nick === nick)) return;
-    
-    if (compareList.length >= 6) {
-        alert('You can compare up to 6 players at once.');
-        return;
-    }
-    
-    compareList.push(player);
-    updateComparePanel();
-}
-
-function removeFromCompare(nick) {
-    compareList = compareList.filter(p => p.Nick !== nick);
-    updateComparePanel();
-}
-
-function clearCompare() {
-    compareList = [];
-    updateComparePanel();
-}
-
-function closeCompare() {
-    document.getElementById('comparePanel').classList.remove('active');
-}
-
-function updateComparePanel() {
-    const container = document.getElementById('comparePlayers');
-    const countSpan = document.getElementById('compareCount');
-    const compareBtn = document.getElementById('compareBtn');
-    
-    container.innerHTML = '';
-    
-    compareList.forEach(player => {
-        const tag = document.createElement('span');
-        tag.className = 'compare-player-tag';
-        const safeNick = escapeHtml(player.Nick || '?');
-        tag.innerHTML = `
-            ${safeNick}
-            <button class="remove-btn" onclick="removeFromCompare('${player.Nick.replace(/'/g, "\\'")}')">×</button>
-        `;
-        container.appendChild(tag);
-    });
-    
-    countSpan.textContent = `${compareList.length} players selected`;
-    compareBtn.disabled = compareList.length < 2;
-    
-    if (compareList.length > 0) {
-        document.getElementById('comparePanel').classList.add('active');
-    } else {
-        document.getElementById('comparePanel').classList.remove('active');
-    }
-}
-
-// ============================================================
-// MODAL KARŞILAŞTIRMA - TABLO FORMATI (Soldan Sağa)
-// ============================================================
-
-function openCompareModal() {
-    if (compareList.length < 2) return;
-    
-    const modal = document.getElementById('compareModal');
-    const thead = document.getElementById('compareTableHead');
-    const tbody = document.getElementById('compareTableBody');
-    
-    thead.innerHTML = '';
-    tbody.innerHTML = '';
-    
-    // Başlık satırı - Oyuncu isimleri
-    let headerHtml = '<tr><th>Stat</th>';
-    compareList.forEach(player => {
-        const safeNick = escapeHtml(player.Nick || '?');
-        const safeRole = escapeHtml(player.Role || '?');
-        const tier = player.Tier || 'E-Tier';
-        let tierClass = 'E';
-        if (tier.includes('S')) tierClass = 'S';
-        else if (tier.includes('A')) tierClass = 'A';
-        else if (tier.includes('B')) tierClass = 'B';
-        else if (tier.includes('C')) tierClass = 'C';
-        else if (tier.includes('D')) tierClass = 'D';
-        
-        headerHtml += `
-            <th>
-                <span class="player-name-header">${safeNick}</span>
-                <span class="player-role-header">${safeRole}</span>
-                <span class="player-tier-header tier-${tierClass}">${escapeHtml(tier)}</span>
-            </th>
-        `;
-    });
-    headerHtml += '</tr>';
-    thead.innerHTML = headerHtml;
-    
-    // İstatistik listesi
-    const statList = [
-        { key: 'Rank', label: 'Rank' },
-        { key: 'Rating', label: 'Rating' },
-        { key: 'Raw_Skill', label: 'Raw Skill' },
-        { key: 'Multiplier', label: 'Multiplier' },
-        { key: 'Matches', label: 'Matches' },
-        { key: 'Wins', label: 'Wins' },
-        { key: 'Losses', label: 'Losses' },
-        { key: 'Win_Rate', label: 'Win Rate' },
-        { key: 'Win_Loss_Ratio', label: 'W/L Ratio' },
-        { key: 'Goals_PG', label: 'Goals/G' },
-        { key: 'Assists_PG', label: 'Assists/G' },
-        { key: 'Saves_PG', label: 'Saves/G' },
-        { key: 'OwnGoals_PG', label: 'OG/G' },
-        { key: 'Total_Goals', label: 'Total Goals' },
-        { key: 'Total_Assists', label: 'Total Assists' },
-        { key: 'Total_Saves', label: 'Total Saves' },
-        { key: 'Total_OwnGoals', label: 'Total OG' },
-        { key: 'MVP_Count', label: 'MVP Count' },
-        { key: 'MVP_Per_Win', label: 'MVP/Win %' },
-        { key: 'Offensive_Ratio', label: 'Offensive %' },
-        { key: 'Defensive_Ratio', label: 'Defensive %' },
-        { key: 'Playmaker_Ratio', label: 'Playmaker %' },
-        { key: 'Efficiency', label: 'Efficiency' },
-        { key: 'Impact', label: 'Impact' },
-        { key: 'Goalkeeping_Index', label: 'GK Index' },
-        { key: 'Defense_Reliability', label: 'Defense Rel.' },
-        { key: 'Total_Actions', label: 'Total Actions' }
-    ];
-    
-    // Her istatistik için en iyi ve en kötü değerleri bul
-    const statBests = {};
-    const statWorsts = {};
-    
-    statList.forEach(stat => {
-        const values = compareList.map(p => {
-            const val = p[stat.key] !== undefined ? p[stat.key] : null;
-            return { player: p, raw: val, num: parseFloat(val) };
-        }).filter(v => v.raw !== '' && v.raw !== null && v.raw !== undefined && !isNaN(v.num));
-        
-        if (values.length > 0) {
-            const lowIsGood = ['OwnGoals_PG', 'Total_OwnGoals', 'Losses'].includes(stat.key);
-            if (lowIsGood) {
-                statBests[stat.key] = Math.min(...values.map(v => v.num));
-                statWorsts[stat.key] = Math.max(...values.map(v => v.num));
-            } else {
-                statBests[stat.key] = Math.max(...values.map(v => v.num));
-                statWorsts[stat.key] = Math.min(...values.map(v => v.num));
-            }
-        }
-    });
-    
-    // Veri satırları
-    statList.forEach(stat => {
-        let rowHtml = `<tr><td class="stat-label">${stat.label}</td>`;
-        
-        compareList.forEach(player => {
-            const val = player[stat.key] !== undefined ? player[stat.key] : '?';
-            let display = val;
-            
-            // Yüzde ekle
-            if (['Win_Rate', 'MVP_Per_Win', 'Offensive_Ratio', 'Defensive_Ratio', 'Playmaker_Ratio', 'Goalkeeping_Index'].includes(stat.key)) {
-                if (display !== '?' && !isNaN(parseFloat(display))) {
-                    display = display + '%';
-                }
-            }
-            
-            // Rating özel gösterim
-            let valueHtml = '';
-            if (stat.key === 'Rating' && val !== '?' && !isNaN(parseFloat(val))) {
-                valueHtml = `<span class="rating-big">${escapeHtml(String(display))}</span>`;
-            } else {
-                const isBest = statBests[stat.key] !== undefined && parseFloat(val) === statBests[stat.key] && val !== '?' && !isNaN(parseFloat(val));
-                const isWorst = statWorsts[stat.key] !== undefined && parseFloat(val) === statWorsts[stat.key] && val !== '?' && !isNaN(parseFloat(val));
-                let className = '';
-                if (isBest) className = 'best';
-                if (isWorst) className = 'worst';
-                valueHtml = `<span class="stat-value ${className}">${escapeHtml(String(display))}</span>`;
-            }
-            
-            rowHtml += `<td>${valueHtml}</td>`;
-        });
-        
-        rowHtml += '</tr>';
-        tbody.innerHTML += rowHtml;
-    });
-    
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeCompareModal() {
-    document.getElementById('compareModal').classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-// ESC tuşu ile kapatma
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeCompareModal();
-    }
-});
-
-// Modal dışına tıklayınca kapatma
-document.getElementById('compareModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeCompareModal();
-    }
-});
-
-// ============================================================
 
 async function loadData() {
     try {
@@ -979,8 +404,6 @@ async function loadData() {
             throw new Error('No data rows found.');
         }
 
-        allPlayers = players;
-
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
 
@@ -1000,11 +423,7 @@ async function loadData() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="rank-col">${index + 1}</td>
-                <td class="nick-col" title="${safeNick}">
-                    <a href="#" onclick="addToCompare('${player['Nick'].replace(/'/g, "\\'")}'); return false;" style="color: #3498db; text-decoration: none; cursor: pointer;" title="Click to add to comparison">
-                        ${safeNick}
-                    </a>
-                </td>
+                <td class="nick-col" title="${safeNick}">${safeNick}</td>
                 <td class="sitename-col" title="${safeSiteName}">${safeSiteName}</td>
                 <td><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" title="FFS Gaming profilini aç">${escapeHtml(player['UserID'] || '?')}</a></td>
                 <td class="rating-col">${escapeHtml(player['Rating'] || '?')}</td>
@@ -1061,6 +480,7 @@ async function loadData() {
 
         document.getElementById('playerCount').textContent = players.length;
 
+        // Cache-Busting for metadata.json
         try {
             const cacheBuster = new Date().getTime();
             const metaRes = await fetch('data/metadata.json?t=' + cacheBuster);
