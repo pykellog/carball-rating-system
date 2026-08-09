@@ -6,180 +6,258 @@
     <title>FFS Gaming CarBall Player Rankings</title>
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+    
+    <!-- Google Fonts for Sports Theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     
     <style>
+        /* ========================================================
+           CARBALL STADIUM THEME - CSS 
+           ======================================================== */
+        :root {
+            --pitch-dark: #0e2012;
+            --pitch-light: #132a18;
+            --line-white: #f5f6fa;
+            --neon-green: #00ff88;
+            --scoreboard-bg: rgba(10, 15, 12, 0.85);
+            --text-light: #dcdde1;
+            --highlight: #2ed573;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         html, body {
             width: 100%;
-            height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
+            min-height: 100%;
+            /* Football Pitch Pattern Background */
+            background: repeating-linear-gradient(
+                90deg,
+                var(--pitch-dark),
+                var(--pitch-dark) 60px,
+                var(--pitch-light) 60px,
+                var(--pitch-light) 120px
+            );
+            font-family: 'Inter', sans-serif;
+            color: var(--text-light);
             margin: 0;
-            padding: 0;
+            padding: 20px 10px;
         }
+
+        /* The Main Scoreboard Panel */
         .container {
             width: 100%;
-            max-width: 100%;
-            margin: 0;
-            padding: 12px 15px;
-            background: white;
-            border-radius: 0;
-            box-shadow: none;
-            min-height: 100vh;
+            max-width: 98%;
+            margin: 0 auto;
+            padding: 20px 25px;
+            background: var(--scoreboard-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 136, 0.1) inset;
             display: flex;
             flex-direction: column;
         }
+
+        /* Header Area */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 4px;
-            margin-bottom: 6px;
+            border-bottom: 4px solid var(--line-white); /* Pitch line */
+            padding-bottom: 10px;
+            margin-bottom: 15px;
             flex-shrink: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
         }
+
         .header h1 {
             margin: 0;
-            color: #2c3e50;
-            font-size: 18px;
+            color: var(--neon-green);
+            font-family: 'Teko', sans-serif;
+            font-size: 38px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
+        .header h1::before {
+            content: "⚽";
+            font-size: 30px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
         .header .info {
-            color: #7f8c8d;
-            font-size: 12px;
-            background: #ecf0f1;
-            padding: 2px 12px;
-            border-radius: 20px;
+            color: #bdc3c7;
+            font-size: 13px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 15px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-family: 'Teko', sans-serif;
+            font-size: 18px;
+            letter-spacing: 1px;
         }
+
         .github-btn {
-            background: #2c3e50;
+            background: #1e272e;
             color: white;
-            padding: 4px 12px;
+            padding: 6px 15px;
             border-radius: 30px;
             text-decoration: none;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             transition: all 0.3s ease;
-            border: 1px solid #34495e;
+            border: 1px solid #485460;
         }
         .github-btn:hover {
-            background: #3498db !important;
-            border-color: #3498db !important;
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            background: var(--neon-green) !important;
+            color: #000 !important;
+            border-color: var(--neon-green) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
         }
-        .github-btn svg {
-            fill: white;
-            height: 14px;
-            width: 14px;
-        }
+        .github-btn:hover svg { fill: #000; }
+        .github-btn svg { fill: white; height: 16px; width: 16px; transition: fill 0.3s; }
+
+        /* Notification / Note Area */
         .note {
-            background: #eaf4ff;
-            border-left: 4px solid #3498db;
-            padding: 4px 12px;
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 4px solid var(--neon-green);
+            padding: 8px 15px;
             border-radius: 4px;
-            font-size: 11px;
-            color: #2c3e50;
-            margin-bottom: 6px;
+            font-size: 13px;
+            color: #dcdde1;
+            margin-bottom: 15px;
             flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .note strong { color: #2980b9; }
-        .note .tip { float: right; }
-        @media (max-width: 768px) {
-            .note .tip { float: none; display: block; margin-top: 2px; }
-        }
+        .note strong { color: var(--neon-green); }
+        .note .tip { color: #f39c12; font-weight: 600; }
+
+        /* Custom Search Box */
         .search-box {
-            margin-bottom: 6px;
+            margin-bottom: 15px;
             flex-shrink: 0;
+            position: relative;
         }
         .search-box input {
             width: 100%;
-            max-width: 350px;
-            padding: 6px 14px;
-            font-size: 13px;
-            border: 2px solid #dfe6e9;
+            max-width: 400px;
+            padding: 10px 18px;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 30px;
             outline: none;
-            transition: 0.2s;
+            transition: 0.3s;
+            font-family: 'Inter', sans-serif;
         }
+        .search-box input::placeholder { color: #7f8fa6; }
         .search-box input:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52,152,219,0.15);
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            background: rgba(0, 0, 0, 0.8);
         }
+
+        /* Table Container */
         .table-responsive {
             overflow-x: auto;
             width: 100%;
             flex: 1;
             min-height: 0;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
+        /* DATATABLES DARK STADIUM OVERRIDES */
         table.dataTable {
+            font-family: 'Inter', sans-serif !important;
             font-size: 12px !important;
             width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 0 !important;
         }
         table.dataTable td, 
         table.dataTable th {
-            padding: 4px 5px !important;
+            padding: 8px 6px !important;
             white-space: nowrap;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
+        /* Table Headers */
         table.dataTable th {
-            font-size: 11px !important;
-            font-weight: 700;
-            background: #2c3e50;
-            color: white;
-            position: relative;
-            cursor: help;
+            font-family: 'Teko', sans-serif;
+            font-size: 17px !important;
+            font-weight: 500;
+            background: #09130b !important;
+            color: var(--line-white) !important;
+            letter-spacing: 0.5px;
+            border-bottom: 3px solid var(--neon-green) !important; /* Grass line */
+            cursor: pointer;
         }
         table.dataTable th[title] {
-            border-bottom: 1px dashed rgba(255,255,255,0.3);
-        }
-        table.dataTable td {
-            font-size: 12px !important;
-        }
-        .badge {
-            display: inline-block;
-            padding: 1px 8px;
-            border-radius: 30px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.2px;
-        }
-        .badge-S { background: #e74c3c; color: #fff; }
-        .badge-A { background: #e84393; color: #fff; }
-        .badge-B { background: #6c5ce7; color: #fff; }
-        .badge-C { background: #0984e3; color: #fff; }
-        .badge-D { background: #00b894; color: #fff; }
-        .badge-E { background: #636e72; color: #fff; }
-        .footer {
-            margin-top: 6px;
-            text-align: center;
-            color: #95a5a6;
-            font-size: 11px;
-            border-top: 1px solid #ecf0f1;
-            padding-top: 4px;
-            flex-shrink: 0;
-        }
-        .footer a {
-            color: #3498db;
             text-decoration: none;
         }
-        .footer a:hover { text-decoration: underline; }
-        .dataTables_wrapper .dataTables_filter { display: none; }
-        .dataTables_wrapper .dataTables_length { display: none; }
-        .dataTables_wrapper .dataTables_info { font-size: 12px !important; padding: 4px 0 !important; }
-        .dataTables_wrapper .dataTables_paginate { font-size: 12px !important; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            padding: 2px 8px !important;
+        table.dataTable th:hover {
+            color: var(--neon-green) !important;
         }
-        .rank-col { font-weight: 600; color: #2c3e50; }
-        .nick-col { font-weight: 600; color: #2c3e50; }
-        .rating-col { font-weight: 700; color: #2980b9; }
-        .role-col { font-size: 11px; }
-        /* Column widths - optimized for 32 columns */
+        
+        /* Table Rows (Alternating cut grass effect) */
+        table.dataTable tbody tr { background-color: rgba(20, 20, 20, 0.6) !important; color: #ecf0f1; transition: all 0.15s; }
+        table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
+        
+        /* The Hover Spotlight Effect */
+        table.dataTable tbody tr:hover {
+            background-color: var(--pitch-light) !important;
+            color: white !important;
+            transform: scale(1.005);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset;
+        }
+        
+        /* Links inside table */
+        table.dataTable td a { color: #3498db; text-decoration: none; font-weight: 600; }
+        table.dataTable td a:hover { color: var(--neon-green); text-decoration: underline; }
+
+        /* Specific Columns styling */
+        .rank-col { font-weight: 800; color: #f1c40f !important; font-size: 14px; text-align: center;}
+        .nick-col { font-weight: 700; color: #fff; font-size: 13px;}
+        .rating-col { font-weight: 800; color: var(--neon-green) !important; font-size: 14px; text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);}
+        .role-col { font-size: 11px; color: #95a5a6; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;}
+        
+        /* Badges (FUT Style Tier Ratings) */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .badge-S { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; text-shadow: none; border-color: #f39c12; }
+        .badge-A { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: #fff; }
+        .badge-B { background: linear-gradient(135deg, #3498db, #2980b9); color: #fff; }
+        .badge-C { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; }
+        .badge-D { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; }
+        .badge-E { background: linear-gradient(135deg, #7f8c8d, #34495e); color: #fff; }
+
+        /* Column Widths */
         .col-rank { width: 2%; }
         .col-nick { width: 7%; min-width: 60px; }
         .col-sitename { width: 7%; min-width: 60px; }
@@ -213,42 +291,83 @@
         .col-defenserel { width: 2.5%; }
         .col-totalactions { width: 3.5%; }
 
+        /* DataTables Pagination & Info Dark Mode fix */
+        .dataTables_wrapper .dataTables_filter { display: none; }
+        .dataTables_wrapper .dataTables_length { display: none; }
+        .dataTables_wrapper .dataTables_info { 
+            color: #7f8fa6 !important; 
+            font-size: 13px !important; 
+            padding-top: 15px !important; 
+        }
+        .dataTables_wrapper .dataTables_paginate { margin-top: 10px !important; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: #dcdde1 !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            background: rgba(0,0,0,0.5) !important;
+            border-radius: 4px !important;
+            margin: 0 3px !important;
+            padding: 4px 10px !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: var(--neon-green) !important;
+            color: black !important;
+            border-color: var(--neon-green) !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--highlight) !important;
+            color: black !important;
+            border-color: var(--highlight) !important;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 15px;
+            text-align: center;
+            color: #7f8fa6;
+            font-size: 12px;
+            border-top: 1px dashed rgba(255,255,255,0.1);
+            padding-top: 15px;
+            flex-shrink: 0;
+            font-family: 'Teko', sans-serif;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+        .footer a {
+            color: var(--neon-green);
+            text-decoration: none;
+        }
+        .footer a:hover { text-decoration: underline; text-shadow: 0 0 5px var(--neon-green); }
+
+        /* Responsive Design Adjustments */
         @media (max-width: 1200px) {
             table.dataTable { font-size: 11px !important; }
-            table.dataTable td { font-size: 11px !important; }
-            table.dataTable th { font-size: 10px !important; }
-            .role-col { font-size: 10px; }
-            .badge { font-size: 9px; padding: 1px 6px; }
-            .col-nick { min-width: 50px; }
-            .col-sitename { min-width: 50px; }
-            .col-role { min-width: 55px; }
+            table.dataTable th { font-size: 14px !important; }
+            .badge { font-size: 10px; padding: 2px 6px; }
+            .header h1 { font-size: 28px; }
         }
         @media (max-width: 768px) {
-            table.dataTable { font-size: 9px !important; }
-            table.dataTable td { font-size: 9px !important; }
-            table.dataTable th { font-size: 8px !important; }
-            table.dataTable td, table.dataTable th { padding: 3px 3px !important; }
-            .badge { font-size: 7px; padding: 1px 4px; }
-            .col-nick { min-width: 35px; }
-            .col-sitename { min-width: 35px; }
-            .col-role { min-width: 35px; }
-            .header h1 { font-size: 14px; }
-            .header .info { font-size: 10px; }
-            .search-box input { font-size: 12px; padding: 5px 10px; }
-            .github-btn { font-size: 10px; padding: 4px 10px; }
-            .github-btn svg { height: 12px; width: 12px; }
+            .note { flex-direction: column; text-align: center; gap: 5px; }
+            .note .tip { float: none; display: block; margin-top: 2px; }
+            table.dataTable { font-size: 10px !important; }
+            table.dataTable th { font-size: 12px !important; padding: 5px 3px !important; }
+            table.dataTable td { padding: 5px 3px !important; }
+            .badge { font-size: 8px; padding: 2px 4px; }
+            .header { justify-content: center; gap: 10px; text-align: center; }
+            .header h1 { font-size: 24px; }
+            .header .info { font-size: 14px; }
+            .search-box input { max-width: 100%; }
         }
     </style>
-    <script data-goatcounter="https://pykellog.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+    <script data-goatcounter="https://pykellog.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
 <div class="container">
     <!-- HEADER -->
     <div class="header">
-        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-            <h1 style="margin: 0;">FFS Gaming CarBall Player Rankings</h1>
+        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: center;">
+            <h1 style="margin: 0;">FFS Gaming CarBall Rankings</h1>
             <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer" class="github-btn">
                 <svg height="16" viewBox="0 0 16 16" width="16">
                     <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
@@ -257,15 +376,15 @@
             </a>
         </div>
         <div class="info">
-            📊 <span id="playerCount">0</span> players &nbsp;|&nbsp;
-            📅 <span id="lastUpdate">-</span>
+            🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp;
+            ⏱️ Last whistle: <span id="lastUpdate">-</span>
         </div>
     </div>
 
     <!-- NOTE -->
     <div class="note">
-        💡 Data from <strong>FFS Gaming</strong> CarBall server.
-        <span class="tip">🔍 Search by nickname or click column headers to sort</span>
+        <span>💡 Official Stats from <strong>FFS Gaming</strong> CarBall Server.</span>
+        <span class="tip">🔍 Quick Search / Click headers to sort stats!</span>
     </div>
 
     <!-- SEARCH -->
@@ -275,7 +394,8 @@
 
     <!-- TABLE -->
     <div class="table-responsive">
-        <table id="playersTable" class="display compact stripe" style="width:100%">
+        <!-- Removed 'stripe' class since we manually stripe it in css to control dark mode colors -->
+        <table id="playersTable" class="display compact" style="width:100%">
             <thead>
                 <tr>
                     <th class="col-rank" title="Rank position">#</th>
@@ -320,11 +440,11 @@
 
     <!-- FOOTER -->
     <div class="footer">
-        Data sourced from <strong>FFS Gaming</strong> MTA server.
+        Data sourced from <strong>FFS Gaming</strong> MTA Server pitch.
         <span id="footerUpdate">-</span>
-        <br>
+        <br><br>
         <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer">
-            🔗 View on GitHub / GitHub'da Görüntüle
+            🔗 GitHub Repository
         </a>
     </div>
 </div>
@@ -487,7 +607,7 @@ async function loadData() {
             if (metaRes.ok) {
                 const meta = await metaRes.json();
                 document.getElementById('lastUpdate').textContent = meta.lastUpdate || 'Unknown';
-                document.getElementById('footerUpdate').textContent = `Last updated: ${meta.lastUpdate || 'Unknown'}`;
+                document.getElementById('footerUpdate').textContent = `Match end update: ${meta.lastUpdate || 'Unknown'}`;
             }
         } catch (e) {
             document.getElementById('lastUpdate').textContent = 'Unknown';
@@ -497,9 +617,9 @@ async function loadData() {
         console.error('Error:', error);
         document.getElementById('tableBody').innerHTML = `
             <tr>
-                <td colspan="32" style="padding: 30px; color: #e74c3c; text-align: center;">
-                    ⚠️ Error loading data<br>
-                    <small style="color: #888;">${error.message}</small>
+                <td colspan="32" style="padding: 30px; color: #e74c3c; text-align: center; font-size: 16px;">
+                    ⚠️ Referee stopped the match! Error loading data.<br>
+                    <small style="color: #bdc3c7;">${error.message}</small>
                 </td>
             </tr>
         `;
