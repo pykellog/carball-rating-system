@@ -42,11 +42,39 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
         }
         .header h1 {
-            margin: 0; color: var(--neon-green); font-family: 'Teko', sans-serif; font-size: 38px;
-            text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
-            display: flex; align-items: center; gap: 10px;
+            margin: 0;
+            color: var(--neon-green);
+            font-family: 'Teko', sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.6px;
+            line-height: 1.05;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(0, 255, 136, 0.1), rgba(255,255,255,0.06));
+            border: 1px solid rgba(0, 255, 136, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 24px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+            max-width: 100%;
         }
         .header h1::before { content: "⚽"; font-size: 30px; filter: drop-shadow(0 0 5px white); }
+        .header h1::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            transform: translateX(-100%);
+            animation: title-shine 3s infinite;
+        }
+        @keyframes title-shine {
+            100% { transform: translateX(100%); }
+        }
         .header .info {
             color: #bdc3c7; font-size: 13px; background: rgba(0, 0, 0, 0.6); padding: 6px 15px;
             border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); font-family: 'Teko', sans-serif;
@@ -205,7 +233,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <div><h1 style="margin: 0;">FFS Gaming CarBall Rankings</h1></div>
+        <div><h1>FFS Gaming CarBall Rankings</h1></div>
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;">
             <div class="info">🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp; ⏱️ Last Update: <span id="lastUpdate">-</span></div>
             <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer" class="github-btn">
