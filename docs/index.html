@@ -31,16 +31,23 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        html, body {
+        html {
+            background-color: var(--pitch-dark);
+        }
+
+        body {
             width: 100%;
-            min-height: 100%;
+            min-height: 100vh;
+            /* Çim deseni düzeltildi ve sabitlendi */
             background: repeating-linear-gradient(
                 90deg,
-                var(--pitch-dark),
+                var(--pitch-dark) 0px,
                 var(--pitch-dark) 60px,
                 var(--pitch-light) 60px,
                 var(--pitch-light) 120px
             );
+            background-attachment: fixed; /* Çizgilerin kırılmasını/kaymasını engelleyen sihir! */
+            background-position: center top;
             font-family: 'Inter', sans-serif;
             color: var(--text-light);
             margin: 0;
@@ -211,18 +218,17 @@
         /* FUT Style Card */
         .fut-card {
             background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
-            border-radius: 20px; width: 280px; padding: 35px 20px 25px 20px; /* Üst padding artırıldı rozet için */
+            border-radius: 20px; width: 280px; padding: 35px 20px 25px 20px;
             text-align: center; position: relative;
             border: 2px solid #333; transition: transform 0.4s, box-shadow 0.4s;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            margin-top: 15px; /* Rozetin taşması için boşluk */
+            margin-top: 15px; 
         }
         .fut-card:hover { transform: translateY(-10px) scale(1.02); }
 
-        /* YENİ: KART SIRA ROZETLERİ (RANK BADGES) */
         .card-rank-badge {
             position: absolute;
-            top: -22px; /* Kartın dışına taşır */
+            top: -22px; 
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Teko', sans-serif;
@@ -245,13 +251,11 @@
 
         @keyframes glow-gold { from { box-shadow: 0 0 10px #f1c40f; } to { box-shadow: 0 0 25px #f1c40f, 0 0 15px #fff; } }
 
-        /* Card Ranks Colors (Borders and Glows) */
         .rank-gold { border-color: #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.3), inset 0 0 20px rgba(241, 196, 15, 0.1); }
         .rank-silver { border-color: #bdc3c7; box-shadow: 0 0 30px rgba(189, 195, 199, 0.2); }
         .rank-bronze { border-color: #d35400; box-shadow: 0 0 30px rgba(211, 84, 0, 0.2); }
         .rank-normal { border-color: var(--neon-green); box-shadow: 0 0 20px rgba(0, 255, 136, 0.1); }
 
-        /* Card Content */
         .card-rating { font-family: 'Teko', sans-serif; font-size: 65px; line-height: 1; font-weight: 700; color: white; margin-bottom: 0px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         .card-raw-label { color: var(--neon-green); font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
         .card-tier { font-size: 12px; letter-spacing: 2px; color: #7f8fa6; text-transform: uppercase; margin-bottom: 15px; }
@@ -527,7 +531,6 @@ $(document).ready(function() {
             $(this).removeClass('selected-player');
             selectedPlayers = selectedPlayers.filter(p => p !== nick);
         } else {
-            // YENİ: 6 OYUNCU SINIRI KONTROLÜ
             if (selectedPlayers.length >= 6) {
                 return;
             }
@@ -560,7 +563,6 @@ function openArena() {
         return;
     }
     
-    // Impact + Eff'e göre büyükten küçüğe sırala (Eşitlik varsa Raw Skill)
     let compData = selectedPlayers.map(nick => globalPlayers.find(p => p['Nick'] === nick));
     
     compData.sort((a, b) => {
@@ -586,13 +588,11 @@ function openArena() {
     const arena = document.getElementById('arenaCards');
     arena.innerHTML = '';
 
-    // Kartları Oluştur ve Sıra Rozetlerini Ekles
     compData.forEach((p, index) => {
         let rankClass = "rank-normal";
         let badgeClass = "";
         let rankText = "";
 
-        // ROZET TANIMLAMALARI
         if(index === 0) { 
             rankClass = "rank-gold"; 
             badgeClass = "badge-rank-1"; 
