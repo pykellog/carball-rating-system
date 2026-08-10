@@ -1,0 +1,18 @@
+{
+  "rules": {
+    "messages": {
+      ".read": true,
+      ".write": "auth != null",
+      "$msg": {
+        ".validate": "newData.hasChildren(['uid','displayName','text','ts']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 1000 && newData.child('displayName').isString() && newData.child('displayName').val().length <= 30 && newData.child('ts').isNumber() && (root.child('presence').child(auth.uid).child('lastMsgTs').val() == null || (newData.child('ts').val() - root.child('presence').child(auth.uid).child('lastMsgTs').val()) > 3000) && (newData.child('ts').val() <= now + 60000)"
+      }
+    },
+    "presence": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['displayName','ts']) && newData.child('displayName').isString() && newData.child('displayName').val().length <= 30 && newData.child('ts').isNumber()"
+      }
+    }
+  }
+}

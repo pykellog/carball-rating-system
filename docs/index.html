@@ -461,156 +461,221 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 const sessionId = Math.random().toString(36).substring(2, 15);
-const gun = Gun({
-    peers: [
-        'https://gun-relay.marda.studio/gun',
-        'https://gun-vue.vercel.app/gun',
-        'https://peer.wallakel.com/gun'
-    ],
-    localStorage: true
-});
-const chatNode = gun.get('ffs-carball-global-chat-v3');
-const presenceNode = gun.get('ffs-carball-presence-v3');
 let chatOpen = false;
 let myUsername = localStorage.getItem('cb_chat_username') || '';
 let myFlag = localStorage.getItem('cb_chat_flag') || '🏳️';
 let unreadCount = 0;
 let renderedMessageIds = new Set();
 const chatAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
+
+// Firebase config (user provided)
+const firebaseConfig = {
+    apiKey: "AIzaSyDa-AMzD2KZT4tpEMeeJs3OdTOUiMItEtc",
+    authDomain: "carball-chat-system.firebaseapp.com",
+    databaseURL: "https://carball-chat-system-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "carball-chat-system",
+    storageBucket: "carball-chat-system.firebasedatabase.app",
+    messagingSenderId: "320519367632",
+    appId: "1:320519367632:web:77bfae85fc6081f0ae67d5"
+};
+
+let auth = null;
+let db = null;
+let uid = null;
+let messagesRef = null;
+let presenceRef = null;
+
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script'); s.src = url; s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+    });
+}
+
+async function ensureFirebase() {
+    if (window.firebase && window.firebase.apps) return;
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js');
+    firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.database();
+    messagesRef = db.ref('messages');
+    presenceRef = db.ref('presence');
+
+    auth.onAuthStateChanged(user => {
+        if (user) { uid = user.uid; }
+    });
+
+    // presence listener -> update online count
+    presenceRef.on('value', snap => {
+        const count = snap.numChildren();
+        document.getElementById('active-users-count').textContent = count || 0;
+    });
+
+    // messages listener
+    messagesRef.limitToLast(200).on('child_added', snap => {
+        const data = snap.val(); const id = snap.key;
+        if (!data || !data.ts || (!data.text && !data.system)) return;
+        if (renderedMessageIds.has(id)) return; renderedMessageIds.add(id);
+        // normalize
+        const msg = {
+            id: id,
+            user: data.system ? 'System' : (data.displayName || data.user || 'Anon'),
+            flag: data.country || data.flag || (data.system ? '🔔' : '🏳️'),
+            text: data.system ? (data.text || '') : (data.text || ''),
+            time: data.ts || data.time || Date.now(),
+            isSystem: !!data.system
+        };
+        bufferMessage(msg);
+    });
+}
+
+async function initFirebase() {
+    try { await ensureFirebase(); await auth.signInAnonymously().catch(() => {}); } catch (e) { console.warn('Firebase load failed', e); }
+}
+
 async function fetchCountryFlag() {
-    if(localStorage.getItem('cb_chat_flag')) return;
+    if (localStorage.getItem('cb_chat_flag')) return;
     try {
         const res = await fetch('https://ipwho.is/');
         const data = await res.json();
-        if(data.success && data.flag && data.flag.emoji) {
-            myFlag = data.flag.emoji;
-            localStorage.setItem('cb_chat_flag', myFlag);
+        if (data && data.country_code && data.country_code.length === 2) {
+            // convert country code to emoji
+            const code = data.country_code.toUpperCase();
+            const flag = code.replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()));
+            myFlag = flag; localStorage.setItem('cb_chat_flag', myFlag);
         }
-    } catch(e) {}
+    } catch (e) {}
 }
-if(!myUsername) fetchCountryFlag();
+
+if (!myUsername) fetchCountryFlag();
+
 function toggleChat() {
     const panel = document.getElementById('chat-panel');
     const badge = document.getElementById('chat-badge');
     chatOpen = !chatOpen;
     if (chatOpen) {
-        panel.style.display = 'flex';
-        badge.style.display = 'none';
-        unreadCount = 0;
-        const msgs = document.getElementById('chat-messages');
-        msgs.scrollTop = msgs.scrollHeight;
-        updatePresence();
-    } else {
-        panel.style.display = 'none';
-    }
+        panel.style.display = 'flex'; badge.style.display = 'none'; unreadCount = 0;
+        const msgs = document.getElementById('chat-messages'); msgs.scrollTop = msgs.scrollHeight;
+        // update presence timestamp if already joined
+        if (uid && myUsername) {
+            presenceRef.child(uid).update({ ts: Date.now() }).catch(() => {});
+        }
+    } else { panel.style.display = 'none'; }
 }
-document.getElementById('chat-input').addEventListener('focus', function(e) {
-    if (!myUsername) {
-        e.target.blur();
-        document.getElementById('chat-login-overlay').style.display = 'flex';
-        document.getElementById('chat-username-input').focus();
-    }
+
+document.getElementById('chat-input').addEventListener('focus', function (e) {
+    if (!myUsername) { e.target.blur(); document.getElementById('chat-login-overlay').style.display = 'flex'; document.getElementById('chat-username-input').focus(); }
 });
+
+// populate flag select in the join overlay
+function buildFlagSelect() {
+    const flags = [
+        ['🇹🇷','Turkey'],['🇬🇧','United Kingdom'],['🇺🇸','United States'],['🇩🇪','Germany'],['🇫🇷','France'],['🇪🇸','Spain'],['🇮🇹','Italy'],['🇳🇱','Netherlands'],['🇧🇷','Brazil'],['🇦🇷','Argentina'],['🇯🇵','Japan'],['🇰🇷','South Korea'],['🇨🇳','China'],['🇮🇳','India'],['🇦🇺','Australia'],['🇨🇦','Canada'],['🏳️','Other']
+    ];
+    const sel = document.createElement('select'); sel.id = 'chat-flag-select'; sel.style.width = '100%'; sel.style.marginBottom = '10px'; sel.style.padding = '10px'; sel.style.borderRadius = '12px';
+    flags.forEach(f => { const opt = document.createElement('option'); opt.value = f[0]; opt.textContent = `${f[0]} ${f[1]}`; sel.appendChild(opt); });
+    const overlay = document.getElementById('chat-login-overlay'); overlay.insertBefore(sel, document.getElementById('chat-username-input'));
+    // preselect detected flag
+    if (myFlag) sel.value = myFlag;
+    sel.addEventListener('change', () => { myFlag = sel.value; localStorage.setItem('cb_chat_flag', myFlag); });
+}
+
 function joinChat() {
     const input = document.getElementById('chat-username-input').value.trim();
-    if(input.length < 3) { alert("Nickname must be at least 3 characters!"); return; }
-    myUsername = input;
-    localStorage.setItem('cb_chat_username', myUsername);
-    document.getElementById('chat-login-overlay').style.display = 'none';
-    document.getElementById('chat-input').focus();
-    const enterMsg = {
-        id: Gun.text.random(),
-        user: 'System',
-        flag: '🔔',
-        text: `${myUsername} joined the arena!`,
-        time: Date.now(),
-        isSystem: true
-    };
-    chatNode.get(enterMsg.id).put(enterMsg);
-    updatePresence();
+    if (input.length < 3) { alert('Nickname must be at least 3 characters!'); return; }
+    myUsername = input; localStorage.setItem('cb_chat_username', myUsername);
+    const sel = document.getElementById('chat-flag-select'); if (sel && sel.value) { myFlag = sel.value; localStorage.setItem('cb_chat_flag', myFlag); }
+    document.getElementById('chat-login-overlay').style.display = 'none'; document.getElementById('chat-input').focus();
+    // set presence and announce
+    if (uid) {
+        presenceRef.child(uid).onDisconnect().remove();
+        presenceRef.child(uid).set({ displayName: myUsername, country: myFlag, ts: Date.now() }).catch(() => {});
+    }
+    messagesRef.push({ system: true, text: `${myUsername} joined the arena!`, ts: Date.now() }).catch(() => {});
 }
-document.getElementById('chat-username-input').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') joinChat();
-});
-document.getElementById('chat-input').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') sendMessage();
-});
+
+document.addEventListener('click', function (e) { if (e.target && e.target.id === 'chat-cancel-btn') { document.getElementById('chat-login-overlay').style.display = 'none'; } });
+document.getElementById('chat-username-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') joinChat(); });
+document.getElementById('chat-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') sendMessage(); });
+
 function sendMessage() {
-    if(!myUsername) {
-        document.getElementById('chat-login-overlay').style.display = 'flex';
+    if (!myUsername) { document.getElementById('chat-login-overlay').style.display = 'flex'; return; }
+    const now = Date.now();
+    const RATE_LIMIT_MS = 3000; // 3 seconds between messages
+    const last = window._lastChatSent || 0;
+    if (now - last < RATE_LIMIT_MS) {
+        // simple client-side rate limit
+        const wait = Math.ceil((RATE_LIMIT_MS - (now - last)) / 1000);
+        alert('Please wait ' + wait + 's before sending another message.');
         return;
     }
     const input = document.getElementById('chat-input');
-    const text = input.value.trim();
-    if(text === '') return;
-    const msgData = { id: Gun.text.random(), user: myUsername, flag: myFlag, text: text, time: Date.now() };
-    chatNode.get(msgData.id).put(msgData);
+    const text = input.value.trim(); if (text === '') return;
+    const payload = { uid: uid || sessionId, displayName: myUsername, country: myFlag, text: text, ts: now };
+    // push message and update presence.lastMsgTs for basic server-side validation
+    messagesRef.push(payload).then(() => {
+        window._lastChatSent = now;
+        if (uid) {
+            presenceRef.child(uid).update({ ts: now, lastMsgTs: now }).catch(() => {});
+        }
+    }).catch((err) => {
+        console.warn('Send failed', err);
+        alert('Message delivery failed.');
+    });
     input.value = '';
-    updatePresence();
 }
-function formatTime(timestamp) {
-    const d = new Date(timestamp);
-    return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
-}
+
+function formatTime(timestamp) { const d = new Date(timestamp); return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0'); }
+
 let messageBuffer = [];
 let renderTimeout = null;
-chatNode.map().on((data, id) => {
-    if (!data || !data.time || !data.text) return;
-    const TWO_DAYS = 48 * 60 * 60 * 1000;
-    if (Date.now() - data.time > TWO_DAYS) return;
-    if (!renderedMessageIds.has(data.id)) {
-        renderedMessageIds.add(data.id);
-        messageBuffer.push(data);
-        clearTimeout(renderTimeout);
-        renderTimeout = setTimeout(() => {
-            messageBuffer.sort((a, b) => a.time - b.time);
-            const box = document.getElementById('chat-messages');
-            messageBuffer.forEach(msg => {
-                const isMe = msg.user === myUsername;
-                const alignment = msg.isSystem ? 'center' : (isMe ? 'self' : 'others');
-                const div = document.createElement('div');
-                if (msg.isSystem) {
-                    div.style.textAlign = 'center'; div.style.color = 'var(--neon-green)';
-                    div.style.fontSize = '11px'; div.style.margin = '5px 0';
-                    div.innerHTML = `${msg.flag} ${escapeHtml(msg.text)}`;
-                } else {
-                    div.className = `chat-msg ${alignment}`;
-                    div.innerHTML = `
-                        <div class="msg-info">
-                            ${!isMe ? `<span class="msg-flag">${msg.flag}</span>` : ''}
-                            <span class="msg-name">${escapeHtml(msg.user)}</span>
-                            <span style="opacity:0.5; margin-left:4px;">${formatTime(msg.time)}</span>
-                        </div>
-                        <div class="msg-bubble">${escapeHtml(msg.text)}</div>
-                    `;
-                }
-                box.appendChild(div);
-            });
-            box.scrollTop = box.scrollHeight;
-            messageBuffer = [];
-            if (!chatOpen) {
-                unreadCount++;
-                const badge = document.getElementById('chat-badge');
-                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-                badge.style.display = 'flex';
-                badge.style.animation = 'none'; badge.offsetHeight; badge.style.animation = 'pop 0.3s ease-out';
-                chatAudio.play().catch(e => {});
+function bufferMessage(msg) {
+    messageBuffer.push(msg);
+    clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(() => {
+        messageBuffer.sort((a,b) => a.time - b.time);
+        const box = document.getElementById('chat-messages');
+        messageBuffer.forEach(msg => {
+            const isMe = (msg.user === myUsername);
+            const alignment = msg.isSystem ? 'center' : (isMe ? 'self' : 'others');
+            const div = document.createElement('div');
+            if (msg.isSystem) {
+                div.style.textAlign = 'center'; div.style.color = 'var(--neon-green)'; div.style.fontSize = '11px'; div.style.margin = '5px 0'; div.innerHTML = `${msg.flag || '🔔'} ${escapeHtml(msg.text)}`;
+            } else {
+                div.className = `chat-msg ${alignment}`;
+                div.innerHTML = `
+                    <div class="msg-info">
+                        ${!isMe ? `<span class="msg-flag">${msg.flag}</span>` : ''}
+                        <span class="msg-name">${escapeHtml(msg.user)}</span>
+                        <span style="opacity:0.5; margin-left:4px;">${formatTime(msg.time)}</span>
+                    </div>
+                    <div class="msg-bubble">${escapeHtml(msg.text)}</div>
+                `;
             }
-        }, 100);
-    }
-});
-let onlineSessions = new Map();
-function updatePresence() { presenceNode.get(sessionId).put({ user: myUsername, time: Date.now() }); }
-presenceNode.map().on((data, session) => { if(data && data.time) onlineSessions.set(session, data.time); });
-setInterval(() => {
-    const now = Date.now(); let count = 0;
-    for (let [session, lastSeen] of onlineSessions.entries()) {
-        if (now - lastSeen < 120000) count++;
-    }
-    count = Math.max(count, 1);
-    document.getElementById('active-users-count').textContent = count;
-    updatePresence();
-}, 5000);
+            box.appendChild(div);
+        });
+        box.scrollTop = box.scrollHeight;
+        if (!chatOpen) {
+            unreadCount++; const badge = document.getElementById('chat-badge'); badge.textContent = unreadCount > 9 ? '9+' : unreadCount; badge.style.display = 'flex'; badge.style.animation = 'none'; badge.offsetHeight; badge.style.animation = 'pop 0.3s ease-out'; chatAudio.play().catch(()=>{});
+        }
+        messageBuffer = [];
+    }, 100);
+}
+
+// build flag selector on load
+document.addEventListener('DOMContentLoaded', function () { buildFlagSelect(); });
+
+// initialize firebase and sign-in
+initFirebase().then(() => {
+    // ensure presenceRef/messagesRef exist
+    if (!messagesRef || !presenceRef) { messagesRef = db.ref('messages'); presenceRef = db.ref('presence'); }
+    // if user was previously joined, restore presence
+    auth.onAuthStateChanged(user => {
+        if (user) { uid = user.uid; if (myUsername) { presenceRef.child(uid).onDisconnect().remove(); presenceRef.child(uid).set({ displayName: myUsername, country: myFlag, ts: Date.now() }).catch(()=>{}); } }
+    });
+}).catch(e => { console.warn('Firebase init error', e); });
+
 </script>
 </body>
 </html>
