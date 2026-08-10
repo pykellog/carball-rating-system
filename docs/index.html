@@ -212,16 +212,19 @@
         .btn-close-arena { position: absolute; top: 20px; right: 30px; font-size: 40px; color: white; cursor: pointer; transition: 0.3s; line-height: 1; }
         .btn-close-arena:hover { color: #e74c3c; transform: rotate(90deg); }
 
-        .cards-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; align-items: flex-start; }
+        /* KART DİZİLİMİ - EŞİT YÜKSEKLİK İÇİN STRETCH EKLENDİ */
+        .cards-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; align-items: stretch; }
         
-        /* FUT Style Card */
+        /* FUT Style Card - DÜZELTİLDİ: Artık içeriği ne kadar uzun olursa olsun hepsi aynı boyda olacak! */
         .fut-card {
             background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
             border-radius: 20px; width: 280px; padding: 35px 20px 25px 20px;
             text-align: center; position: relative;
             border: 2px solid #333; transition: transform 0.4s, box-shadow 0.4s;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            margin-top: 15px; 
+            margin-top: 15px;
+            display: flex; /* Eşit yükseklik için eklendi */
+            flex-direction: column; /* İçerikleri yukarıdan aşağı dizecek */
         }
         .fut-card:hover { transform: translateY(-10px) scale(1.02); }
 
@@ -246,21 +249,24 @@
         .badge-rank-1 { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; border-color: #ffeaa7; box-shadow: 0 0 20px #f1c40f, inset 0 0 10px rgba(255,255,255,0.5); animation: glow-gold 1.5s infinite alternate;}
         .badge-rank-2 { background: linear-gradient(135deg, #bdc3c7, #7f8c8d); color: #000; border-color: #ecf0f1; box-shadow: 0 0 15px #bdc3c7; }
         .badge-rank-3 { background: linear-gradient(135deg, #d35400, #c0392b); color: #fff; border-color: #e67e22; box-shadow: 0 0 15px #d35400; }
-        .badge-rank-other { background: linear-gradient(135deg, #1a252f, #000); color: var(--neon-green); border-color: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
+        
+        /* 4, 5, 6. Sıra Rozetleri için "Elenen / Alt Sıra" Koyu Teması */
+        .badge-rank-other { background: linear-gradient(135deg, #2c3e50, #1a252f); color: #bdc3c7; border-color: #34495e; box-shadow: 0 5px 15px rgba(0,0,0,0.6); }
 
         @keyframes glow-gold { from { box-shadow: 0 0 10px #f1c40f; } to { box-shadow: 0 0 25px #f1c40f, 0 0 15px #fff; } }
 
+        /* KART ÇERÇEVELERİ */
         .rank-gold { border-color: #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.3), inset 0 0 20px rgba(241, 196, 15, 0.1); }
         .rank-silver { border-color: #bdc3c7; box-shadow: 0 0 30px rgba(189, 195, 199, 0.2); }
         .rank-bronze { border-color: #d35400; box-shadow: 0 0 30px rgba(211, 84, 0, 0.2); }
-        .rank-normal { border-color: var(--neon-green); box-shadow: 0 0 20px rgba(0, 255, 136, 0.1); }
+        /* 4, 5, 6. Sıra Kartları için "Elenen / Alt Sıra" Koyu Teması */
+        .rank-other { border-color: #34495e; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
 
         .card-rating { font-family: 'Teko', sans-serif; font-size: 65px; line-height: 1; font-weight: 700; color: white; margin-bottom: 0px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         .card-raw-label { color: var(--neon-green); font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
         .card-tier { font-size: 12px; letter-spacing: 2px; color: #7f8fa6; text-transform: uppercase; margin-bottom: 15px; }
-        .card-nick { font-size: 24px; font-weight: 700; color: white; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
+        .card-nick { font-size: 24px; font-weight: 700; color: white; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; }
         
-        /* YENİ EKLENEN MAÇ SAYISI BÖLÜMÜ */
         .card-matches { font-size: 13px; color: #f1c40f; font-weight: 700; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); letter-spacing: 1px; text-shadow: 0 0 8px rgba(241, 196, 15, 0.4); }
 
         .stat-row { display: flex; flex-direction: column; text-align: left; margin-bottom: 12px; }
@@ -565,7 +571,6 @@ function openArena() {
         return;
     }
     
-    // YENİ: Tecrübe ağırlıklı sıralama (Impact + Eff) * Multiplier
     let compData = selectedPlayers.map(nick => globalPlayers.find(p => p['Nick'] === nick));
     
     compData.sort((a, b) => {
@@ -594,9 +599,9 @@ function openArena() {
     arena.innerHTML = '';
 
     compData.forEach((p, index) => {
-        let rankClass = "rank-normal";
-        let badgeClass = "";
-        let rankText = "";
+        let rankClass = "rank-other"; // Default: Alt Sıra rengi
+        let badgeClass = "badge-rank-other";
+        let rankText = `#${index + 1} PLACE`;
 
         if(index === 0) { 
             rankClass = "rank-gold"; 
@@ -613,10 +618,6 @@ function openArena() {
             badgeClass = "badge-rank-3"; 
             rankText = "🥉 3RD PLACE"; 
         }
-        else {
-            badgeClass = "badge-rank-other";
-            rankText = `#${index + 1} PLACE`;
-        }
 
         const gPct = Math.min((parseFloat(p['Goals_PG'] || 0) / maxGoals) * 100, 100);
         const aPct = Math.min((parseFloat(p['Assists_PG'] || 0) / maxAssists) * 100, 100);
@@ -626,31 +627,35 @@ function openArena() {
         const cardHTML = `
             <div class="fut-card ${rankClass}">
                 <div class="card-rank-badge ${badgeClass}">${rankText}</div>
+                
                 <div class="card-rating">${escapeHtml(p['Raw_Skill'] || '0')}</div>
                 <div class="card-raw-label">RAW SKILL</div>
                 <div class="card-tier">${escapeHtml(p['Tier'] || 'E-TIER')} • ${escapeHtml(p['Role'] || 'UNKNOWN')}</div>
                 <div class="card-nick">${escapeHtml(p['Nick'])}</div>
                 <div class="card-matches">🎮 ${escapeHtml(p['Matches'] || '0')} MATCHES</div>
                 
-                <div class="stat-row">
-                    <div class="stat-label"><span>Goals / Game</span><span class="stat-val">${escapeHtml(p['Goals_PG'])}</span></div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bar-goals" style="width: ${gPct}%"></div></div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat-label"><span>Assists / Game</span><span class="stat-val">${escapeHtml(p['Assists_PG'])}</span></div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bar-assists" style="width: ${aPct}%"></div></div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat-label"><span>Saves / Game</span><span class="stat-val">${escapeHtml(p['Saves_PG'])}</span></div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bar-saves" style="width: ${sPct}%"></div></div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat-label"><span>Win Rate</span><span class="stat-val">${escapeHtml(p['Win_Rate'])}%</span></div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bar-winrate" style="width: ${wPct}%"></div></div>
-                </div>
-                <div class="stat-row" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
-                    <div class="stat-label" style="justify-content: center; font-size: 14px; color: #f1c40f; text-shadow: 0 0 5px rgba(241,196,15,0.3);">
-                        🔥 IMP: ${escapeHtml(p['Impact'] || '0')} &nbsp;|&nbsp; ⚡ EFF: ${escapeHtml(p['Efficiency'] || '0')}
+                <!-- BU DİV SAYESİNDE BARLAR HEP EN AŞAĞIDA EŞİT HİZALANACAK -->
+                <div style="margin-top: auto; width: 100%;">
+                    <div class="stat-row">
+                        <div class="stat-label"><span>Goals / Game</span><span class="stat-val">${escapeHtml(p['Goals_PG'])}</span></div>
+                        <div class="stat-bar-bg"><div class="stat-bar-fill bar-goals" style="width: ${gPct}%"></div></div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-label"><span>Assists / Game</span><span class="stat-val">${escapeHtml(p['Assists_PG'])}</span></div>
+                        <div class="stat-bar-bg"><div class="stat-bar-fill bar-assists" style="width: ${aPct}%"></div></div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-label"><span>Saves / Game</span><span class="stat-val">${escapeHtml(p['Saves_PG'])}</span></div>
+                        <div class="stat-bar-bg"><div class="stat-bar-fill bar-saves" style="width: ${sPct}%"></div></div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-label"><span>Win Rate</span><span class="stat-val">${escapeHtml(p['Win_Rate'])}%</span></div>
+                        <div class="stat-bar-bg"><div class="stat-bar-fill bar-winrate" style="width: ${wPct}%"></div></div>
+                    </div>
+                    <div class="stat-row" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-bottom: 0;">
+                        <div class="stat-label" style="justify-content: center; font-size: 14px; color: #f1c40f; text-shadow: 0 0 5px rgba(241,196,15,0.3);">
+                            🔥 IMP: ${escapeHtml(p['Impact'] || '0')} &nbsp;|&nbsp; ⚡ EFF: ${escapeHtml(p['Efficiency'] || '0')}
+                        </div>
                     </div>
                 </div>
             </div>
