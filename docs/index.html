@@ -153,42 +153,21 @@
         .footer a { color: var(--neon-green); text-decoration: none; }
         .footer a:hover { text-decoration: underline; text-shadow: 0 0 5px var(--neon-green); }
         #chat-widget-container { position: fixed; bottom: 30px; right: 30px; z-index: 10000; font-family: 'Inter', sans-serif; }
-        #chat-toggle {
-            width: 65px; height: 65px; border-radius: 50%; background: var(--neon-green);
-            box-shadow: 0 5px 25px rgba(0, 255, 136, 0.5); cursor: pointer; display: flex;
-            justify-content: center; align-items: center; transition: all 0.3s; position: relative; border: none;
-        }
+        #chat-toggle { width: 65px; height: 65px; border-radius: 50%; background: var(--neon-green); box-shadow: 0 5px 25px rgba(0, 255, 136, 0.5); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; position: relative; border: none; }
         #chat-toggle:hover { transform: scale(1.1); box-shadow: 0 5px 35px rgba(0, 255, 136, 0.8); }
         #chat-toggle svg { fill: #000; width: 32px; height: 32px; }
-        #chat-badge {
-            position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white;
-            font-size: 12px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; border: 2px solid var(--pitch-dark);
-            display: none; animation: pop 0.3s ease-out;
-        }
+        #chat-badge { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; font-size: 12px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid var(--pitch-dark); display: none; animation: pop 0.3s ease-out; }
         @keyframes pop { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        #chat-panel {
-            position: absolute; bottom: 85px; right: 0; width: 350px; height: 500px;
-            background: rgba(10, 15, 12, 0.95); backdrop-filter: blur(15px);
-            border: 2px solid rgba(0, 255, 136, 0.4); border-radius: 15px;
-            display: none; flex-direction: column; overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8); transform-origin: bottom right;
-            animation: slideUp 0.3s ease-out;
-        }
+        #chat-panel { position: absolute; bottom: 85px; right: 0; width: 350px; height: 500px; background: rgba(10, 15, 12, 0.95); backdrop-filter: blur(15px); border: 2px solid rgba(0, 255, 136, 0.4); border-radius: 15px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.8); transform-origin: bottom right; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
-        #chat-header {
-            background: rgba(0,0,0,0.6); padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
-        }
+        #chat-header { background: rgba(0,0,0,0.6); padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         .chat-title { color: white; font-family: 'Teko', sans-serif; font-size: 24px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
         .online-dot { width: 10px; height: 10px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); animation: blink 2s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .online-count { font-size: 13px; color: #bdc3c7; font-family: 'Inter', sans-serif; }
         #chat-close { color: white; cursor: pointer; font-size: 24px; transition: 0.3s; line-height: 1; }
         #chat-close:hover { color: #e74c3c; }
-        #chat-messages {
-            flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
-        }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         #chat-messages::-webkit-scrollbar { width: 6px; }
         #chat-messages::-webkit-scrollbar-track { background: transparent; }
         #chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
@@ -203,56 +182,23 @@
         .msg-bubble { padding: 10px 14px; border-radius: 15px; font-size: 13px; line-height: 1.4; color: white; word-wrap: break-word; }
         .chat-msg.others .msg-bubble { background: #2c3e50; border-top-left-radius: 2px; }
         .chat-msg.self .msg-bubble { background: #132a18; border: 1px solid rgba(0,255,136,0.3); border-top-right-radius: 2px; }
-        #chat-input-area {
-            padding: 15px; background: rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.1);
-            display: flex; gap: 10px; flex-shrink: 0; position: relative;
-        }
-        #chat-input {
-            flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 20px; padding: 10px 15px; color: white; outline: none; font-family: 'Inter', sans-serif; font-size: 13px;
-        }
+        #chat-input-area { padding: 15px; background: rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; flex-shrink: 0; position: relative; }
+        #chat-input { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 10px 15px; color: white; outline: none; font-family: 'Inter', sans-serif; font-size: 13px; }
         #chat-input:focus { border-color: var(--neon-green); }
-        #chat-send {
-            background: var(--neon-green); border: none; width: 40px; height: 40px;
-            border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s;
-        }
+        #chat-send { background: var(--neon-green); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
         #chat-send:hover { transform: scale(1.1); }
         #chat-send svg { fill: #000; width: 18px; height: 18px; margin-left: 2px; }
-        #chat-login-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 15, 12, 0.98); z-index: 10; display: none; 
-            flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center;
-        }
+        #chat-login-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 15, 12, 0.98); z-index: 10; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; }
         #chat-login-overlay h3 { font-family: 'Teko', sans-serif; color: var(--neon-green); font-size: 32px; margin-bottom: 10px; }
         #chat-login-overlay p { font-size: 13px; color: #bdc3c7; margin-bottom: 25px; }
-        #chat-username-input {
-            width: 100%; padding: 12px 15px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.2);
-            background: transparent; color: white; font-size: 14px; text-align: center; outline: none; margin-bottom: 15px;
-        }
+        #chat-username-input { width: 100%; padding: 12px 15px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.2); background: transparent; color: white; font-size: 14px; text-align: center; outline: none; margin-bottom: 15px; }
         #chat-username-input:focus { border-color: var(--neon-green); }
-        #chat-join-btn {
-            background: var(--neon-green); color: #000; padding: 12px 30px; border-radius: 30px;
-            font-weight: bold; border: none; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; margin-bottom: 10px;
-        }
+        #chat-join-btn { background: var(--neon-green); color: #000; padding: 12px 30px; border-radius: 30px; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; margin-bottom: 10px; }
         #chat-join-btn:hover { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); transform: translateY(-2px); }
         #chat-cancel-btn { background: transparent; border: 1px solid #7f8fa6; color: #7f8fa6; padding: 8px 30px; border-radius: 30px; cursor: pointer; width: 100%; font-size: 12px; }
         #chat-cancel-btn:hover { background: rgba(255,255,255,0.1); }
-        @media (max-width: 1400px) {
-            table.dataTable { font-size: 10px !important; }
-            table.dataTable th { font-size: 14px !important; padding: 4px 2px !important; }
-            table.dataTable td { padding: 4px 2px !important; }
-            .badge { font-size: 9px; padding: 1px 4px; }
-        }
-        @media (max-width: 768px) {
-            .stadium-announcement { font-size: 16px; flex-direction: column; padding: 5px; }
-            table.dataTable { font-size: 9px !important; }
-            table.dataTable th { font-size: 12px !important; }
-            .header h1 { font-size: 24px; text-align: center; justify-content: center;}
-            .header { justify-content: center; gap: 10px; }
-            #compareDock { width: 95%; flex-direction: column; gap: 10px; padding: 15px; }
-            .fut-card { width: 100%; max-width: 300px; margin-top: 25px; }
-            #chat-panel { width: 90vw; height: 75vh; bottom: 80px; right: 15px; }
-        }
+        @media (max-width: 1400px) { table.dataTable { font-size: 10px !important; } table.dataTable th { font-size: 14px !important; padding: 4px 2px !important; } table.dataTable td { padding: 4px 2px !important; } .badge { font-size: 9px; padding: 1px 4px; } }
+        @media (max-width: 768px) { .stadium-announcement { font-size: 16px; flex-direction: column; padding: 5px; } table.dataTable { font-size: 9px !important; } table.dataTable th { font-size: 12px !important; } .header h1 { font-size: 24px; text-align: center; justify-content: center;} .header { justify-content: center; gap: 10px; } #compareDock { width: 95%; flex-direction: column; gap: 10px; padding: 15px; } .fut-card { width: 100%; max-width: 300px; margin-top: 25px; } #chat-panel { width: 90vw; height: 75vh; bottom: 80px; right: 15px; } }
     </style>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="adefbdcd-a363-4714-8f6d-86f7cd379c8c"></script>
 </head>
@@ -261,9 +207,7 @@
     <div class="header">
         <div><h1 style="margin: 0;">FFS Gaming CarBall Rankings</h1></div>
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;">
-            <div class="info">
-                🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp; ⏱️ Last Update: <span id="lastUpdate">-</span>
-            </div>
+            <div class="info">🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp; ⏱️ Last Update: <span id="lastUpdate">-</span></div>
             <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer" class="github-btn">
                 <svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
                 GitHub
@@ -271,53 +215,17 @@
         </div>
     </div>
     <div class="stadium-announcement">
-        <span>⚡</span>
-        <span>Select players by clicking on rows — compare up to 6 players side by side</span>
-        <span>⚡</span>
+        <span>⚡</span><span>Select players by clicking on rows — compare up to 6 players side by side</span><span>⚡</span>
     </div>
-    <div class="search-box">
-        <input type="text" id="customSearch" placeholder="🔍 Search a player... (e.g. fycnamed)">
-    </div>
+    <div class="search-box"><input type="text" id="customSearch" placeholder="🔍 Search a player... (e.g. fycnamed)"></div>
     <div class="table-responsive">
         <table id="playersTable" class="display compact" style="width:100%">
             <thead>
                 <tr>
-                    <th class="col-rank" title="Rank position">#</th>
-                    <th class="col-nick" title="Player nickname">Nick</th>
-                    <th class="col-sitename" title="Player username">User</th>
-                    <th class="col-userid" title="User ID">ID</th>
-                    <th class="col-rating" title="Final rating score">⭐</th>
-                    <th class="col-skill" title="Raw skill score">Skill</th>
-                    <th class="col-multiplier" title="Experience multiplier">×</th>
-                    <th class="col-role" title="Tactical role">Role</th>
-                    <th class="col-tier" title="Performance tier">Tier</th>
-                    <th class="col-matches" title="Total matches played">M</th>
-                    <th class="col-wins" title="Total wins">W</th>
-                    <th class="col-losses" title="Total losses">L</th>
-                    <th class="col-winrate" title="Win rate percentage">W%</th>
-                    <th class="col-wlratio" title="Win/Loss ratio">W/L</th>
-                    <th class="col-goalspg" title="Goals per game average">G/G</th>
-                    <th class="col-assistspg" title="Assists per game average">A/G</th>
-                    <th class="col-savespg" title="Saves per game average">S/G</th>
-                    <th class="col-ogpg" title="Own goals per game average">OG/G</th>
-                    <th class="col-totalgoals" title="Total goals scored">TG</th>
-                    <th class="col-totalassists" title="Total assists made">TA</th>
-                    <th class="col-totalsaves" title="Total saves made">TS</th>
-                    <th class="col-totalog" title="Total own goals">TOG</th>
-                    <th class="col-mvpcount" title="Total MVP awards">MVP</th>
-                    <th class="col-mvpwin" title="MVP percentage per win">MVP%</th>
-                    <th class="col-offensive" title="Offensive contribution ratio">Off%</th>
-                    <th class="col-defensive" title="Defensive contribution ratio">Def%</th>
-                    <th class="col-playmaker" title="Playmaker contribution ratio">Play%</th>
-                    <th class="col-efficiency" title="Overall efficiency score">Eff</th>
-                    <th class="col-impact" title="Game impact score">Imp</th>
-                    <th class="col-gkindex" title="Goalkeeping index percentage">GK%</th>
-                    <th class="col-defenserel" title="Defense reliability score">DefR</th>
-                    <th class="col-totalactions" title="Total actions performed">Act</th>
+                    <th class="col-rank" title="Rank position">#</th><th class="col-nick" title="Player nickname">Nick</th><th class="col-sitename" title="Player username">User</th><th class="col-userid" title="User ID">ID</th><th class="col-rating" title="Final rating score">⭐</th><th class="col-skill" title="Raw skill score">Skill</th><th class="col-multiplier" title="Experience multiplier">×</th><th class="col-role" title="Tactical role">Role</th><th class="col-tier" title="Performance tier">Tier</th><th class="col-matches" title="Total matches played">M</th><th class="col-wins" title="Total wins">W</th><th class="col-losses" title="Total losses">L</th><th class="col-winrate" title="Win rate percentage">W%</th><th class="col-wlratio" title="Win/Loss ratio">W/L</th><th class="col-goalspg" title="Goals per game average">G/G</th><th class="col-assistspg" title="Assists per game average">A/G</th><th class="col-savespg" title="Saves per game average">S/G</th><th class="col-ogpg" title="Own goals per game average">OG/G</th><th class="col-totalgoals" title="Total goals scored">TG</th><th class="col-totalassists" title="Total assists made">TA</th><th class="col-totalsaves" title="Total saves made">TS</th><th class="col-totalog" title="Total own goals">TOG</th><th class="col-mvpcount" title="Total MVP awards">MVP</th><th class="col-mvpwin" title="MVP percentage per win">MVP%</th><th class="col-offensive" title="Offensive contribution ratio">Off%</th><th class="col-defensive" title="Defensive contribution ratio">Def%</th><th class="col-playmaker" title="Playmaker contribution ratio">Play%</th><th class="col-efficiency" title="Overall efficiency score">Eff</th><th class="col-impact" title="Game impact score">Imp</th><th class="col-gkindex" title="Goalkeeping index percentage">GK%</th><th class="col-defenserel" title="Defense reliability score">DefR</th><th class="col-totalactions" title="Total actions performed">Act</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-            </tbody>
+            <tbody id="tableBody"></tbody>
         </table>
     </div>
     <div class="footer">
@@ -326,9 +234,7 @@
     </div>
 </div>
 <div id="compareDock">
-    <div class="dock-text">
-        <span class="dock-count" id="selCount">0</span> PLAYERS SELECTED <span style="font-size:14px; color:#7f8fa6;">(Max 6)</span>
-    </div>
+    <div class="dock-text"><span class="dock-count" id="selCount">0</span> PLAYERS SELECTED <span style="font-size:14px; color:#7f8fa6;">(Max 6)</span></div>
     <div style="display:flex; gap: 10px;">
         <button class="btn-dock btn-compare" onclick="openArena()">COMPARE NOW ⚔️</button>
         <button class="btn-dock btn-clear" onclick="clearSelection()">CLEAR</button>
@@ -340,8 +246,7 @@
         <h2>CARBALL CLASH ARENA</h2>
         <p>Sorted by Experience-Weighted Impact & Efficiency (Match MVP Engine)</p>
     </div>
-    <div class="cards-container" id="arenaCards">
-    </div>
+    <div class="cards-container" id="arenaCards"></div>
 </div>
 <div id="chat-widget-container">
     <button id="chat-toggle" onclick="toggleChat()">
@@ -364,8 +269,7 @@
                 <span id="chat-close" onclick="toggleChat()" style="margin-left: 10px;">&times;</span>
             </div>
         </div>
-        <div id="chat-messages">
-        </div>
+        <div id="chat-messages"></div>
         <div id="chat-input-area">
             <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
             <button id="chat-send" onclick="sendMessage()">
@@ -555,16 +459,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+const sessionId = Math.random().toString(36).substring(2, 15);
 const gun = Gun({
     peers: [
-        'https://gun-server.onrender.com/gun',
-        'https://peer.wallakel.com/gun',
-        'https://maddiex-gun-relay.onrender.com/gun'
+        'https://gun-relay.marda.studio/gun',
+        'https://gun-vue.vercel.app/gun',
+        'https://peer.wallakel.com/gun'
     ],
     localStorage: true
 });
-const chatNode = gun.get('ffs-carball-global-chat-room-v2');
-const presenceNode = gun.get('ffs-carball-presence-v2');
+const chatNode = gun.get('ffs-carball-global-chat-v3');
+const presenceNode = gun.get('ffs-carball-presence-v3');
 let chatOpen = false;
 let myUsername = localStorage.getItem('cb_chat_username') || '';
 let myFlag = localStorage.getItem('cb_chat_flag') || '🏳️';
@@ -580,7 +486,7 @@ async function fetchCountryFlag() {
             myFlag = data.flag.emoji;
             localStorage.setItem('cb_chat_flag', myFlag);
         }
-    } catch(e) { console.log('Flag fetch failed', e); }
+    } catch(e) {}
 }
 if(!myUsername) fetchCountryFlag();
 function toggleChat() {
@@ -693,12 +599,12 @@ chatNode.map().on((data, id) => {
         }, 100);
     }
 });
-let onlineUsers = new Map();
-function updatePresence() { if(myUsername) presenceNode.get(myUsername).put(Date.now()); }
-presenceNode.map().on((time, user) => { if(time && user) onlineUsers.set(user, time); });
+let onlineSessions = new Map();
+function updatePresence() { presenceNode.get(sessionId).put({ user: myUsername, time: Date.now() }); }
+presenceNode.map().on((data, session) => { if(data && data.time) onlineSessions.set(session, data.time); });
 setInterval(() => {
     const now = Date.now(); let count = 0;
-    for (let [user, lastSeen] of onlineUsers.entries()) {
+    for (let [session, lastSeen] of onlineSessions.entries()) {
         if (now - lastSeen < 120000) count++;
     }
     count = Math.max(count, 1);
