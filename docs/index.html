@@ -39,77 +39,36 @@
         .header {
             position: relative;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-            padding: 16px 18px 18px; margin-bottom: 16px; flex-shrink: 0;
-            border-radius: 20px;
-            background:
-                linear-gradient(135deg, rgba(255,255,255,0.06), rgba(7, 14, 10, 0.95)),
-                radial-gradient(circle at top left, rgba(0, 255, 136, 0.12), transparent 40%);
-            border: 1px solid rgba(255,255,255,0.11);
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.08),
-                0 10px 32px rgba(0, 0, 0, 0.33),
-                0 0 0 1px rgba(0, 255, 136, 0.07);
-            overflow: hidden;
-        }
-        .header::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
-            transform: translateX(-120%);
-            animation: header-sweep 6s linear infinite;
-            pointer-events: none;
-        }
-        .header::after {
-            content: "";
-            position: absolute;
-            left: 16px; right: 16px; bottom: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.55), rgba(255,255,255,0.24), transparent);
-            pointer-events: none;
+            padding: 12px 14px 14px; margin-bottom: 14px; flex-shrink: 0;
+            border-radius: 16px;
+            background: rgba(7, 14, 10, 0.88);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 6px 20px rgba(0, 0, 0, 0.25);
         }
         .header h1 {
             margin: 0;
             color: #f8fafc;
             font-family: 'Teko', sans-serif;
-            font-size: clamp(28px, 3vw, 40px);
-            font-weight: 700;
+            font-size: clamp(24px, 2.4vw, 30px);
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.16em;
-            line-height: 1.03;
+            letter-spacing: 0.14em;
+            line-height: 1.05;
             display: inline-block;
-            padding: 13px 20px;
-            border-radius: 16px;
-            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(8, 16, 12, 0.96) 55%, rgba(0, 255, 136, 0.06));
-            border: 1px solid rgba(255,255,255,0.14);
-            box-shadow:
-                0 0 0 1px rgba(255,255,255,0.03) inset,
-                0 0 24px rgba(0, 0, 0, 0.3),
-                0 0 36px rgba(0, 255, 136, 0.06);
+            padding: 8px 0;
+            background: none;
+            border: none;
+            box-shadow: none;
             position: relative;
-            overflow: hidden;
             max-width: 100%;
-            text-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 0 18px rgba(148, 163, 184, 0.16);
-        }
-        .header h1::before {
-            content: "";
-            position: absolute;
-            inset: 2px;
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 13px;
-            pointer-events: none;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.03);
         }
         .header h1::after {
             content: "";
             position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 5px;
-            background: linear-gradient(180deg, #f5c542 0%, #7d8ca3 55%, rgba(255,255,255,0.24) 100%);
-            box-shadow: 0 0 12px rgba(245, 197, 66, 0.25);
-            border-radius: 0 14px 14px 0;
-        }
-        @keyframes header-sweep {
-            100% { transform: translateX(120%); }
+            left: 0; right: 0; bottom: -2px;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(0, 255, 136, 0.45), rgba(255,255,255,0.15));
         }
         .header .info {
             color: #bdc3c7; font-size: 13px; background: rgba(0, 0, 0, 0.6); padding: 6px 15px;
