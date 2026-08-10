@@ -26,10 +26,10 @@
             background: repeating-linear-gradient(90deg, var(--pitch-dark) 0px, var(--pitch-dark) 60px, var(--pitch-light) 60px, var(--pitch-light) 120px);
             background-position: center top; background-repeat: repeat;
             font-family: 'Inter', sans-serif; color: var(--text-light);
-            margin: 0; padding: 15px 5px; padding-bottom: 80px;
+            margin: 0; padding: 10px 5px 20px;
         }
         .container {
-            width: 100%; max-width: 100%; margin: 0 auto; padding: 15px;
+            width: 100%; max-width: 100%; margin: 0 auto; padding: 12px;
             background: rgba(10, 15, 12, 0.92);
             border: 2px solid rgba(0, 255, 136, 0.25); border-radius: 12px;
             box-shadow: 0 0 18px rgba(0, 0, 0, 0.55);
@@ -38,11 +38,16 @@
         .header {
             position: relative;
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+            gap: 14px;
             padding: 12px 14px 14px; margin-bottom: 14px; flex-shrink: 0;
             border-radius: 16px;
             background: rgba(7, 14, 10, 0.88);
             border: 1px solid rgba(255,255,255,0.08);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        .header-title {
+            flex: 1 1 260px;
+            min-width: 0;
         }
         .header h1 {
             margin: 0;
@@ -73,6 +78,20 @@
             color: #bdc3c7; font-size: 13px; background: rgba(0, 0, 0, 0.6); padding: 6px 15px;
             border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); font-family: 'Teko', sans-serif;
             font-size: 18px; letter-spacing: 1px;
+        }
+        .header-actions {
+            display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+            flex: 1 1 260px;
+            flex-wrap: wrap;
+        }
+        .header-search {
+            flex: 1 1 320px;
+            min-width: 240px;
+            margin-bottom: 0;
+            justify-content: center;
+        }
+        .header-search input {
+            width: min(100%, 420px);
         }
         .github-btn {
             background: #1e272e; color: white; padding: 6px 15px; border-radius: 30px;
@@ -176,18 +195,19 @@
         .bar-assists { background: #3498db; }
         .bar-saves { background: #2ecc71; }
         .bar-winrate { background: #f1c40f; }
-        .footer { margin-top: 15px; text-align: center; color: #7f8fa6; font-size: 12px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px; flex-shrink: 0; font-family: 'Teko', sans-serif; font-size: 18px; letter-spacing: 1px; }
+        .footer { margin-top: 10px; text-align: center; color: #7f8fa6; font-size: 12px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px; padding-bottom: 2px; flex-shrink: 0; font-family: 'Teko', sans-serif; font-size: 18px; letter-spacing: 1px; }
         .footer a { color: var(--neon-green); text-decoration: none; }
         .footer a:hover { text-decoration: underline; text-shadow: 0 0 5px var(--neon-green); }
         @media (max-width: 1400px) { table.dataTable { font-size: 10px !important; } table.dataTable th { font-size: 14px !important; padding: 4px 2px !important; } table.dataTable td { padding: 4px 2px !important; } .badge { font-size: 9px; padding: 1px 4px; } }
-        @media (max-width: 768px) { .stadium-announcement { font-size: 16px; flex-direction: column; padding: 5px; } table.dataTable { font-size: 9px !important; } table.dataTable th { font-size: 12px !important; } .header h1 { font-size: 24px; text-align: center; justify-content: center;} .header { justify-content: center; gap: 10px; } #compareDock { width: 95%; flex-direction: column; gap: 10px; padding: 15px; } .fut-card { width: 100%; max-width: 300px; margin-top: 25px; } }
+        @media (max-width: 768px) { table.dataTable { font-size: 9px !important; } table.dataTable th { font-size: 12px !important; } .header { justify-content: center; gap: 10px; } .header-title { flex-basis: 100%; text-align: center; } .header-search { order: 2; width: 100%; min-width: 100%; } .header-actions { justify-content: center; flex-basis: 100%; } .header h1 { font-size: 24px; text-align: center; justify-content: center;} #compareDock { width: 95%; flex-direction: column; gap: 10px; padding: 15px; } .fut-card { width: 100%; max-width: 300px; margin-top: 25px; } }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <div><h1>FFS Gaming CarBall Rankings</h1></div>
-        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;">
+        <div class="header-title"><h1>FFS Gaming CarBall Rankings</h1></div>
+        <div class="search-box header-search"><input type="text" id="customSearch" placeholder="🔍 Search a player... (e.g. fycnamed)"></div>
+        <div class="header-actions">
             <div class="info">🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp; ⏱️ Last Update: <span id="lastUpdate">-</span></div>
             <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer" class="github-btn">
                 <svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -195,10 +215,6 @@
             </a>
         </div>
     </div>
-    <div class="stadium-announcement">
-        <span>⚡</span><span>Select players by clicking on rows — compare up to 6 players side by side</span><span>⚡</span>
-    </div>
-    <div class="search-box"><input type="text" id="customSearch" placeholder="🔍 Search a player... (e.g. fycnamed)"></div>
     <div class="table-responsive">
         <table id="playersTable" class="display compact" style="width:100%">
             <thead>
