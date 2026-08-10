@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
     <style>
         :root {
             --pitch-dark: #0e2012;
@@ -25,15 +24,15 @@
         body {
             width: 100%; min-height: 100vh;
             background: repeating-linear-gradient(90deg, var(--pitch-dark) 0px, var(--pitch-dark) 60px, var(--pitch-light) 60px, var(--pitch-light) 120px);
-            background-attachment: fixed; background-position: center top;
+            background-position: center top; background-repeat: repeat;
             font-family: 'Inter', sans-serif; color: var(--text-light);
             margin: 0; padding: 15px 5px; padding-bottom: 80px;
         }
         .container {
             width: 100%; max-width: 100%; margin: 0 auto; padding: 15px;
-            background: var(--scoreboard-bg); backdrop-filter: blur(10px);
-            border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 136, 0.1) inset;
+            background: rgba(10, 15, 12, 0.92);
+            border: 2px solid rgba(0, 255, 136, 0.25); border-radius: 12px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.55);
             display: flex; flex-direction: column;
         }
         .header {
@@ -80,15 +79,15 @@
             text-decoration: none; font-size: 13px; font-weight: 600; display: inline-flex;
             align-items: center; gap: 6px; transition: all 0.3s ease; border: 1px solid #485460;
         }
-        .github-btn:hover { background: var(--neon-green) !important; color: #000 !important; border-color: var(--neon-green) !important; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4); }
+        .github-btn:hover { background: var(--neon-green) !important; color: #000 !important; border-color: var(--neon-green) !important; transform: none; box-shadow: none; }
         .github-btn:hover svg { fill: #000; }
         .github-btn svg { fill: white; height: 16px; width: 16px; transition: fill 0.3s; }
         .stadium-announcement {
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.15), transparent);
-            border-top: 1px solid rgba(0, 255, 136, 0.4); border-bottom: 1px solid rgba(0, 255, 136, 0.4);
+            background: rgba(0, 255, 136, 0.08);
+            border-top: 1px solid rgba(0, 255, 136, 0.2); border-bottom: 1px solid rgba(0, 255, 136, 0.2);
             color: #dcdde1; text-align: center; padding: 8px 15px; font-family: 'Teko', sans-serif;
             font-size: 22px; letter-spacing: 1.5px; margin-bottom: 15px; display: flex;
-            justify-content: center; align-items: center; gap: 10px; animation: pulse-glow 2.5s infinite;
+            justify-content: center; align-items: center; gap: 10px; animation: none;
         }
         .stadium-announcement .highlight { color: var(--neon-green); text-shadow: 0 0 8px rgba(0, 255, 136, 0.6); font-weight: 600; }
         @keyframes pulse-glow { 0% { box-shadow: 0 0 0px transparent inset; } 50% { box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset; } 100% { box-shadow: 0 0 0px transparent inset; } }
@@ -106,10 +105,10 @@
         table.dataTable th:hover { color: var(--neon-green) !important; }
         table.dataTable thead th { background-image: none !important; }
         table.dataTable thead th::before, table.dataTable thead th::after { display: none !important; content: "" !important; }
-        table.dataTable tbody tr { background-color: rgba(20, 20, 20, 0.6) !important; color: #ecf0f1; transition: all 0.2s ease; cursor: pointer; }
+        table.dataTable tbody tr { background-color: rgba(20, 20, 20, 0.6) !important; color: #ecf0f1; transition: none; cursor: pointer; }
         table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
-        table.dataTable tbody tr:hover { background-color: var(--pitch-light) !important; color: white !important; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset; }
-        table.dataTable tbody tr.selected-player { background-color: rgba(0, 255, 136, 0.15) !important; border-left: 4px solid var(--neon-green) !important; box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.3) !important; }
+        table.dataTable tbody tr:hover { background-color: rgba(19, 42, 24, 0.9) !important; color: white !important; box-shadow: none; }
+        table.dataTable tbody tr.selected-player { background-color: rgba(0, 255, 136, 0.12) !important; border-left: 4px solid var(--neon-green) !important; box-shadow: none !important; }
         table.dataTable td a { color: #3498db; text-decoration: none; font-weight: 600; }
         table.dataTable td a:hover { color: var(--neon-green); text-decoration: underline; }
         .rank-col { font-weight: 800; color: #f1c40f !important; font-size: 13px; }
@@ -135,26 +134,26 @@
         .dataTables_wrapper .dataTables_paginate .paginate_button { color: #dcdde1 !important; border: 1px solid rgba(255,255,255,0.1) !important; background: rgba(0,0,0,0.5) !important; border-radius: 4px !important; margin: 0 3px !important; padding: 4px 10px !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--neon-green) !important; color: black !important; border-color: var(--neon-green) !important; }
         .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--highlight) !important; color: black !important; border-color: var(--highlight) !important; font-weight: bold; }
-        #compareDock { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 12, 0.95); border: 2px solid var(--neon-green); border-bottom: none; border-radius: 15px 15px 0 0; padding: 10px 30px; display: flex; align-items: center; gap: 20px; box-shadow: 0 -5px 25px rgba(0, 255, 136, 0.4); transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; backdrop-filter: blur(10px); }
+        #compareDock { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 12, 0.95); border: 2px solid var(--neon-green); border-bottom: none; border-radius: 15px 15px 0 0; padding: 10px 30px; display: flex; align-items: center; gap: 20px; box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.35); transition: bottom 0.18s ease-out; z-index: 1000; backdrop-filter: none; }
         #compareDock.active { bottom: 0; }
         #compareDock .dock-text { color: white; font-family: 'Teko', sans-serif; font-size: 22px; letter-spacing: 1px; }
         #compareDock .dock-count { color: var(--neon-green); font-weight: bold; font-size: 28px; }
         .btn-dock { padding: 8px 20px; border-radius: 30px; font-weight: bold; font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; border: none; transition: 0.3s; }
         .btn-compare { background: var(--neon-green); color: #000; box-shadow: 0 0 15px rgba(0, 255, 136, 0.5); }
-        .btn-compare:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 255, 136, 0.8); }
+        .btn-compare:hover { transform: none; box-shadow: none; }
         .btn-clear { background: transparent; color: #e74c3c; border: 1px solid #e74c3c; }
         .btn-clear:hover { background: #e74c3c; color: white; }
-        #arenaModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 10, 8, 0.95); backdrop-filter: blur(15px); z-index: 9999; display: none; overflow-y: auto; padding: 60px 20px 40px 20px; }
+        #arenaModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 10, 8, 0.95); backdrop-filter: none; z-index: 9999; display: none; overflow-y: auto; padding: 60px 20px 40px 20px; }
         .arena-header { text-align: center; margin-bottom: 50px; }
         .arena-header h2 { font-family: 'Teko', sans-serif; font-size: 50px; color: white; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); margin-bottom: 5px;}
         .arena-header p { color: #bdc3c7; font-size: 16px; }
         .btn-close-arena { position: absolute; top: 20px; right: 30px; font-size: 40px; color: white; cursor: pointer; transition: 0.3s; line-height: 1; }
         .btn-close-arena:hover { color: #e74c3c; transform: rotate(90deg); }
         .cards-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; align-items: stretch; }
-        .fut-card { background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%); border-radius: 20px; width: 280px; padding: 35px 20px 25px 20px; text-align: center; position: relative; border: 2px solid #333; transition: transform 0.4s, box-shadow 0.4s; box-shadow: 0 10px 30px rgba(0,0,0,0.8); margin-top: 15px; display: flex; flex-direction: column; }
-        .fut-card:hover { transform: translateY(-10px) scale(1.02); }
+        .fut-card { background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%); border-radius: 20px; width: 280px; padding: 35px 20px 25px 20px; text-align: center; position: relative; border: 2px solid #333; transition: none; box-shadow: 0 6px 16px rgba(0,0,0,0.55); margin-top: 15px; display: flex; flex-direction: column; }
+        .fut-card:hover { transform: none; }
         .card-rank-badge { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-family: 'Teko', sans-serif; font-size: 26px; font-weight: 700; padding: 2px 25px; border-radius: 30px; line-height: 1.2; letter-spacing: 1px; z-index: 10; border: 2px solid #fff; white-space: nowrap; box-shadow: 0 5px 15px rgba(0,0,0,0.6); }
-        .badge-rank-1 { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; border-color: #ffeaa7; box-shadow: 0 0 20px #f1c40f, inset 0 0 10px rgba(255,255,255,0.5); animation: glow-gold 1.5s infinite alternate;}
+        .badge-rank-1 { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; border-color: #ffeaa7; box-shadow: 0 0 12px #f1c40f; animation: none;}
         .badge-rank-2 { background: linear-gradient(135deg, #bdc3c7, #7f8c8d); color: #000; border-color: #ecf0f1; box-shadow: 0 0 15px #bdc3c7; }
         .badge-rank-3 { background: linear-gradient(135deg, #d35400, #c0392b); color: #fff; border-color: #e67e22; box-shadow: 0 0 15px #d35400; }
         .badge-rank-other { background: linear-gradient(135deg, #2c3e50, #1a252f); color: #bdc3c7; border-color: #34495e; box-shadow: 0 5px 15px rgba(0,0,0,0.6); }
@@ -181,16 +180,16 @@
         .footer a { color: var(--neon-green); text-decoration: none; }
         .footer a:hover { text-decoration: underline; text-shadow: 0 0 5px var(--neon-green); }
         #chat-widget-container { position: fixed; bottom: 30px; right: 30px; z-index: 10000; font-family: 'Inter', sans-serif; }
-        #chat-toggle { width: 65px; height: 65px; border-radius: 50%; background: var(--neon-green); box-shadow: 0 5px 25px rgba(0, 255, 136, 0.5); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s; position: relative; border: none; }
-        #chat-toggle:hover { transform: scale(1.1); box-shadow: 0 5px 35px rgba(0, 255, 136, 0.8); }
+        #chat-toggle { width: 65px; height: 65px; border-radius: 50%; background: var(--neon-green); box-shadow: 0 3px 12px rgba(0, 255, 136, 0.3); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: none; position: relative; border: none; }
+        #chat-toggle:hover { transform: none; box-shadow: 0 3px 12px rgba(0, 255, 136, 0.3); }
         #chat-toggle svg { fill: #000; width: 32px; height: 32px; }
         #chat-badge { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; font-size: 12px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid var(--pitch-dark); display: none; animation: pop 0.3s ease-out; }
         @keyframes pop { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        #chat-panel { position: absolute; bottom: 85px; right: 0; width: 350px; height: 500px; background: rgba(10, 15, 12, 0.95); backdrop-filter: blur(15px); border: 2px solid rgba(0, 255, 136, 0.4); border-radius: 15px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.8); transform-origin: bottom right; animation: slideUp 0.3s ease-out; }
+        #chat-panel { position: absolute; bottom: 85px; right: 0; width: 350px; height: 500px; background: rgba(10, 15, 12, 0.95); backdrop-filter: none; border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 15px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.45); transform-origin: bottom right; animation: none; }
         @keyframes slideUp { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
         #chat-header { background: rgba(0,0,0,0.6); padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         .chat-title { color: white; font-family: 'Teko', sans-serif; font-size: 24px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-        .online-dot { width: 10px; height: 10px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); animation: blink 2s infinite; }
+        .online-dot { width: 10px; height: 10px; background: var(--neon-green); border-radius: 50%; box-shadow: none; animation: none; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .online-count { font-size: 13px; color: #bdc3c7; font-family: 'Inter', sans-serif; }
         #chat-close { color: white; cursor: pointer; font-size: 24px; transition: 0.3s; line-height: 1; }
@@ -199,7 +198,7 @@
         #chat-messages::-webkit-scrollbar { width: 6px; }
         #chat-messages::-webkit-scrollbar-track { background: transparent; }
         #chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-        .chat-msg { display: flex; flex-direction: column; max-width: 85%; animation: fadeIn 0.3s; }
+        .chat-msg { display: flex; flex-direction: column; max-width: 85%; animation: none; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .chat-msg.others { align-self: flex-start; }
         .chat-msg.self { align-self: flex-end; }
@@ -214,7 +213,7 @@
         #chat-input { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 10px 15px; color: white; outline: none; font-family: 'Inter', sans-serif; font-size: 13px; }
         #chat-input:focus { border-color: var(--neon-green); }
         #chat-send { background: var(--neon-green); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
-        #chat-send:hover { transform: scale(1.1); }
+        #chat-send:hover { transform: none; }
         #chat-send svg { fill: #000; width: 18px; height: 18px; margin-left: 2px; }
         #chat-login-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 15, 12, 0.98); z-index: 10; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; }
         #chat-login-overlay h3 { font-family: 'Teko', sans-serif; color: var(--neon-green); font-size: 32px; margin-bottom: 10px; }
@@ -222,13 +221,12 @@
         #chat-username-input { width: 100%; padding: 12px 15px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.2); background: transparent; color: white; font-size: 14px; text-align: center; outline: none; margin-bottom: 15px; }
         #chat-username-input:focus { border-color: var(--neon-green); }
         #chat-join-btn { background: var(--neon-green); color: #000; padding: 12px 30px; border-radius: 30px; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; margin-bottom: 10px; }
-        #chat-join-btn:hover { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); transform: translateY(-2px); }
+        #chat-join-btn:hover { box-shadow: none; transform: none; }
         #chat-cancel-btn { background: transparent; border: 1px solid #7f8fa6; color: #7f8fa6; padding: 8px 30px; border-radius: 30px; cursor: pointer; width: 100%; font-size: 12px; }
         #chat-cancel-btn:hover { background: rgba(255,255,255,0.1); }
         @media (max-width: 1400px) { table.dataTable { font-size: 10px !important; } table.dataTable th { font-size: 14px !important; padding: 4px 2px !important; } table.dataTable td { padding: 4px 2px !important; } .badge { font-size: 9px; padding: 1px 4px; } }
         @media (max-width: 768px) { .stadium-announcement { font-size: 16px; flex-direction: column; padding: 5px; } table.dataTable { font-size: 9px !important; } table.dataTable th { font-size: 12px !important; } .header h1 { font-size: 24px; text-align: center; justify-content: center;} .header { justify-content: center; gap: 10px; } #compareDock { width: 95%; flex-direction: column; gap: 10px; padding: 15px; } .fut-card { width: 100%; max-width: 300px; margin-top: 25px; } #chat-panel { width: 90vw; height: 75vh; bottom: 80px; right: 15px; } }
     </style>
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="adefbdcd-a363-4714-8f6d-86f7cd379c8c"></script>
 </head>
 <body>
 <div class="container">
@@ -598,6 +596,8 @@ let myFlag = localStorage.getItem('cb_chat_flag') || '🏳️';
 let unreadCount = 0;
 let renderedMessageIds = new Set();
 const chatAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
+let firebaseInitializing = false;
+let firebaseReady = false;
 
 // Firebase config (user provided)
 const firebaseConfig = {
@@ -624,44 +624,55 @@ function loadScript(url) {
 
 async function ensureFirebase() {
     if (window.firebase && window.firebase.apps) return;
-    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js');
-    firebase.initializeApp(firebaseConfig);
-    auth = firebase.auth();
-    db = firebase.database();
-    messagesRef = db.ref('messages');
-    presenceRef = db.ref('presence');
+    if (firebaseInitializing) return firebaseInitializing;
 
-    auth.onAuthStateChanged(user => {
-        if (user) { uid = user.uid; }
-    });
+    firebaseInitializing = (async () => {
+        await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+        await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js');
+        await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js');
+        firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        db = firebase.database();
+        messagesRef = db.ref('messages');
+        presenceRef = db.ref('presence');
 
-    // presence listener -> update online count
-    presenceRef.on('value', snap => {
-        const count = snap.numChildren();
-        document.getElementById('active-users-count').textContent = count || 0;
-    });
+        auth.onAuthStateChanged(user => {
+            if (user) { uid = user.uid; }
+        });
 
-    // messages listener
-    messagesRef.limitToLast(200).on('child_added', snap => {
-        const data = snap.val(); const id = snap.key;
-        if (!data || !data.ts || (!data.text && !data.system)) return;
-        if (renderedMessageIds.has(id)) return; renderedMessageIds.add(id);
-        // normalize
-        const msg = {
-            id: id,
-            user: data.system ? 'System' : (data.displayName || data.user || 'Anon'),
-            flag: data.country || data.flag || (data.system ? '🔔' : '🏳️'),
-            text: data.system ? (data.text || '') : (data.text || ''),
-            time: data.ts || data.time || Date.now(),
-            isSystem: !!data.system
-        };
-        bufferMessage(msg);
-    });
+        presenceRef.on('value', snap => {
+            const count = snap.numChildren();
+            const el = document.getElementById('active-users-count');
+            if (el) el.textContent = count || 0;
+        });
+
+        messagesRef.limitToLast(200).on('child_added', snap => {
+            const data = snap.val(); const id = snap.key;
+            if (!data || !data.ts || (!data.text && !data.system)) return;
+            if (renderedMessageIds.has(id)) return; renderedMessageIds.add(id);
+            const msg = {
+                id: id,
+                user: data.system ? 'System' : (data.displayName || data.user || 'Anon'),
+                flag: data.country || data.flag || (data.system ? '🔔' : '🏳️'),
+                text: data.text || '',
+                time: data.ts || data.time || Date.now(),
+                isSystem: !!data.system
+            };
+            bufferMessage(msg);
+        });
+    })();
+
+    try {
+        await firebaseInitializing;
+        firebaseReady = true;
+    } catch (e) {
+        console.warn('Firebase load failed', e);
+        firebaseReady = false;
+    }
 }
 
 async function initFirebase() {
+    if (firebaseReady) return;
     try { await ensureFirebase(); await auth.signInAnonymously().catch(() => {}); } catch (e) { console.warn('Firebase load failed', e); }
 }
 
@@ -671,7 +682,6 @@ async function fetchCountryFlag() {
         const res = await fetch('https://ipwho.is/');
         const data = await res.json();
         if (data && data.country_code && data.country_code.length === 2) {
-            // convert country code to emoji
             const code = data.country_code.toUpperCase();
             const flag = code.replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()));
             myFlag = flag; localStorage.setItem('cb_chat_flag', myFlag);
@@ -679,23 +689,22 @@ async function fetchCountryFlag() {
     } catch (e) {}
 }
 
-if (!myUsername) fetchCountryFlag();
-
 function toggleChat() {
     const panel = document.getElementById('chat-panel');
     const badge = document.getElementById('chat-badge');
     chatOpen = !chatOpen;
     if (chatOpen) {
+        initFirebase().catch(() => {});
         panel.style.display = 'flex'; badge.style.display = 'none'; unreadCount = 0;
         const msgs = document.getElementById('chat-messages'); msgs.scrollTop = msgs.scrollHeight;
-        // update presence timestamp if already joined
         if (uid && myUsername) {
-            presenceRef.child(uid).update({ ts: Date.now() }).catch(() => {});
+            presenceRef?.child(uid).update({ ts: Date.now() }).catch(() => {});
         }
     } else { panel.style.display = 'none'; }
 }
 
 document.getElementById('chat-input').addEventListener('focus', function (e) {
+    initFirebase().catch(() => {});
     if (!myUsername) { e.target.blur(); document.getElementById('chat-login-overlay').style.display = 'flex'; document.getElementById('chat-username-input').focus(); }
 });
 
@@ -718,12 +727,12 @@ function joinChat() {
     myUsername = input; localStorage.setItem('cb_chat_username', myUsername);
     const sel = document.getElementById('chat-flag-select'); if (sel && sel.value) { myFlag = sel.value; localStorage.setItem('cb_chat_flag', myFlag); }
     document.getElementById('chat-login-overlay').style.display = 'none'; document.getElementById('chat-input').focus();
-    // set presence and announce
+    initFirebase().catch(() => {});
     if (uid) {
-        presenceRef.child(uid).onDisconnect().remove();
-        presenceRef.child(uid).set({ displayName: myUsername, country: myFlag, ts: Date.now() }).catch(() => {});
+        presenceRef?.child(uid).onDisconnect().remove();
+        presenceRef?.child(uid).set({ displayName: myUsername, country: myFlag, ts: Date.now() }).catch(() => {});
     }
-    messagesRef.push({ system: true, text: `${myUsername} joined the arena!`, ts: Date.now() }).catch(() => {});
+    messagesRef?.push({ system: true, text: `${myUsername} joined the arena!`, ts: Date.now() }).catch(() => {});
 }
 
 document.addEventListener('click', function (e) { if (e.target && e.target.id === 'chat-cancel-btn') { document.getElementById('chat-login-overlay').style.display = 'none'; } });
@@ -796,16 +805,6 @@ function bufferMessage(msg) {
 
 // build flag selector on load
 document.addEventListener('DOMContentLoaded', function () { buildFlagSelect(); });
-
-// initialize firebase and sign-in
-initFirebase().then(() => {
-    // ensure presenceRef/messagesRef exist
-    if (!messagesRef || !presenceRef) { messagesRef = db.ref('messages'); presenceRef = db.ref('presence'); }
-    // if user was previously joined, restore presence
-    auth.onAuthStateChanged(user => {
-        if (user) { uid = user.uid; if (myUsername) { presenceRef.child(uid).onDisconnect().remove(); presenceRef.child(uid).set({ displayName: myUsername, country: myFlag, ts: Date.now() }).catch(()=>{}); } }
-    });
-}).catch(e => { console.warn('Firebase init error', e); });
 
 </script>
 </body>
