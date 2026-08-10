@@ -676,20 +676,24 @@ function closeArena() {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const aramaKutusu = document.getElementById("customSearch");
+    let bekletmeSayaci;
 
     if (aramaKutusu) {
-        aramaKutusu.addEventListener("keypress", function (e) {
-            if (e.key === "Enter") {
+        aramaKutusu.addEventListener("input", function () {
+            clearTimeout(bekletmeSayaci);
+
+            bekletmeSayaci = setTimeout(function () {
                 const arananKelime = aramaKutusu.value.trim().toLowerCase();
                 
-                if (arananKelime && window.umami) {
-                    umami.track("Oyuncu Araması", { kelime: arananKelime });
+                if (arananKelime.length >= 2 && window.umami) {
+                    umami.track("Canlı Arama", { kelime: arananKelime });
                 }
-            }
+            }, 1500);
         });
     }
 });
 </script>
+
     
 </body>
 </html>
