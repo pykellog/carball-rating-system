@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+
     <style>
         :root {
             --pitch-dark: #0e2012;
@@ -101,6 +102,7 @@
         table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
         table.dataTable tbody tr:hover { background-color: var(--pitch-light) !important; color: white !important; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset; }
         table.dataTable tbody tr.selected-player { background-color: rgba(0, 255, 136, 0.15) !important; border-left: 4px solid var(--neon-green) !important; box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.3) !important; }
+
         table.dataTable td a { color: #3498db; text-decoration: none; font-weight: 600; }
         table.dataTable td a:hover { color: var(--neon-green); text-decoration: underline; }
 
@@ -248,7 +250,7 @@
 
         #chat-input-area {
             padding: 15px; background: rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.1);
-            display: flex; gap: 10px; flex-shrink: 0;
+            display: flex; gap: 10px; flex-shrink: 0; position: relative;
         }
         #chat-input {
             flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
@@ -264,7 +266,7 @@
 
         #chat-login-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 15, 12, 0.98); z-index: 10; display: flex;
+            background: rgba(10, 15, 12, 0.98); z-index: 10; display: none;
             flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center;
         }
         #chat-login-overlay h3 { font-family: 'Teko', sans-serif; color: var(--neon-green); font-size: 32px; margin-bottom: 10px; }
@@ -276,9 +278,11 @@
         #chat-username-input:focus { border-color: var(--neon-green); }
         #chat-join-btn {
             background: var(--neon-green); color: #000; padding: 12px 30px; border-radius: 30px;
-            font-weight: bold; border: none; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px;
+            font-weight: bold; border: none; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; margin-bottom: 10px;
         }
         #chat-join-btn:hover { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); transform: translateY(-2px); }
+        #chat-cancel-btn { background: transparent; border: 1px solid #7f8fa6; color: #7f8fa6; padding: 8px 30px; border-radius: 30px; cursor: pointer; width: 100%; font-size: 12px; }
+        #chat-cancel-btn:hover { background: rgba(255,255,255,0.1); }
 
         @media (max-width: 1400px) {
             table.dataTable { font-size: 10px !important; }
@@ -407,12 +411,11 @@
             <p>Connect with CarBall players worldwide!</p>
             <input type="text" id="chat-username-input" placeholder="Enter your Nickname..." maxlength="15" autocomplete="off">
             <button id="chat-join-btn" onclick="joinChat()">ENTER ARENA</button>
+            <button id="chat-cancel-btn" onclick="document.getElementById('chat-login-overlay').style.display='none';">Cancel</button>
         </div>
 
         <div id="chat-header">
-            <div class="chat-title">
-                Global Chat
-            </div>
+            <div class="chat-title">Global Chat</div>
             <div style="display:flex; align-items:center; gap:6px;">
                 <div class="online-dot"></div>
                 <span class="online-count"><span id="active-users-count">1</span> Online</span>
@@ -424,7 +427,7 @@
         </div>
 
         <div id="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Send a message..." autocomplete="off">
+            <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
             <button id="chat-send" onclick="sendMessage()">
                 <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
             </button>
@@ -436,9 +439,7 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
-let dataTable;
-let globalPlayers = [];
-let selectedPlayers = [];
+let dataTable; let globalPlayers = []; let selectedPlayers = [];
 
 function escapeHtml(text) {
     if (!text) return '?';
@@ -447,16 +448,14 @@ function escapeHtml(text) {
 }
 
 function parseQuotedCSV(line) {
-    const result = [];
-    let current = ''; let inQuotes = false;
+    const result = []; let current = ''; let inQuotes = false;
     for (let i = 0; i < line.length; i++) {
         const char = line[i];
         if (char === '"') { inQuotes = !inQuotes; } 
         else if (char === ',' && !inQuotes) { result.push(current.trim()); current = ''; } 
         else { current += char; }
     }
-    result.push(current.trim());
-    return result;
+    result.push(current.trim()); return result;
 }
 
 async function loadData() {
@@ -475,20 +474,16 @@ async function loadData() {
             const values = parseQuotedCSV(lines[i]);
             if (values.length < 4) continue;
             const player = {};
-            headers.forEach((header, index) => {
-                player[header] = values[index] ? values[index].replace(/^"|"$/g, '').trim() : '';
-            });
+            headers.forEach((header, index) => { player[header] = values[index] ? values[index].replace(/^"|"$/g, '').trim() : ''; });
             globalPlayers.push(player);
         }
 
         if (globalPlayers.length === 0) throw new Error('No data rows found.');
 
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
+        const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
 
         globalPlayers.forEach((player, index) => {
-            const tier = player['Tier'] || 'E-Tier';
-            let tierClass = 'E';
+            const tier = player['Tier'] || 'E-Tier'; let tierClass = 'E';
             if (tier.includes('S')) tierClass = 'S'; else if (tier.includes('A')) tierClass = 'A'; else if (tier.includes('B')) tierClass = 'B'; else if (tier.includes('C')) tierClass = 'C'; else if (tier.includes('D')) tierClass = 'D';
 
             const safeNick = escapeHtml(player['Nick'] || '?');
@@ -537,8 +532,7 @@ async function loadData() {
         dataTable = $('#playersTable').DataTable({
             pageLength: 25, scrollX: false, autoWidth: false,
             language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/en-GB.json' },
-            order: [[0, 'asc']], searching: true,
-            columnDefs: [{ type: 'num', targets: 0 }],
+            order: [[0, 'asc']], searching: true, columnDefs: [{ type: 'num', targets: 0 }],
             dom: '<"top"f>rt<"bottom"lip>', pagingType: 'simple_numbers'
         });
 
@@ -561,18 +555,13 @@ async function loadData() {
 
 $(document).ready(function() {
     loadData();
-
     $('#playersTable tbody').on('click', 'tr', function () {
-        const nick = $(this).attr('data-nick');
-        if(!nick) return;
-
+        const nick = $(this).attr('data-nick'); if(!nick) return;
         if($(this).hasClass('selected-player')) {
             $(this).removeClass('selected-player');
             selectedPlayers = selectedPlayers.filter(p => p !== nick);
         } else {
-            if (selectedPlayers.length >= 6) {
-                return;
-            }
+            if (selectedPlayers.length >= 6) return;
             $(this).addClass('selected-player');
             selectedPlayers.push(nick);
         }
@@ -583,38 +572,20 @@ $(document).ready(function() {
 function updateDock() {
     const dock = document.getElementById('compareDock');
     document.getElementById('selCount').textContent = selectedPlayers.length;
-    if(selectedPlayers.length > 0) {
-        dock.classList.add('active');
-    } else {
-        dock.classList.remove('active');
-    }
+    if(selectedPlayers.length > 0) dock.classList.add('active'); else dock.classList.remove('active');
 }
 
-function clearSelection() {
-    selectedPlayers = [];
-    $('#playersTable tbody tr').removeClass('selected-player');
-    updateDock();
-}
+function clearSelection() { selectedPlayers = []; $('#playersTable tbody tr').removeClass('selected-player'); updateDock(); }
 
 function openArena() {
-    if(selectedPlayers.length < 1) {
-        alert("Please select at least 1 player to view stats!");
-        return;
-    }
+    if(selectedPlayers.length < 1) { alert("Please select at least 1 player to view stats!"); return; }
     
     let compData = selectedPlayers.map(nick => globalPlayers.find(p => p['Nick'] === nick));
     
     compData.sort((a, b) => {
-        const impA = parseFloat(a['Impact'] || 0); const effA = parseFloat(a['Efficiency'] || 0);
-        const multA = parseFloat(a['Multiplier'] || 1); const skillA = parseFloat(a['Raw_Skill'] || 0);
-        const totalA = (impA + effA) * multA;
-
-        const impB = parseFloat(b['Impact'] || 0); const effB = parseFloat(b['Efficiency'] || 0);
-        const multB = parseFloat(b['Multiplier'] || 1); const skillB = parseFloat(b['Raw_Skill'] || 0);
-        const totalB = (impB + effB) * multB;
-
-        if (totalB !== totalA) return totalB - totalA; 
-        return skillB - skillA;
+        const impA = parseFloat(a['Impact'] || 0); const effA = parseFloat(a['Efficiency'] || 0); const multA = parseFloat(a['Multiplier'] || 1); const skillA = parseFloat(a['Raw_Skill'] || 0); const totalA = (impA + effA) * multA;
+        const impB = parseFloat(b['Impact'] || 0); const effB = parseFloat(b['Efficiency'] || 0); const multB = parseFloat(b['Multiplier'] || 1); const skillB = parseFloat(b['Raw_Skill'] || 0); const totalB = (impB + effB) * multB;
+        if (totalB !== totalA) return totalB - totalA; return skillB - skillA;
     });
 
     const maxGoals = Math.max(...compData.map(p => parseFloat(p['Goals_PG'] || 0)), 1);
@@ -622,12 +593,10 @@ function openArena() {
     const maxSaves = Math.max(...compData.map(p => parseFloat(p['Saves_PG'] || 0)), 1);
     const maxWR = Math.max(...compData.map(p => parseFloat(p['Win_Rate'] || 0)), 1);
 
-    const arena = document.getElementById('arenaCards');
-    arena.innerHTML = '';
+    const arena = document.getElementById('arenaCards'); arena.innerHTML = '';
 
     compData.forEach((p, index) => {
         let rankClass = "rank-other"; let badgeClass = "badge-rank-other"; let rankText = `#${index + 1} PLACE`;
-
         if(index === 0) { rankClass = "rank-gold"; badgeClass = "badge-rank-1"; rankText = "👑 1ST PLACE"; }
         else if(index === 1) { rankClass = "rank-silver"; badgeClass = "badge-rank-2"; rankText = "🥈 2ND PLACE"; }
         else if(index === 2) { rankClass = "rank-bronze"; badgeClass = "badge-rank-3"; rankText = "🥉 3RD PLACE"; }
@@ -659,32 +628,33 @@ function openArena() {
         arena.innerHTML += cardHTML;
     });
 
-    document.getElementById('arenaModal').style.display = 'block';
-    document.body.style.overflow = 'hidden';
+    document.getElementById('arenaModal').style.display = 'block'; document.body.style.overflow = 'hidden';
 }
 
-function closeArena() {
-    document.getElementById('arenaModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
+function closeArena() { document.getElementById('arenaModal').style.display = 'none'; document.body.style.overflow = 'auto'; }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const aramaKutusu = document.getElementById("customSearch");
-    let bekletmeSayaci;
+    const aramaKutusu = document.getElementById("customSearch"); let bekletmeSayaci;
     if (aramaKutusu) {
         aramaKutusu.addEventListener("input", function () {
             clearTimeout(bekletmeSayaci);
             bekletmeSayaci = setTimeout(function () {
                 const arananKelime = aramaKutusu.value.trim().toLowerCase();
-                if (arananKelime.length >= 2 && window.umami) {
-                    umami.track("Canlı Arama", { kelime: arananKelime });
-                }
+                if (arananKelime.length >= 2 && window.umami) umami.track("Canlı Arama", { kelime: arananKelime });
             }, 1500);
         });
     }
 });
 
-const gun = Gun(['https://gun-manhattan.herokuapp.com/gun', 'https://relay.peer.uk/gun']);
+const gun = Gun({
+    peers: [
+        'https://gun-manhattan.herokuapp.com/gun',
+        'https://relay.peer.uk/gun',
+        'https://gun-eu.herokuapp.com/gun'
+    ],
+    localStorage: true
+});
+
 const chatNode = gun.get('ffs-carball-global-chat-room-v1');
 const presenceNode = gun.get('ffs-carball-presence-v1');
 
@@ -717,21 +687,22 @@ function toggleChat() {
         panel.style.display = 'flex';
         badge.style.display = 'none';
         unreadCount = 0;
+        
         const msgs = document.getElementById('chat-messages');
         msgs.scrollTop = msgs.scrollHeight;
-        
-        if(!myUsername) {
-            document.getElementById('chat-login-overlay').style.display = 'flex';
-            document.getElementById('chat-username-input').focus();
-        } else {
-            document.getElementById('chat-login-overlay').style.display = 'none';
-            document.getElementById('chat-input').focus();
-            updatePresence();
-        }
+        updatePresence();
     } else {
         panel.style.display = 'none';
     }
 }
+
+document.getElementById('chat-input').addEventListener('focus', function(e) {
+    if (!myUsername) {
+        e.target.blur();
+        document.getElementById('chat-login-overlay').style.display = 'flex';
+        document.getElementById('chat-username-input').focus();
+    }
+});
 
 function joinChat() {
     const input = document.getElementById('chat-username-input').value.trim();
@@ -740,6 +711,7 @@ function joinChat() {
     myUsername = input;
     localStorage.setItem('cb_chat_username', myUsername);
     document.getElementById('chat-login-overlay').style.display = 'none';
+    
     document.getElementById('chat-input').focus();
     
     const enterMsg = {
@@ -762,18 +734,15 @@ document.getElementById('chat-input').addEventListener('keypress', function (e) 
 });
 
 function sendMessage() {
-    if(!myUsername) return;
+    if(!myUsername) {
+        document.getElementById('chat-login-overlay').style.display = 'flex';
+        return;
+    }
     const input = document.getElementById('chat-input');
     const text = input.value.trim();
     if(text === '') return;
 
-    const msgData = {
-        id: Gun.text.random(),
-        user: myUsername,
-        flag: myFlag,
-        text: text,
-        time: Date.now()
-    };
+    const msgData = { id: Gun.text.random(), user: myUsername, flag: myFlag, text: text, time: Date.now() };
 
     chatNode.get(msgData.id).put(msgData);
     input.value = '';
@@ -791,8 +760,8 @@ let renderTimeout = null;
 chatNode.map().once((data, id) => {
     if (!data || !data.time || !data.text) return;
     
-    const ONE_DAY = 24 * 60 * 60 * 1000;
-    if (Date.now() - data.time > ONE_DAY) return;
+    const TWO_DAYS = 48 * 60 * 60 * 1000;
+    if (Date.now() - data.time > TWO_DAYS) return;
 
     if (!renderedMessageIds.has(data.id)) {
         renderedMessageIds.add(data.id);
@@ -809,10 +778,8 @@ chatNode.map().once((data, id) => {
                 const div = document.createElement('div');
                 
                 if (msg.isSystem) {
-                    div.style.textAlign = 'center';
-                    div.style.color = 'var(--neon-green)';
-                    div.style.fontSize = '11px';
-                    div.style.margin = '5px 0';
+                    div.style.textAlign = 'center'; div.style.color = 'var(--neon-green)';
+                    div.style.fontSize = '11px'; div.style.margin = '5px 0';
                     div.innerHTML = `${msg.flag} ${escapeHtml(msg.text)}`;
                 } else {
                     div.className = `chat-msg ${alignment}`;
@@ -836,10 +803,7 @@ chatNode.map().once((data, id) => {
                 const badge = document.getElementById('chat-badge');
                 badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
                 badge.style.display = 'flex';
-                badge.style.animation = 'none';
-                badge.offsetHeight; 
-                badge.style.animation = 'pop 0.3s ease-out';
-                
+                badge.style.animation = 'none'; badge.offsetHeight; badge.style.animation = 'pop 0.3s ease-out';
                 chatAudio.play().catch(e => {});
             }
         }, 100);
@@ -847,25 +811,14 @@ chatNode.map().once((data, id) => {
 });
 
 let onlineUsers = new Map();
+function updatePresence() { if(myUsername) presenceNode.get(myUsername).put(Date.now()); }
 
-function updatePresence() {
-    if(!myUsername) return;
-    presenceNode.get(myUsername).put(Date.now());
-}
-
-presenceNode.map().on((time, user) => {
-    if(time && user) {
-        onlineUsers.set(user, time);
-    }
-});
+presenceNode.map().on((time, user) => { if(time && user) onlineUsers.set(user, time); });
 
 setInterval(() => {
-    const now = Date.now();
-    let count = 0;
+    const now = Date.now(); let count = 0;
     for (let [user, lastSeen] of onlineUsers.entries()) {
-        if (now - lastSeen < 120000) {
-            count++;
-        }
+        if (now - lastSeen < 120000) count++;
     }
     count = Math.max(count, 1);
     document.getElementById('active-users-count').textContent = count;
