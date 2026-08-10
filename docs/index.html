@@ -113,6 +113,11 @@
         table.dataTable td a { color: #3498db; text-decoration: none; font-weight: 600; }
         table.dataTable td a:hover { color: var(--neon-green); text-decoration: underline; }
         .rank-col { font-weight: 800; color: #f1c40f !important; font-size: 13px; }
+        .flag-col { 
+            text-align: center !important; 
+            vertical-align: middle;
+            font-size: 20px;
+        }
         .nick-col { font-weight: 700; color: #fff; font-size: 12px; }
         .sitename-col { font-size: 11.5px; color: #bdc3c7;}
         .rating-col { font-weight: 800; color: var(--neon-green) !important; font-size: 13px; text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);}
@@ -245,7 +250,39 @@
         <table id="playersTable" class="display compact" style="width:100%">
             <thead>
                 <tr>
-                    <th class="col-rank" title="Rank position">#</th><th class="col-nick" title="Player nickname">Nick</th><th class="col-sitename" title="Player username">User</th><th class="col-userid" title="User ID">ID</th><th class="col-rating" title="Final rating score">⭐</th><th class="col-skill" title="Raw skill score">Skill</th><th class="col-multiplier" title="Experience multiplier">×</th><th class="col-role" title="Tactical role">Role</th><th class="col-tier" title="Performance tier">Tier</th><th class="col-matches" title="Total matches played">M</th><th class="col-wins" title="Total wins">W</th><th class="col-losses" title="Total losses">L</th><th class="col-winrate" title="Win rate percentage">W%</th><th class="col-wlratio" title="Win/Loss ratio">W/L</th><th class="col-goalspg" title="Goals per game average">G/G</th><th class="col-assistspg" title="Assists per game average">A/G</th><th class="col-savespg" title="Saves per game average">S/G</th><th class="col-ogpg" title="Own goals per game average">OG/G</th><th class="col-totalgoals" title="Total goals scored">TG</th><th class="col-totalassists" title="Total assists made">TA</th><th class="col-totalsaves" title="Total saves made">TS</th><th class="col-totalog" title="Total own goals">TOG</th><th class="col-mvpcount" title="Total MVP awards">MVP</th><th class="col-mvpwin" title="MVP percentage per win">MVP%</th><th class="col-offensive" title="Offensive contribution ratio">Off%</th><th class="col-defensive" title="Defensive contribution ratio">Def%</th><th class="col-playmaker" title="Playmaker contribution ratio">Play%</th><th class="col-efficiency" title="Overall efficiency score">Eff</th><th class="col-impact" title="Game impact score">Imp</th><th class="col-gkindex" title="Goalkeeping index percentage">GK%</th><th class="col-defenserel" title="Defense reliability score">DefR</th><th class="col-totalactions" title="Total actions performed">Act</th>
+                    <th class="col-rank" title="Rank position">#</th>
+                    <th class="col-flag" title="Country">🌍</th>
+                    <th class="col-nick" title="Player nickname">Nick</th>
+                    <th class="col-sitename" title="Player username">User</th>
+                    <th class="col-userid" title="User ID">ID</th>
+                    <th class="col-rating" title="Final rating score">⭐</th>
+                    <th class="col-skill" title="Raw skill score">Skill</th>
+                    <th class="col-multiplier" title="Experience multiplier">×</th>
+                    <th class="col-role" title="Tactical role">Role</th>
+                    <th class="col-tier" title="Performance tier">Tier</th>
+                    <th class="col-matches" title="Total matches played">M</th>
+                    <th class="col-wins" title="Total wins">W</th>
+                    <th class="col-losses" title="Total losses">L</th>
+                    <th class="col-winrate" title="Win rate percentage">W%</th>
+                    <th class="col-wlratio" title="Win/Loss ratio">W/L</th>
+                    <th class="col-goalspg" title="Goals per game average">G/G</th>
+                    <th class="col-assistspg" title="Assists per game average">A/G</th>
+                    <th class="col-savespg" title="Saves per game average">S/G</th>
+                    <th class="col-ogpg" title="Own goals per game average">OG/G</th>
+                    <th class="col-totalgoals" title="Total goals scored">TG</th>
+                    <th class="col-totalassists" title="Total assists made">TA</th>
+                    <th class="col-totalsaves" title="Total saves made">TS</th>
+                    <th class="col-totalog" title="Total own goals">TOG</th>
+                    <th class="col-mvpcount" title="Total MVP awards">MVP</th>
+                    <th class="col-mvpwin" title="MVP percentage per win">MVP%</th>
+                    <th class="col-offensive" title="Offensive contribution ratio">Off%</th>
+                    <th class="col-defensive" title="Defensive contribution ratio">Def%</th>
+                    <th class="col-playmaker" title="Playmaker contribution ratio">Play%</th>
+                    <th class="col-efficiency" title="Overall efficiency score">Eff</th>
+                    <th class="col-impact" title="Game impact score">Imp</th>
+                    <th class="col-gkindex" title="Goalkeeping index percentage">GK%</th>
+                    <th class="col-defenserel" title="Defense reliability score">DefR</th>
+                    <th class="col-totalactions" title="Total actions performed">Act</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -305,11 +342,13 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
 let dataTable; let globalPlayers = []; let selectedPlayers = [];
+
 function escapeHtml(text) {
     if (!text) return '?';
     const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
     return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
 }
+
 function parseQuotedCSV(line) {
     const result = []; let current = ''; let inQuotes = false;
     for (let i = 0; i < line.length; i++) {
@@ -320,35 +359,101 @@ function parseQuotedCSV(line) {
     }
     result.push(current.trim()); return result;
 }
+
+// ============================================================
+// EN BASİT ÇÖZÜM: Doğrudan Emoji Göster
+// ============================================================
+function getFlagHtml(countryCode) {
+    if (!countryCode) return '';
+    
+    // 1. Eğer zaten 2 harfli bir kod geldiyse (örn: "NL", "TR")
+    if (typeof countryCode === 'string' && countryCode.length === 2 && /^[A-Za-z]{2}$/.test(countryCode)) {
+        return `<img src="flags/${countryCode.toLowerCase()}.svg" alt="${countryCode}" width="20" height="13" style="border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); vertical-align: middle;">`;
+    }
+    
+    // 2. Eğer emoji geldiyse (örn: "🇳🇱")
+    if (countryCode.length >= 2) {
+        try {
+            // Unicode kod noktalarını al
+            const first = countryCode.codePointAt(0);
+            const second = countryCode.codePointAt(2);
+            
+            // Eğer bu değerler bayrak emojisi aralığındaysa (0x1F1E6 - 0x1F1FF)
+            if (first >= 0x1F1E6 && first <= 0x1F1FF && second >= 0x1F1E6 && second <= 0x1F1FF) {
+                const country1 = String.fromCharCode(first - 0x1F1E6 + 65);
+                const country2 = String.fromCharCode(second - 0x1F1E6 + 65);
+                const countryCode2 = country1 + country2;
+                return `<img src="flags/${countryCode2.toLowerCase()}.svg" alt="${countryCode2}" width="20" height="13" style="border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); vertical-align: middle;">`;
+            }
+        } catch (e) {
+            console.warn('Bayrak dönüşüm hatası:', countryCode, e);
+        }
+    }
+    
+    return '';
+}
+
 async function loadData() {
     try {
-        const response = await fetch('https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players.csv');
+        // ============================================================
+        // ORTAM ALGILAMA: Yerel mi yoksa GitHub'da mı?
+        // ============================================================
+        const isLocal = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.hostname === '';
+
+        const csvUrl = isLocal 
+            ? '../data/players.csv'  // Yerel test (Live Server)
+            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players.csv';  // GitHub Pages
+
+        console.log('📁 CSV URL:', csvUrl);
+
+        const response = await fetch(csvUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        
         const csvText = await response.text();
         const lines = csvText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
         if (lines.length < 2) throw new Error('CSV file is empty or has only header.');
+        
         const headerValues = parseQuotedCSV(lines[0]);
         const headers = headerValues.map(h => h.replace(/^"|"$/g, '').trim());
+        
         globalPlayers = [];
         for (let i = 1; i < lines.length; i++) {
             const values = parseQuotedCSV(lines[i]);
             if (values.length < 4) continue;
             const player = {};
-            headers.forEach((header, index) => { player[header] = values[index] ? values[index].replace(/^"|"$/g, '').trim() : ''; });
+            headers.forEach((header, index) => { 
+                player[header] = values[index] ? values[index].replace(/^"|"$/g, '').trim() : ''; 
+            });
             globalPlayers.push(player);
         }
+        
         if (globalPlayers.length === 0) throw new Error('No data rows found.');
-        const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+        
+        const tbody = document.getElementById('tableBody'); 
+        tbody.innerHTML = '';
+        
         globalPlayers.forEach((player, index) => {
-            const tier = player['Tier'] || 'E-Tier'; let tierClass = 'E';
-            if (tier.includes('S')) tierClass = 'S'; else if (tier.includes('A')) tierClass = 'A'; else if (tier.includes('B')) tierClass = 'B'; else if (tier.includes('C')) tierClass = 'C'; else if (tier.includes('D')) tierClass = 'D';
+            const tier = player['Tier'] || 'E-Tier'; 
+            let tierClass = 'E';
+            if (tier.includes('S')) tierClass = 'S'; 
+            else if (tier.includes('A')) tierClass = 'A'; 
+            else if (tier.includes('B')) tierClass = 'B'; 
+            else if (tier.includes('C')) tierClass = 'C'; 
+            else if (tier.includes('D')) tierClass = 'D';
+            
+            // Bayrak - Doğrudan emoji göster (CSS kütüphanesi yok)
+            const flagHtml = getFlagHtml(player['Country'] || '');
             const safeNick = escapeHtml(player['Nick'] || '?');
             const safeSiteName = escapeHtml(player['SiteName'] || '?');
             const safeRole = escapeHtml(player['Role'] || '?');
+            
             const tr = document.createElement('tr');
             tr.setAttribute('data-nick', player['Nick']);
             tr.innerHTML = `
                 <td class="rank-col">${index + 1}</td>
+                <td class="flag-col">${flagHtml}</td>
                 <td class="nick-col" title="${safeNick}">${safeNick}</td>
                 <td class="sitename-col" title="${safeSiteName}">${safeSiteName}</td>
                 <td><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer">${escapeHtml(player['UserID'] || '?')}</a></td>
@@ -383,14 +488,16 @@ async function loadData() {
             `;
             tbody.appendChild(tr);
         });
+        
         dataTable = $('#playersTable').DataTable({
             pageLength: 25, scrollX: false, autoWidth: false,
-            language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/en-GB.json' },
             order: [[0, 'asc']], searching: true, columnDefs: [{ type: 'num', targets: 0 }],
             dom: '<"top"f>rt<"bottom"lip>', pagingType: 'simple_numbers'
         });
+        
         $('#customSearch').on('keyup', function() { dataTable.search(this.value).draw(); });
         document.getElementById('playerCount').textContent = globalPlayers.length;
+        
         try {
             const metaRes = await fetch('data/metadata.json?t=' + new Date().getTime());
             if (metaRes.ok) {
@@ -399,8 +506,9 @@ async function loadData() {
                 document.getElementById('footerUpdate').textContent = `Last Update: ${meta.lastUpdate || 'Unknown'}`;
             }
         } catch (e) { document.getElementById('lastUpdate').textContent = 'Unknown'; }
+        
     } catch (error) {
-        document.getElementById('tableBody').innerHTML = `<tr><td colspan="32" style="padding: 30px; color: #e74c3c; text-align: center;">⚠️ Referee stopped the match! Error loading data.<br><small>${error.message}</small></td></tr>`;
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="33" style="padding: 30px; color: #e74c3c; text-align: center;">⚠️ Referee stopped the match! Error loading data.<br><small>${error.message}</small></td></tr>`;
     }
 }
 $(document).ready(function() {
