@@ -673,5 +673,23 @@ function closeArena() {
 }
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const aramaKutusu = document.getElementById("customSearch");
+
+    if (aramaKutusu) {
+        aramaKutusu.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                const arananKelime = aramaKutusu.value.trim().toLowerCase();
+                
+                if (arananKelime && window.umami) {
+                    umami.track("Oyuncu Araması", { kelime: arananKelime });
+                }
+            }
+        });
+    }
+});
+</script>
+    
 </body>
 </html>
