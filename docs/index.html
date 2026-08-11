@@ -131,14 +131,12 @@
         table.dataTable td a { color: #3498db; text-decoration: none; font-weight: 600; }
         table.dataTable td a:hover { color: var(--neon-green); text-decoration: underline; }
         .rank-col { font-weight: 800; color: #f1c40f !important; font-size: 13px; }
-        .flag-col { 
-            text-align: center !important; 
-            vertical-align: middle;
-            font-size: 20px;
-        }
+        .flag-col { text-align: center !important; vertical-align: middle; font-size: 20px; }
         .nick-col { font-weight: 700; color: #fff; font-size: 12px; }
         .sitename-col { font-size: 11.5px; color: #bdc3c7;}
         .rating-col { font-weight: 800; color: var(--neon-green) !important; font-size: 13px; text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);}
+        .change-up { color: #2ecc71 !important; }
+        .change-down { color: #e74c3c !important; }
         .role-col { font-size: 10px; color: #95a5a6; text-transform: uppercase; font-weight: 600; letter-spacing: 0px;}
         .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); }
         .badge-S { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; border-color: #f39c12; }
@@ -281,6 +279,7 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
 let dataTable; let globalPlayers = []; let selectedPlayers = [];
+let previousData = {};
 
 function escapeHtml(text) {
     if (!text) return '?';
@@ -299,25 +298,18 @@ function parseQuotedCSV(line) {
     result.push(current.trim()); return result;
 }
 
-// ============================================================
-// EN BASİT ÇÖZÜM: Doğrudan Emoji Göster
-// ============================================================
 function getFlagHtml(countryCode) {
     if (!countryCode) return '';
     
-    // 1. Eğer zaten 2 harfli bir kod geldiyse (örn: "NL", "TR")
     if (typeof countryCode === 'string' && countryCode.length === 2 && /^[A-Za-z]{2}$/.test(countryCode)) {
         return `<img src="flags/${countryCode.toLowerCase()}.svg" alt="${countryCode}" width="20" height="13" style="border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); vertical-align: middle;">`;
     }
     
-    // 2. Eğer emoji geldiyse (örn: "🇳🇱")
     if (countryCode.length >= 2) {
         try {
-            // Unicode kod noktalarını al
             const first = countryCode.codePointAt(0);
             const second = countryCode.codePointAt(2);
             
-            // Eğer bu değerler bayrak emojisi aralığındaysa (0x1F1E6 - 0x1F1FF)
             if (first >= 0x1F1E6 && first <= 0x1F1FF && second >= 0x1F1E6 && second <= 0x1F1FF) {
                 const country1 = String.fromCharCode(first - 0x1F1E6 + 65);
                 const country2 = String.fromCharCode(second - 0x1F1E6 + 65);
@@ -332,18 +324,75 @@ function getFlagHtml(countryCode) {
     return '';
 }
 
+function getChangeClass(current, previous) {
+    if (previous === undefined || previous === null || previous === '') return '';
+    
+    // String'leri temizle ve sayıya çevir
+    const cleanCurrent = String(current).replace(/,/g, '').trim();
+    const cleanPrev = String(previous).replace(/,/g, '').trim();
+    
+    const currentNum = parseFloat(cleanCurrent);
+    const prevNum = parseFloat(cleanPrev);
+    
+    if (isNaN(currentNum) || isNaN(prevNum)) return '';
+    
+    const diff = currentNum - prevNum;
+    if (Math.abs(diff) < 0.0001) return '';
+    
+    return diff > 0 ? 'change-up' : 'change-down';
+}
+
+async function loadPreviousData() {
+    try {
+        const isLocal = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.hostname === '';
+
+        const prevCsvUrl = isLocal 
+            ? '../data/players_previous.csv'
+            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players_previous.csv';
+
+        const response = await fetch(prevCsvUrl + '?t=' + new Date().getTime());
+        if (response.ok) {
+            const csvText = await response.text();
+            const lines = csvText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            if (lines.length < 2) return;
+            
+            const headerValues = parseQuotedCSV(lines[0]);
+            const headers = headerValues.map(h => h.replace(/^"|"$/g, '').trim());
+            
+            const prevPlayers = {};
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseQuotedCSV(lines[i]);
+                if (values.length < 4) continue;
+                const player = {};
+                headers.forEach((header, index) => { 
+                    player[header] = values[index] ? values[index].replace(/^"|"$/g, '').trim() : ''; 
+                });
+                if (player['Nick']) {
+                    prevPlayers[player['Nick']] = player;
+                }
+            }
+            previousData = prevPlayers;
+            console.log('📊 Önceki veriler CSV\'den yüklendi:', Object.keys(previousData).length, 'oyuncu');
+            console.log('📊 Örnek: Alex önceki veriler:', previousData['[hvs]al3x (791K)']);
+        }
+    } catch (e) {
+        console.log('Önceki CSV dosyası bulunamadı, karşılaştırma yapılmayacak.', e);
+    }
+}
+
 async function loadData() {
     try {
-        // ============================================================
-        // ORTAM ALGILAMA: Yerel mi yoksa GitHub'da mı?
-        // ============================================================
+        await loadPreviousData();
+        
         const isLocal = window.location.hostname === 'localhost' || 
                         window.location.hostname === '127.0.0.1' ||
                         window.location.hostname === '';
 
         const csvUrl = isLocal 
-            ? '../data/players.csv'  // Yerel test (Live Server)
-            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players.csv';  // GitHub Pages
+            ? '../data/players.csv'
+            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players.csv';
 
         console.log('📁 CSV URL:', csvUrl);
 
@@ -382,11 +431,53 @@ async function loadData() {
             else if (tier.includes('C')) tierClass = 'C'; 
             else if (tier.includes('D')) tierClass = 'D';
             
-            // Bayrak - Doğrudan emoji göster (CSS kütüphanesi yok)
             const flagHtml = getFlagHtml(player['Country'] || '');
             const safeNick = escapeHtml(player['Nick'] || '?');
             const safeSiteName = escapeHtml(player['SiteName'] || '?');
             const safeRole = escapeHtml(player['Role'] || '?');
+            
+            let prev = previousData[player['Nick']];
+            if (!prev) {
+                // Parantez içindeki sayıyı kaldır
+                const baseNick = player['Nick'].replace(/ \(\d+K\)/, '');
+                prev = previousData[baseNick];
+            }
+            if (!prev) {
+                // İçinde geçen kelime ile ara
+                const searchTerm = player['Nick'].replace(/ \(\d+K\)/, '');
+                const key = Object.keys(previousData).find(k => 
+                    k.replace(/ \(\d+K\)/, '') === searchTerm
+                );
+                if (key) prev = previousData[key];
+            }
+            
+            // Tüm sütunlar için değişim sınıfları
+            const ratingClass = getChangeClass(player['Rating'], prev?.['Rating']);
+            const skillClass = getChangeClass(player['Raw_Skill'], prev?.['Raw_Skill']);
+            const multiplierClass = getChangeClass(player['Multiplier'], prev?.['Multiplier']);
+            const matchesClass = getChangeClass(player['Matches'], prev?.['Matches']);
+            const winsClass = getChangeClass(player['Wins'], prev?.['Wins']);
+            const lossesClass = getChangeClass(player['Losses'], prev?.['Losses']);
+            const winRateClass = getChangeClass(player['Win_Rate'], prev?.['Win_Rate']);
+            const wlRatioClass = getChangeClass(player['Win_Loss_Ratio'], prev?.['Win_Loss_Ratio']);
+            const goalsClass = getChangeClass(player['Goals_PG'], prev?.['Goals_PG']);
+            const assistsClass = getChangeClass(player['Assists_PG'], prev?.['Assists_PG']);
+            const savesClass = getChangeClass(player['Saves_PG'], prev?.['Saves_PG']);
+            const ogClass = getChangeClass(player['OwnGoals_PG'], prev?.['OwnGoals_PG']);
+            const totalGoalsClass = getChangeClass(player['Total_Goals'], prev?.['Total_Goals']);
+            const totalAssistsClass = getChangeClass(player['Total_Assists'], prev?.['Total_Assists']);
+            const totalSavesClass = getChangeClass(player['Total_Saves'], prev?.['Total_Saves']);
+            const totalOGClass = getChangeClass(player['Total_OwnGoals'], prev?.['Total_OwnGoals']);
+            const mvpCountClass = getChangeClass(player['MVP_Count'], prev?.['MVP_Count']);
+            const mvpWinClass = getChangeClass(player['MVP_Per_Win'], prev?.['MVP_Per_Win']);
+            const offClass = getChangeClass(player['Offensive_Ratio'], prev?.['Offensive_Ratio']);
+            const defClass = getChangeClass(player['Defensive_Ratio'], prev?.['Defensive_Ratio']);
+            const playmakerClass = getChangeClass(player['Playmaker_Ratio'], prev?.['Playmaker_Ratio']);
+            const effClass = getChangeClass(player['Efficiency'], prev?.['Efficiency']);
+            const impactClass = getChangeClass(player['Impact'], prev?.['Impact']);
+            const gkClass = getChangeClass(player['Goalkeeping_Index'], prev?.['Goalkeeping_Index']);
+            const defRelClass = getChangeClass(player['Defense_Reliability'], prev?.['Defense_Reliability']);
+            const totalActionsClass = getChangeClass(player['Total_Actions'], prev?.['Total_Actions']);
             
             const tr = document.createElement('tr');
             tr.setAttribute('data-nick', player['Nick']);
@@ -396,34 +487,34 @@ async function loadData() {
                 <td class="nick-col" title="${safeNick}">${safeNick}</td>
                 <td class="sitename-col" title="${safeSiteName}">${safeSiteName}</td>
                 <td><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer">${escapeHtml(player['UserID'] || '?')}</a></td>
-                <td class="rating-col">${escapeHtml(player['Rating'] || '?')}</td>
-                <td>${escapeHtml(player['Raw_Skill'] || '?')}</td>
-                <td>${escapeHtml(player['Multiplier'] || '?')}</td>
+                <td class="rating-col ${ratingClass}">${escapeHtml(player['Rating'] || '?')}</td>
+                <td class="${skillClass}">${escapeHtml(player['Raw_Skill'] || '?')}</td>
+                <td class="${multiplierClass}">${escapeHtml(player['Multiplier'] || '?')}</td>
                 <td class="role-col">${safeRole}</td>
                 <td><span class="badge badge-${tierClass}">${escapeHtml(tier)}</span></td>
-                <td>${escapeHtml(player['Matches'] || '?')}</td>
-                <td>${escapeHtml(player['Wins'] || '?')}</td>
-                <td>${escapeHtml(player['Losses'] || '?')}</td>
-                <td>${escapeHtml(player['Win_Rate'] || '?')}%</td>
-                <td>${escapeHtml(player['Win_Loss_Ratio'] || '?')}</td>
-                <td>${escapeHtml(player['Goals_PG'] || '?')}</td>
-                <td>${escapeHtml(player['Assists_PG'] || '?')}</td>
-                <td>${escapeHtml(player['Saves_PG'] || '?')}</td>
-                <td>${escapeHtml(player['OwnGoals_PG'] || '?')}</td>
-                <td>${escapeHtml(player['Total_Goals'] || '?')}</td>
-                <td>${escapeHtml(player['Total_Assists'] || '?')}</td>
-                <td>${escapeHtml(player['Total_Saves'] || '?')}</td>
-                <td>${escapeHtml(player['Total_OwnGoals'] || '?')}</td>
-                <td>${escapeHtml(player['MVP_Count'] || '?')}</td>
-                <td>${escapeHtml(player['MVP_Per_Win'] || '?')}%</td>
-                <td>${escapeHtml(player['Offensive_Ratio'] || '?')}%</td>
-                <td>${escapeHtml(player['Defensive_Ratio'] || '?')}%</td>
-                <td>${escapeHtml(player['Playmaker_Ratio'] || '?')}%</td>
-                <td>${escapeHtml(player['Efficiency'] || '?')}</td>
-                <td>${escapeHtml(player['Impact'] || '?')}</td>
-                <td>${escapeHtml(player['Goalkeeping_Index'] || '?')}%</td>
-                <td>${escapeHtml(player['Defense_Reliability'] || '?')}</td>
-                <td>${escapeHtml(player['Total_Actions'] || '?')}</td>
+                <td class="${matchesClass}">${escapeHtml(player['Matches'] || '?')}</td>
+                <td class="${winsClass}">${escapeHtml(player['Wins'] || '?')}</td>
+                <td class="${lossesClass}">${escapeHtml(player['Losses'] || '?')}</td>
+                <td class="${winRateClass}">${escapeHtml(player['Win_Rate'] || '?')}%</td>
+                <td class="${wlRatioClass}">${escapeHtml(player['Win_Loss_Ratio'] || '?')}</td>
+                <td class="${goalsClass}">${escapeHtml(player['Goals_PG'] || '?')}</td>
+                <td class="${assistsClass}">${escapeHtml(player['Assists_PG'] || '?')}</td>
+                <td class="${savesClass}">${escapeHtml(player['Saves_PG'] || '?')}</td>
+                <td class="${ogClass}">${escapeHtml(player['OwnGoals_PG'] || '?')}</td>
+                <td class="${totalGoalsClass}">${escapeHtml(player['Total_Goals'] || '?')}</td>
+                <td class="${totalAssistsClass}">${escapeHtml(player['Total_Assists'] || '?')}</td>
+                <td class="${totalSavesClass}">${escapeHtml(player['Total_Saves'] || '?')}</td>
+                <td class="${totalOGClass}">${escapeHtml(player['Total_OwnGoals'] || '?')}</td>
+                <td class="${mvpCountClass}">${escapeHtml(player['MVP_Count'] || '?')}</td>
+                <td class="${mvpWinClass}">${escapeHtml(player['MVP_Per_Win'] || '?')}%</td>
+                <td class="${offClass}">${escapeHtml(player['Offensive_Ratio'] || '?')}%</td>
+                <td class="${defClass}">${escapeHtml(player['Defensive_Ratio'] || '?')}%</td>
+                <td class="${playmakerClass}">${escapeHtml(player['Playmaker_Ratio'] || '?')}%</td>
+                <td class="${effClass}">${escapeHtml(player['Efficiency'] || '?')}</td>
+                <td class="${impactClass}">${escapeHtml(player['Impact'] || '?')}</td>
+                <td class="${gkClass}">${escapeHtml(player['Goalkeeping_Index'] || '?')}%</td>
+                <td class="${defRelClass}">${escapeHtml(player['Defense_Reliability'] || '?')}</td>
+                <td class="${totalActionsClass}">${escapeHtml(player['Total_Actions'] || '?')}</td>
             `;
             tbody.appendChild(tr);
         });
