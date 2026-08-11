@@ -382,6 +382,14 @@ async function loadPreviousData() {
     }
 }
 
+function getRoleEmoji(role) {
+    if (!role) return '🔄';
+    if (role.includes('Goalkeeper')) return '🧤';
+    if (role.includes('Striker')) return '⚽';
+    if (role.includes('Playmaker') || role.includes('MVP') || role.includes('Midfielder')) return '🎯';
+    return '🔄';
+}
+
 async function loadData() {
     try {
         await loadPreviousData();
@@ -436,14 +444,15 @@ async function loadData() {
             const safeSiteName = escapeHtml(player['SiteName'] || '?');
             const safeRole = escapeHtml(player['Role'] || '?');
             
+            // Role'e emoji ekle
+            const roleWithEmoji = getRoleEmoji(player['Role'] || '') + ' ' + safeRole;
+            
             let prev = previousData[player['Nick']];
             if (!prev) {
-                // Parantez içindeki sayıyı kaldır
                 const baseNick = player['Nick'].replace(/ \(\d+K\)/, '');
                 prev = previousData[baseNick];
             }
             if (!prev) {
-                // İçinde geçen kelime ile ara
                 const searchTerm = player['Nick'].replace(/ \(\d+K\)/, '');
                 const key = Object.keys(previousData).find(k => 
                     k.replace(/ \(\d+K\)/, '') === searchTerm
@@ -490,7 +499,7 @@ async function loadData() {
                 <td class="rating-col ${ratingClass}">${escapeHtml(player['Rating'] || '?')}</td>
                 <td class="${skillClass}">${escapeHtml(player['Raw_Skill'] || '?')}</td>
                 <td class="${multiplierClass}">${escapeHtml(player['Multiplier'] || '?')}</td>
-                <td class="role-col">${safeRole}</td>
+                <td class="role-col">${roleWithEmoji}</td>
                 <td><span class="badge badge-${tierClass}">${escapeHtml(tier)}</span></td>
                 <td class="${matchesClass}">${escapeHtml(player['Matches'] || '?')}</td>
                 <td class="${winsClass}">${escapeHtml(player['Wins'] || '?')}</td>
