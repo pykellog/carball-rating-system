@@ -221,7 +221,6 @@
                     <th class="col-flag" title="Country">🌍</th>
                     <th class="col-nick" title="Player nickname">Nick</th>
                     <th class="col-sitename" title="Player username">User</th>
-                    <th class="col-userid" title="User ID">ID</th>
                     <th class="col-rating" title="Final rating score">⭐</th>
                     <th class="col-skill" title="Raw skill score">Skill</th>
                     <th class="col-multiplier" title="Experience multiplier">×</th>
@@ -494,8 +493,7 @@ async function loadData() {
                 <td class="rank-col">${index + 1}</td>
                 <td class="flag-col">${flagHtml}</td>
                 <td class="nick-col" title="${safeNick}">${safeNick}</td>
-                <td class="sitename-col" title="${safeSiteName}">${safeSiteName}</td>
-                <td><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer">${escapeHtml(player['UserID'] || '?')}</a></td>
+                <td class="sitename-col"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; cursor: pointer;" title="FFS Gaming profilini aç">${safeSiteName}</a></td>
                 <td class="rating-col ${ratingClass}">${escapeHtml(player['Rating'] || '?')}</td>
                 <td class="${skillClass}">${escapeHtml(player['Raw_Skill'] || '?')}</td>
                 <td class="${multiplierClass}">${escapeHtml(player['Multiplier'] || '?')}</td>
