@@ -196,8 +196,8 @@
         .bar-saves { background: #2ecc71; }
         .bar-winrate { background: #f1c40f; }
         .footer { margin-top: 10px; text-align: center; color: #7f8fa6; font-size: 12px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px; padding-bottom: 2px; flex-shrink: 0; font-family: 'Teko', sans-serif; font-size: 18px; letter-spacing: 1px; }
-        .footer a { color: var(--neon-green); text-decoration: none; }
-        .footer a:hover { text-decoration: underline; text-shadow: 0 0 5px var(--neon-green); }
+        .footer a { color: #ffffff; text-decoration: none; }
+        .footer a:hover { text-shadow: 0 0 5px rgba(255,255,255,0.5)    ; }
         @media (max-width: 1400px) { table.dataTable { font-size: 10px !important; } table.dataTable th { font-size: 14px !important; padding: 4px 2px !important; } table.dataTable td { padding: 4px 2px !important; } .badge { font-size: 9px; padding: 1px 4px; } }
         @media (max-width: 768px) { table.dataTable { font-size: 9px !important; } table.dataTable th { font-size: 12px !important; } .header { justify-content: center; gap: 10px; } .header-title { flex-basis: 100%; text-align: center; } .header-search { order: 2; width: 100%; min-width: 100%; } .header-actions { justify-content: center; flex-basis: 100%; } .header h1 { font-size: 24px; text-align: center; justify-content: center;} #compareDock { width: 95%; flex-direction: column; gap: 10px; padding: 15px; } .fut-card { width: 100%; max-width: 300px; margin-top: 25px; } }
     </style>
@@ -258,7 +258,7 @@
         </table>
     </div>
     <div class="footer">
-        Data sourced from <strong>FFS Gaming</strong> MTA server. <span id="footerUpdate">-</span><br><br>
+        Data sourced from <strong>FFS Gaming</strong> MTA server. <span id="footerUpdate">-</span><br>
         <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer">🔗 GitHub Repository</a>
     </div>
 </div>
@@ -429,7 +429,7 @@ async function loadData() {
         });
         
         dataTable = $('#playersTable').DataTable({
-            pageLength: 25, scrollX: false, autoWidth: false,
+            pageLength: 15, scrollX: false, autoWidth: false,
             order: [[0, 'asc']], searching: true, columnDefs: [{ type: 'num', targets: 0 }],
             dom: '<"top"f>rt<"bottom"lip>', pagingType: 'simple_numbers'
         });
