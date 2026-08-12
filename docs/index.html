@@ -509,12 +509,51 @@ function isPlayerChanged(current, previous) {
         const currentVal = String(current[field] || '').replace(/,/g, '').trim();
         const prevVal = String(previous[field] || '').replace(/,/g, '').trim();
         
-        if (currentVal !== prevVal) {
+        // Sayısal karşılaştırma yap
+        const currentNum = parseFloat(currentVal);
+        const prevNum = parseFloat(prevVal);
+        
+        // Eğer ikisi de sayıysa, sayısal olarak karşılaştır
+        if (!isNaN(currentNum) && !isNaN(prevNum)) {
+            if (Math.abs(currentNum - prevNum) > 0.0001) {
+                return true;
+            }
+        } else if (currentVal !== prevVal) {
+            // String olarak karşılaştır
             return true;
         }
     }
     
     return false;
+}
+
+// ===== ORTAK EŞLEŞTİRME FONKSİYONU =====
+function findPreviousPlayer(nick) {
+    if (!nick) return null;
+    
+    // 1. Direkt eşleşme
+    if (previousData[nick]) {
+        return previousData[nick];
+    }
+    
+    // 2. Büyük/küçük harf duyarsız eşleşme
+    const lowerNick = nick.toLowerCase();
+    for (let key in previousData) {
+        if (key.toLowerCase() === lowerNick) {
+            return previousData[key];
+        }
+    }
+    
+    // 3. Base nick ile eşleşme (parantez içindeki sayıyı temizle)
+    const baseNick = nick.replace(/ \(\d+K\)/, '').toLowerCase();
+    for (let key in previousData) {
+        const keyBase = key.replace(/ \(\d+K\)/, '').toLowerCase();
+        if (keyBase === baseNick) {
+            return previousData[key];
+        }
+    }
+    
+    return null;
 }
 
 async function loadPreviousData() {
@@ -588,10 +627,6 @@ function rebuildTable(onlyChanged) {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
     
-    // Önce tüm oyuncuların gerçek sırasını (rank) hesapla
-    // globalPlayers zaten CSV'deki sıraya göre dizilmiş
-    // Ama DataTable sıralama yapabiliyor, o yüzden safe olarak index+1 kullanalım
-    
     let filteredPlayers = globalPlayers;
     if (onlyChanged) {
         filteredPlayers = globalPlayers.filter(p => changedPlayers.has(p['Nick']));
@@ -615,18 +650,8 @@ function rebuildTable(onlyChanged) {
         const safeRole = escapeHtml(player['Role'] || '?');
         const roleWithEmoji = getRoleEmoji(player['Role'] || '') + ' ' + safeRole;
         
-        let prev = previousData[player['Nick']];
-        if (!prev) {
-            const baseNick = player['Nick'].replace(/ \(\d+K\)/, '');
-            prev = previousData[baseNick];
-        }
-        if (!prev) {
-            const searchTerm = player['Nick'].replace(/ \(\d+K\)/, '');
-            const key = Object.keys(previousData).find(k => 
-                k.replace(/ \(\d+K\)/, '') === searchTerm
-            );
-            if (key) prev = previousData[key];
-        }
+        // === ORTAK EŞLEŞTİRME FONKSİYONUNU KULLAN ===
+        let prev = findPreviousPlayer(player['Nick']);
         
         const isChanged = changedPlayers.has(player['Nick']);
         const isNew = !prev;
@@ -759,18 +784,8 @@ async function loadData() {
         if (globalPlayers.length === 0) throw new Error('No data rows found.');
         
         globalPlayers.forEach((player) => {
-            let prev = previousData[player['Nick']];
-            if (!prev) {
-                const baseNick = player['Nick'].replace(/ \(\d+K\)/, '');
-                prev = previousData[baseNick];
-            }
-            if (!prev) {
-                const searchTerm = player['Nick'].replace(/ \(\d+K\)/, '');
-                const key = Object.keys(previousData).find(k => 
-                    k.replace(/ \(\d+K\)/, '') === searchTerm
-                );
-                if (key) prev = previousData[key];
-            }
+            // === ORTAK EŞLEŞTİRME FONKSİYONUNU KULLAN ===
+            let prev = findPreviousPlayer(player['Nick']);
             
             if (isPlayerChanged(player, prev)) {
                 changedPlayers.add(player['Nick']);
