@@ -729,13 +729,26 @@ function rebuildTable(onlyChanged) {
         tbody.appendChild(tr);
     });
     
+    // === TIER SIRALAMA FONKSİYONU ===
+    jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
+        'tier-pre': function(data) {
+            const tierMap = { 'S-Tier': 1, 'A-Tier': 2, 'B-Tier': 3, 'C-Tier': 4, 'D-Tier': 5, 'E-Tier': 6 };
+            // Badge içindeki metni temizle
+            const cleanTier = String(data).replace(/<[^>]*>/g, '').trim();
+            return tierMap[cleanTier] || 99;
+        }
+    });
+    
     dataTable = $('#playersTable').DataTable({
         pageLength: 15, 
         scrollX: false, 
         autoWidth: false,
         order: [[0, 'asc']], 
         searching: true, 
-        columnDefs: [{ type: 'num', targets: 0 }],
+        columnDefs: [
+            { type: 'num', targets: 0 },
+            { type: 'tier', targets: 8 } // Tier sütunu (9. sütun, index 8)
+        ],
         dom: '<"top"f>rt<"bottom"lip>', 
         pagingType: 'simple_numbers'
     });
