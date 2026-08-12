@@ -509,17 +509,14 @@ function isPlayerChanged(current, previous) {
         const currentVal = String(current[field] || '').replace(/,/g, '').trim();
         const prevVal = String(previous[field] || '').replace(/,/g, '').trim();
         
-        // Sayısal karşılaştırma yap
         const currentNum = parseFloat(currentVal);
         const prevNum = parseFloat(prevVal);
         
-        // Eğer ikisi de sayıysa, sayısal olarak karşılaştır
         if (!isNaN(currentNum) && !isNaN(prevNum)) {
             if (Math.abs(currentNum - prevNum) > 0.0001) {
                 return true;
             }
         } else if (currentVal !== prevVal) {
-            // String olarak karşılaştır
             return true;
         }
     }
@@ -531,12 +528,10 @@ function isPlayerChanged(current, previous) {
 function findPreviousPlayer(nick) {
     if (!nick) return null;
     
-    // 1. Direkt eşleşme
     if (previousData[nick]) {
         return previousData[nick];
     }
     
-    // 2. Büyük/küçük harf duyarsız eşleşme
     const lowerNick = nick.toLowerCase();
     for (let key in previousData) {
         if (key.toLowerCase() === lowerNick) {
@@ -544,7 +539,6 @@ function findPreviousPlayer(nick) {
         }
     }
     
-    // 3. Base nick ile eşleşme (parantez içindeki sayıyı temizle)
     const baseNick = nick.replace(/ \(\d+K\)/, '').toLowerCase();
     for (let key in previousData) {
         const keyBase = key.replace(/ \(\d+K\)/, '').toLowerCase();
@@ -570,13 +564,21 @@ async function loadPreviousData() {
         if (response.ok) {
             const csvText = await response.text();
             const lines = csvText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-            if (lines.length < 2) return;
+            if (lines.length < 3) return;
             
-            const headerValues = parseQuotedCSV(lines[0]);
+            // Satır 0: Tarih
+            const updateDate = lines[0].replace(/^"|"$/g, '').trim();
+            
+            // Satır 1: PlayerCount
+            const playerCountLine = lines[1].replace(/^"|"$/g, '').trim();
+            const playerCount = parseInt(playerCountLine.replace('PlayerCount: ', ''));
+            
+            // Satır 2: Header
+            const headerValues = parseQuotedCSV(lines[2]);
             const headers = headerValues.map(h => h.replace(/^"|"$/g, '').trim());
             
             const prevPlayers = {};
-            for (let i = 1; i < lines.length; i++) {
+            for (let i = 3; i < lines.length; i++) {
                 const values = parseQuotedCSV(lines[i]);
                 if (values.length < 4) continue;
                 const player = {};
@@ -588,10 +590,11 @@ async function loadPreviousData() {
                 }
             }
             previousData = prevPlayers;
-            console.log('📊 Önceki veriler CSV\'den yüklendi:', Object.keys(previousData).length, 'oyuncu');
+            previousData._updateDate = updateDate;
+            previousData._playerCount = playerCount;
         }
     } catch (e) {
-        console.log('Önceki CSV dosyası bulunamadı, karşılaştırma yapılmayacak.', e);
+        console.error('Error loading previous data:', e);
     }
 }
 
@@ -633,7 +636,6 @@ function rebuildTable(onlyChanged) {
     }
     
     filteredPlayers.forEach((player, index) => {
-        // GERÇEK RANK'i bul - globalPlayers içindeki index + 1
         const realRank = globalPlayers.indexOf(player) + 1;
         
         const tier = player['Tier'] || 'E-Tier'; 
@@ -650,7 +652,6 @@ function rebuildTable(onlyChanged) {
         const safeRole = escapeHtml(player['Role'] || '?');
         const roleWithEmoji = getRoleEmoji(player['Role'] || '') + ' ' + safeRole;
         
-        // === ORTAK EŞLEŞTİRME FONKSİYONUNU KULLAN ===
         let prev = findPreviousPlayer(player['Nick']);
         
         const isChanged = changedPlayers.has(player['Nick']);
@@ -756,22 +757,28 @@ async function loadData() {
             ? '../data/players.csv'
             : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players.csv';
 
-        console.log('📁 CSV URL:', csvUrl);
-
         const response = await fetch(csvUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         
         const csvText = await response.text();
         const lines = csvText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-        if (lines.length < 2) throw new Error('CSV file is empty or has only header.');
+        if (lines.length < 3) throw new Error('CSV file is empty or has only header.');
         
-        const headerValues = parseQuotedCSV(lines[0]);
+        // Satır 0: Tarih
+        const updateDate = lines[0].replace(/^"|"$/g, '').trim();
+        
+        // Satır 1: PlayerCount
+        const playerCountLine = lines[1].replace(/^"|"$/g, '').trim();
+        const playerCount = parseInt(playerCountLine.replace('PlayerCount: ', ''));
+        
+        // Satır 2: Header
+        const headerValues = parseQuotedCSV(lines[2]);
         const headers = headerValues.map(h => h.replace(/^"|"$/g, '').trim());
         
         globalPlayers = [];
         changedPlayers.clear();
         
-        for (let i = 1; i < lines.length; i++) {
+        for (let i = 3; i < lines.length; i++) {
             const values = parseQuotedCSV(lines[i]);
             if (values.length < 4) continue;
             const player = {};
@@ -784,30 +791,20 @@ async function loadData() {
         if (globalPlayers.length === 0) throw new Error('No data rows found.');
         
         globalPlayers.forEach((player) => {
-            // === ORTAK EŞLEŞTİRME FONKSİYONUNU KULLAN ===
             let prev = findPreviousPlayer(player['Nick']);
-            
             if (isPlayerChanged(player, prev)) {
                 changedPlayers.add(player['Nick']);
             }
         });
         
-        document.getElementById('changedCount').textContent = changedPlayers.size;
-        document.getElementById('playerCount').textContent = globalPlayers.length;
+        const formattedDate = updateDate.replace(/:(\d{2}) UTC$/, ' UTC');
         
-        console.log('🔄 TOPLAM DEĞİŞEN OYUNCU SAYISI:', changedPlayers.size);
-        console.log('🔄 Değişen oyuncular:', Array.from(changedPlayers));
+        document.getElementById('lastUpdate').textContent = formattedDate;
+        document.getElementById('footerUpdate').textContent = `Last Update: ${formattedDate}`;
+        document.getElementById('playerCount').textContent = playerCount;
+        document.getElementById('changedCount').textContent = changedPlayers.size;
         
         rebuildTable(false);
-        
-        try {
-            const metaRes = await fetch('data/metadata.json?t=' + new Date().getTime());
-            if (metaRes.ok) {
-                const meta = await metaRes.json();
-                document.getElementById('lastUpdate').textContent = meta.lastUpdate || 'Unknown';
-                document.getElementById('footerUpdate').textContent = `Last Update: ${meta.lastUpdate || 'Unknown'}`;
-            }
-        } catch (e) { document.getElementById('lastUpdate').textContent = 'Unknown'; }
         
     } catch (error) {
         document.getElementById('tableBody').innerHTML = `<tr><td colspan="33" style="padding: 30px; color: #e74c3c; text-align: center;">⚠️ Referee stopped the match! Error loading data.<br><small>${error.message}</small></td></tr>`;
