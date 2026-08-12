@@ -638,7 +638,7 @@ function rebuildTable(onlyChanged) {
             <td class="rank-col">${realRank}</td>
             <td class="flag-col">${flagHtml}</td>
             <td class="nick-col" title="${safeNick}">${safeNick} ${changeTag}</td>
-            <td class="sitename-col"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; cursor: pointer;" title="FFS Gaming profilini aç">${safeSiteName}</a></td>
+            <td class="sitename-col"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; cursor: pointer;" title="Click and Open FFS Gaming Profile">${safeSiteName}</a></td>
             <td class="rating-col ${ratingClass}">${escapeHtml(player['Rating'] || '?')}</td>
             <td class="${skillClass}">${escapeHtml(player['Raw_Skill'] || '?')}</td>
             <td class="${multiplierClass}">${escapeHtml(player['Multiplier'] || '?')}</td>
