@@ -78,6 +78,7 @@
             color: #bdc3c7; font-size: 13px; background: rgba(0, 0, 0, 0.6); padding: 6px 15px;
             border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); font-family: 'Teko', sans-serif;
             font-size: 18px; letter-spacing: 1px;
+            white-space: nowrap;
         }
         .header-actions {
             display: flex; align-items: center; justify-content: flex-end; gap: 10px;
@@ -101,15 +102,83 @@
         .github-btn:hover { background: var(--neon-green) !important; color: #000 !important; border-color: var(--neon-green) !important; transform: none; box-shadow: none; }
         .github-btn:hover svg { fill: #000; }
         .github-btn svg { fill: white; height: 16px; width: 16px; transition: fill 0.3s; }
-        .stadium-announcement {
-            background: rgba(0, 255, 136, 0.08);
-            border-top: 1px solid rgba(0, 255, 136, 0.2); border-bottom: 1px solid rgba(0, 255, 136, 0.2);
-            color: #dcdde1; text-align: center; padding: 8px 15px; font-family: 'Teko', sans-serif;
-            font-size: 22px; letter-spacing: 1.5px; margin-bottom: 15px; display: flex;
-            justify-content: center; align-items: center; gap: 10px; animation: none;
+        
+        /* === FİLTRE BUTONU - STADYUM ANNOUNCEMENT İÇİNE TAŞINDI === */
+        .filter-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-shrink: 0;
         }
-        .stadium-announcement .highlight { color: var(--neon-green); text-shadow: 0 0 8px rgba(0, 255, 136, 0.6); font-weight: 600; }
-        @keyframes pulse-glow { 0% { box-shadow: 0 0 0px transparent inset; } 50% { box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) inset; } 100% { box-shadow: 0 0 0px transparent inset; } }
+        .filter-btn {
+            background: rgba(0, 255, 136, 0.05);
+            color: #00ff88;
+            padding: 4px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            font-family: 'Teko', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+        .filter-btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.4);
+        }
+        .filter-btn.active {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
+        }
+        .filter-btn .count {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0 8px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .filter-btn.active .count {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .filter-sep {
+            color: rgba(255,255,255,0.05);
+            font-size: 20px;
+        }
+
+        .stadium-announcement {
+            background: rgba(0, 255, 136, 0.06);
+            border-top: 1px solid rgba(0, 255, 136, 0.15);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.15);
+            color: #dcdde1;
+            text-align: center;
+            padding: 6px 15px;
+            font-family: 'Teko', sans-serif;
+            font-size: 20px;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .stadium-announcement .highlight {
+            color: var(--neon-green);
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+            font-weight: 600;
+        }
+        .stadium-announcement .sep {
+            color: rgba(255,255,255,0.08);
+        }
+
         .search-box { margin-bottom: 15px; display: flex; justify-content: center; }
         .search-box input { width: 100%; max-width: 500px; padding: 10px 20px; font-size: 14px; background: rgba(0, 0, 0, 0.7); color: white; border: 1px solid rgba(0, 255, 136, 0.4); border-radius: 30px; outline: none; transition: 0.3s; font-family: 'Inter', sans-serif; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.5) inset; }
         .search-box input:focus { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); background: rgba(0, 0, 0, 0.9); }
@@ -128,6 +197,43 @@
         table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
         table.dataTable tbody tr:hover { background-color: rgba(19, 42, 24, 0.9) !important; color: white !important; box-shadow: none; }
         table.dataTable tbody tr.selected-player { background-color: rgba(0, 255, 136, 0.12) !important; border-left: 4px solid var(--neon-green) !important; box-shadow: none !important; }
+        
+        table.dataTable tbody tr.changed-player {
+            background-color: rgba(241, 196, 15, 0.08) !important;
+            border-left: 3px solid #f1c40f !important;
+        }
+        table.dataTable tbody tr.changed-player:nth-child(even) {
+            background-color: rgba(241, 196, 15, 0.12) !important;
+        }
+        table.dataTable tbody tr.changed-player:hover {
+            background-color: rgba(241, 196, 15, 0.2) !important;
+        }
+        
+        .change-tag {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: 700;
+            margin-left: 4px;
+            font-family: 'Inter', sans-serif;
+        }
+        .change-tag.up {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+        .change-tag.down {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        .change-tag.new {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
         table.dataTable td a { color: #3498db; text-decoration: none; font-weight: 600; }
         table.dataTable td a:hover { color: var(--neon-green); text-decoration: underline; }
         .rank-col { font-weight: 800; color: #f1c40f !important; font-size: 13px; }
@@ -195,9 +301,22 @@
         .bar-winrate { background: #f1c40f; }
         .footer { margin-top: 10px; text-align: center; color: #7f8fa6; font-size: 12px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px; padding-bottom: 2px; flex-shrink: 0; font-family: 'Teko', sans-serif; font-size: 18px; letter-spacing: 1px; }
         .footer a { color: #ffffff; text-decoration: none; }
-        .footer a:hover { text-shadow: 0 0 5px rgba(255,255,255,0.5)    ; }
+        .footer a:hover { text-shadow: 0 0 5px rgba(255,255,255,0.5); }
         @media (max-width: 1400px) { table.dataTable { font-size: 10px !important; } table.dataTable th { font-size: 14px !important; padding: 4px 2px !important; } table.dataTable td { padding: 4px 2px !important; } .badge { font-size: 9px; padding: 1px 4px; } }
-        @media (max-width: 768px) { table.dataTable { font-size: 9px !important; } table.dataTable th { font-size: 12px !important; } .header { justify-content: center; gap: 10px; } .header-title { flex-basis: 100%; text-align: center; } .header-search { order: 2; width: 100%; min-width: 100%; } .header-actions { justify-content: center; flex-basis: 100%; } .header h1 { font-size: 24px; text-align: center; justify-content: center;} #compareDock { width: 95%; flex-direction: column; gap: 10px; padding: 15px; } .fut-card { width: 100%; max-width: 300px; margin-top: 25px; } }
+        @media (max-width: 768px) { 
+            table.dataTable { font-size: 9px !important; } 
+            table.dataTable th { font-size: 12px !important; } 
+            .header { justify-content: center; gap: 10px; } 
+            .header-title { flex-basis: 100%; text-align: center; } 
+            .header-search { order: 2; width: 100%; min-width: 100%; } 
+            .header-actions { justify-content: center; flex-basis: 100%; } 
+            .header h1 { font-size: 24px; text-align: center; justify-content: center;} 
+            #compareDock { width: 95%; flex-direction: column; gap: 10px; padding: 15px; } 
+            .fut-card { width: 100%; max-width: 300px; margin-top: 25px; }
+            .filter-btn { font-size: 14px; padding: 3px 12px; }
+            .header .info { font-size: 14px; padding: 4px 10px; }
+            .stadium-announcement { font-size: 16px; gap: 8px; padding: 4px 10px; }
+        }
     </style>
 </head>
 <body>
@@ -206,13 +325,23 @@
         <div class="header-title"><h1>FFS Gaming CarBall Rankings</h1></div>
         <div class="search-box header-search"><input type="text" id="customSearch" placeholder="🔍 Search a player... (e.g. fycnamed)"></div>
         <div class="header-actions">
-            <div class="info">🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp; ⏱️ Last Update: <span id="lastUpdate">-</span></div>
+            <div class="info">🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp; ⏱️ <span id="lastUpdate">-</span></div>
             <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer" class="github-btn">
                 <svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
                 GitHub
             </a>
         </div>
     </div>
+    
+    <!-- STADIUM ANNOUNCEMENT + FILTER BUTONU -->
+    <div class="stadium-announcement">
+        <div class="filter-wrapper" style="width: 100%; justify-content: center;">
+            <button class="filter-btn" id="filterChangedBtn" onclick="toggleFilter()">
+                📊 Show Changes <span class="count" id="changedCount">0</span>
+            </button>
+        </div>
+    </div>
+    
     <div class="table-responsive">
         <table id="playersTable" class="display compact" style="width:100%">
             <thead>
@@ -279,6 +408,8 @@
 <script>
 let dataTable; let globalPlayers = []; let selectedPlayers = [];
 let previousData = {};
+let changedPlayers = new Set();
+let filterActive = false;
 
 function escapeHtml(text) {
     if (!text) return '?';
@@ -326,7 +457,6 @@ function getFlagHtml(countryCode) {
 function getChangeClass(current, previous) {
     if (previous === undefined || previous === null || previous === '') return '';
     
-    // String'leri temizle ve sayıya çevir
     const cleanCurrent = String(current).replace(/,/g, '').trim();
     const cleanPrev = String(previous).replace(/,/g, '').trim();
     
@@ -339,6 +469,52 @@ function getChangeClass(current, previous) {
     if (Math.abs(diff) < 0.0001) return '';
     
     return diff > 0 ? 'change-up' : 'change-down';
+}
+
+function getChangeTag(current, previous, isNew) {
+    if (isNew) {
+        return `<span class="change-tag new">✦ NEW</span>`;
+    }
+    if (previous === undefined || previous === null || previous === '') return '';
+    
+    const cleanCurrent = String(current).replace(/,/g, '').trim();
+    const cleanPrev = String(previous).replace(/,/g, '').trim();
+    
+    const currentNum = parseFloat(cleanCurrent);
+    const prevNum = parseFloat(cleanPrev);
+    
+    if (isNaN(currentNum) || isNaN(prevNum)) return '';
+    
+    const diff = currentNum - prevNum;
+    if (Math.abs(diff) < 0.0001) return '';
+    
+    const sign = diff > 0 ? '↑' : '↓';
+    const cls = diff > 0 ? 'up' : 'down';
+    return `<span class="change-tag ${cls}">${sign}${Math.abs(diff).toFixed(1)}</span>`;
+}
+
+function isPlayerChanged(current, previous) {
+    if (!previous) return true;
+    
+    const compareFields = [
+        'Rating', 'Raw_Skill', 'Multiplier', 'Matches', 'Wins', 'Losses',
+        'Win_Rate', 'Win_Loss_Ratio', 'Goals_PG', 'Assists_PG', 'Saves_PG',
+        'OwnGoals_PG', 'Total_Goals', 'Total_Assists', 'Total_Saves',
+        'Total_OwnGoals', 'MVP_Count', 'MVP_Per_Win', 'Offensive_Ratio',
+        'Defensive_Ratio', 'Playmaker_Ratio', 'Efficiency', 'Impact',
+        'Goalkeeping_Index', 'Defense_Reliability', 'Total_Actions'
+    ];
+    
+    for (let field of compareFields) {
+        const currentVal = String(current[field] || '').replace(/,/g, '').trim();
+        const prevVal = String(previous[field] || '').replace(/,/g, '').trim();
+        
+        if (currentVal !== prevVal) {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 async function loadPreviousData() {
@@ -374,7 +550,6 @@ async function loadPreviousData() {
             }
             previousData = prevPlayers;
             console.log('📊 Önceki veriler CSV\'den yüklendi:', Object.keys(previousData).length, 'oyuncu');
-            console.log('📊 Örnek: Alex önceki veriler:', previousData['[hvs]al3x (791K)']);
         }
     } catch (e) {
         console.log('Önceki CSV dosyası bulunamadı, karşılaştırma yapılmayacak.', e);
@@ -387,6 +562,161 @@ function getRoleEmoji(role) {
     if (role.includes('Striker')) return '⚽';
     if (role.includes('Playmaker') || role.includes('MVP') || role.includes('Midfielder')) return '🎯';
     return '🔄';
+}
+
+function toggleFilter() {
+    filterActive = !filterActive;
+    const btn = document.getElementById('filterChangedBtn');
+    
+    if (filterActive) {
+        btn.classList.add('active');
+        btn.innerHTML = `📊 Show Changes <span class="count" id="changedCount">${changedPlayers.size}</span> ✕`;
+        rebuildTable(true);
+    } else {
+        btn.classList.remove('active');
+        btn.innerHTML = `📊 Show Changes <span class="count" id="changedCount">${changedPlayers.size}</span>`;
+        rebuildTable(false);
+    }
+}
+
+function rebuildTable(onlyChanged) {
+    if (dataTable) {
+        dataTable.destroy();
+        dataTable = null;
+    }
+    
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    
+    // Önce tüm oyuncuların gerçek sırasını (rank) hesapla
+    // globalPlayers zaten CSV'deki sıraya göre dizilmiş
+    // Ama DataTable sıralama yapabiliyor, o yüzden safe olarak index+1 kullanalım
+    
+    let filteredPlayers = globalPlayers;
+    if (onlyChanged) {
+        filteredPlayers = globalPlayers.filter(p => changedPlayers.has(p['Nick']));
+    }
+    
+    filteredPlayers.forEach((player, index) => {
+        // GERÇEK RANK'i bul - globalPlayers içindeki index + 1
+        const realRank = globalPlayers.indexOf(player) + 1;
+        
+        const tier = player['Tier'] || 'E-Tier'; 
+        let tierClass = 'E';
+        if (tier.includes('S')) tierClass = 'S'; 
+        else if (tier.includes('A')) tierClass = 'A'; 
+        else if (tier.includes('B')) tierClass = 'B'; 
+        else if (tier.includes('C')) tierClass = 'C'; 
+        else if (tier.includes('D')) tierClass = 'D';
+        
+        const flagHtml = getFlagHtml(player['Country'] || '');
+        const safeNick = escapeHtml(player['Nick'] || '?');
+        const safeSiteName = escapeHtml(player['SiteName'] || '?');
+        const safeRole = escapeHtml(player['Role'] || '?');
+        const roleWithEmoji = getRoleEmoji(player['Role'] || '') + ' ' + safeRole;
+        
+        let prev = previousData[player['Nick']];
+        if (!prev) {
+            const baseNick = player['Nick'].replace(/ \(\d+K\)/, '');
+            prev = previousData[baseNick];
+        }
+        if (!prev) {
+            const searchTerm = player['Nick'].replace(/ \(\d+K\)/, '');
+            const key = Object.keys(previousData).find(k => 
+                k.replace(/ \(\d+K\)/, '') === searchTerm
+            );
+            if (key) prev = previousData[key];
+        }
+        
+        const isChanged = changedPlayers.has(player['Nick']);
+        const isNew = !prev;
+        
+        const ratingClass = getChangeClass(player['Rating'], prev?.['Rating']);
+        const skillClass = getChangeClass(player['Raw_Skill'], prev?.['Raw_Skill']);
+        const multiplierClass = getChangeClass(player['Multiplier'], prev?.['Multiplier']);
+        const matchesClass = getChangeClass(player['Matches'], prev?.['Matches']);
+        const winsClass = getChangeClass(player['Wins'], prev?.['Wins']);
+        const lossesClass = getChangeClass(player['Losses'], prev?.['Losses']);
+        const winRateClass = getChangeClass(player['Win_Rate'], prev?.['Win_Rate']);
+        const wlRatioClass = getChangeClass(player['Win_Loss_Ratio'], prev?.['Win_Loss_Ratio']);
+        const goalsClass = getChangeClass(player['Goals_PG'], prev?.['Goals_PG']);
+        const assistsClass = getChangeClass(player['Assists_PG'], prev?.['Assists_PG']);
+        const savesClass = getChangeClass(player['Saves_PG'], prev?.['Saves_PG']);
+        const ogClass = getChangeClass(player['OwnGoals_PG'], prev?.['OwnGoals_PG']);
+        const totalGoalsClass = getChangeClass(player['Total_Goals'], prev?.['Total_Goals']);
+        const totalAssistsClass = getChangeClass(player['Total_Assists'], prev?.['Total_Assists']);
+        const totalSavesClass = getChangeClass(player['Total_Saves'], prev?.['Total_Saves']);
+        const totalOGClass = getChangeClass(player['Total_OwnGoals'], prev?.['Total_OwnGoals']);
+        const mvpCountClass = getChangeClass(player['MVP_Count'], prev?.['MVP_Count']);
+        const mvpWinClass = getChangeClass(player['MVP_Per_Win'], prev?.['MVP_Per_Win']);
+        const offClass = getChangeClass(player['Offensive_Ratio'], prev?.['Offensive_Ratio']);
+        const defClass = getChangeClass(player['Defensive_Ratio'], prev?.['Defensive_Ratio']);
+        const playmakerClass = getChangeClass(player['Playmaker_Ratio'], prev?.['Playmaker_Ratio']);
+        const effClass = getChangeClass(player['Efficiency'], prev?.['Efficiency']);
+        const impactClass = getChangeClass(player['Impact'], prev?.['Impact']);
+        const gkClass = getChangeClass(player['Goalkeeping_Index'], prev?.['Goalkeeping_Index']);
+        const defRelClass = getChangeClass(player['Defense_Reliability'], prev?.['Defense_Reliability']);
+        const totalActionsClass = getChangeClass(player['Total_Actions'], prev?.['Total_Actions']);
+        
+        const changeTag = getChangeTag(player['Rating'], prev?.['Rating'], isNew);
+        
+        const tr = document.createElement('tr');
+        tr.setAttribute('data-nick', player['Nick']);
+        if (isChanged) {
+            tr.classList.add('changed-player');
+        }
+        
+        tr.innerHTML = `
+            <td class="rank-col">${realRank}</td>
+            <td class="flag-col">${flagHtml}</td>
+            <td class="nick-col" title="${safeNick}">${safeNick} ${changeTag}</td>
+            <td class="sitename-col"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; cursor: pointer;" title="FFS Gaming profilini aç">${safeSiteName}</a></td>
+            <td class="rating-col ${ratingClass}">${escapeHtml(player['Rating'] || '?')}</td>
+            <td class="${skillClass}">${escapeHtml(player['Raw_Skill'] || '?')}</td>
+            <td class="${multiplierClass}">${escapeHtml(player['Multiplier'] || '?')}</td>
+            <td class="role-col">${roleWithEmoji}</td>
+            <td><span class="badge badge-${tierClass}">${escapeHtml(tier)}</span></td>
+            <td class="${matchesClass}">${escapeHtml(player['Matches'] || '?')}</td>
+            <td class="${winsClass}">${escapeHtml(player['Wins'] || '?')}</td>
+            <td class="${lossesClass}">${escapeHtml(player['Losses'] || '?')}</td>
+            <td class="${winRateClass}">${escapeHtml(player['Win_Rate'] || '?')}%</td>
+            <td class="${wlRatioClass}">${escapeHtml(player['Win_Loss_Ratio'] || '?')}</td>
+            <td class="${goalsClass}">${escapeHtml(player['Goals_PG'] || '?')}</td>
+            <td class="${assistsClass}">${escapeHtml(player['Assists_PG'] || '?')}</td>
+            <td class="${savesClass}">${escapeHtml(player['Saves_PG'] || '?')}</td>
+            <td class="${ogClass}">${escapeHtml(player['OwnGoals_PG'] || '?')}</td>
+            <td class="${totalGoalsClass}">${escapeHtml(player['Total_Goals'] || '?')}</td>
+            <td class="${totalAssistsClass}">${escapeHtml(player['Total_Assists'] || '?')}</td>
+            <td class="${totalSavesClass}">${escapeHtml(player['Total_Saves'] || '?')}</td>
+            <td class="${totalOGClass}">${escapeHtml(player['Total_OwnGoals'] || '?')}</td>
+            <td class="${mvpCountClass}">${escapeHtml(player['MVP_Count'] || '?')}</td>
+            <td class="${mvpWinClass}">${escapeHtml(player['MVP_Per_Win'] || '?')}%</td>
+            <td class="${offClass}">${escapeHtml(player['Offensive_Ratio'] || '?')}%</td>
+            <td class="${defClass}">${escapeHtml(player['Defensive_Ratio'] || '?')}%</td>
+            <td class="${playmakerClass}">${escapeHtml(player['Playmaker_Ratio'] || '?')}%</td>
+            <td class="${effClass}">${escapeHtml(player['Efficiency'] || '?')}</td>
+            <td class="${impactClass}">${escapeHtml(player['Impact'] || '?')}</td>
+            <td class="${gkClass}">${escapeHtml(player['Goalkeeping_Index'] || '?')}%</td>
+            <td class="${defRelClass}">${escapeHtml(player['Defense_Reliability'] || '?')}</td>
+            <td class="${totalActionsClass}">${escapeHtml(player['Total_Actions'] || '?')}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+    
+    dataTable = $('#playersTable').DataTable({
+        pageLength: 15, 
+        scrollX: false, 
+        autoWidth: false,
+        order: [[0, 'asc']], 
+        searching: true, 
+        columnDefs: [{ type: 'num', targets: 0 }],
+        dom: '<"top"f>rt<"bottom"lip>', 
+        pagingType: 'simple_numbers'
+    });
+    
+    $('#customSearch').off('keyup').on('keyup', function() { 
+        dataTable.search(this.value).draw(); 
+    });
 }
 
 async function loadData() {
@@ -414,6 +744,8 @@ async function loadData() {
         const headers = headerValues.map(h => h.replace(/^"|"$/g, '').trim());
         
         globalPlayers = [];
+        changedPlayers.clear();
+        
         for (let i = 1; i < lines.length; i++) {
             const values = parseQuotedCSV(lines[i]);
             if (values.length < 4) continue;
@@ -426,26 +758,7 @@ async function loadData() {
         
         if (globalPlayers.length === 0) throw new Error('No data rows found.');
         
-        const tbody = document.getElementById('tableBody'); 
-        tbody.innerHTML = '';
-        
-        globalPlayers.forEach((player, index) => {
-            const tier = player['Tier'] || 'E-Tier'; 
-            let tierClass = 'E';
-            if (tier.includes('S')) tierClass = 'S'; 
-            else if (tier.includes('A')) tierClass = 'A'; 
-            else if (tier.includes('B')) tierClass = 'B'; 
-            else if (tier.includes('C')) tierClass = 'C'; 
-            else if (tier.includes('D')) tierClass = 'D';
-            
-            const flagHtml = getFlagHtml(player['Country'] || '');
-            const safeNick = escapeHtml(player['Nick'] || '?');
-            const safeSiteName = escapeHtml(player['SiteName'] || '?');
-            const safeRole = escapeHtml(player['Role'] || '?');
-            
-            // Role'e emoji ekle
-            const roleWithEmoji = getRoleEmoji(player['Role'] || '') + ' ' + safeRole;
-            
+        globalPlayers.forEach((player) => {
             let prev = previousData[player['Nick']];
             if (!prev) {
                 const baseNick = player['Nick'].replace(/ \(\d+K\)/, '');
@@ -459,81 +772,18 @@ async function loadData() {
                 if (key) prev = previousData[key];
             }
             
-            // Tüm sütunlar için değişim sınıfları
-            const ratingClass = getChangeClass(player['Rating'], prev?.['Rating']);
-            const skillClass = getChangeClass(player['Raw_Skill'], prev?.['Raw_Skill']);
-            const multiplierClass = getChangeClass(player['Multiplier'], prev?.['Multiplier']);
-            const matchesClass = getChangeClass(player['Matches'], prev?.['Matches']);
-            const winsClass = getChangeClass(player['Wins'], prev?.['Wins']);
-            const lossesClass = getChangeClass(player['Losses'], prev?.['Losses']);
-            const winRateClass = getChangeClass(player['Win_Rate'], prev?.['Win_Rate']);
-            const wlRatioClass = getChangeClass(player['Win_Loss_Ratio'], prev?.['Win_Loss_Ratio']);
-            const goalsClass = getChangeClass(player['Goals_PG'], prev?.['Goals_PG']);
-            const assistsClass = getChangeClass(player['Assists_PG'], prev?.['Assists_PG']);
-            const savesClass = getChangeClass(player['Saves_PG'], prev?.['Saves_PG']);
-            const ogClass = getChangeClass(player['OwnGoals_PG'], prev?.['OwnGoals_PG']);
-            const totalGoalsClass = getChangeClass(player['Total_Goals'], prev?.['Total_Goals']);
-            const totalAssistsClass = getChangeClass(player['Total_Assists'], prev?.['Total_Assists']);
-            const totalSavesClass = getChangeClass(player['Total_Saves'], prev?.['Total_Saves']);
-            const totalOGClass = getChangeClass(player['Total_OwnGoals'], prev?.['Total_OwnGoals']);
-            const mvpCountClass = getChangeClass(player['MVP_Count'], prev?.['MVP_Count']);
-            const mvpWinClass = getChangeClass(player['MVP_Per_Win'], prev?.['MVP_Per_Win']);
-            const offClass = getChangeClass(player['Offensive_Ratio'], prev?.['Offensive_Ratio']);
-            const defClass = getChangeClass(player['Defensive_Ratio'], prev?.['Defensive_Ratio']);
-            const playmakerClass = getChangeClass(player['Playmaker_Ratio'], prev?.['Playmaker_Ratio']);
-            const effClass = getChangeClass(player['Efficiency'], prev?.['Efficiency']);
-            const impactClass = getChangeClass(player['Impact'], prev?.['Impact']);
-            const gkClass = getChangeClass(player['Goalkeeping_Index'], prev?.['Goalkeeping_Index']);
-            const defRelClass = getChangeClass(player['Defense_Reliability'], prev?.['Defense_Reliability']);
-            const totalActionsClass = getChangeClass(player['Total_Actions'], prev?.['Total_Actions']);
-            
-            const tr = document.createElement('tr');
-            tr.setAttribute('data-nick', player['Nick']);
-            tr.innerHTML = `
-                <td class="rank-col">${index + 1}</td>
-                <td class="flag-col">${flagHtml}</td>
-                <td class="nick-col" title="${safeNick}">${safeNick}</td>
-                <td class="sitename-col"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; cursor: pointer;" title="FFS Gaming profilini aç">${safeSiteName}</a></td>
-                <td class="rating-col ${ratingClass}">${escapeHtml(player['Rating'] || '?')}</td>
-                <td class="${skillClass}">${escapeHtml(player['Raw_Skill'] || '?')}</td>
-                <td class="${multiplierClass}">${escapeHtml(player['Multiplier'] || '?')}</td>
-                <td class="role-col">${roleWithEmoji}</td>
-                <td><span class="badge badge-${tierClass}">${escapeHtml(tier)}</span></td>
-                <td class="${matchesClass}">${escapeHtml(player['Matches'] || '?')}</td>
-                <td class="${winsClass}">${escapeHtml(player['Wins'] || '?')}</td>
-                <td class="${lossesClass}">${escapeHtml(player['Losses'] || '?')}</td>
-                <td class="${winRateClass}">${escapeHtml(player['Win_Rate'] || '?')}%</td>
-                <td class="${wlRatioClass}">${escapeHtml(player['Win_Loss_Ratio'] || '?')}</td>
-                <td class="${goalsClass}">${escapeHtml(player['Goals_PG'] || '?')}</td>
-                <td class="${assistsClass}">${escapeHtml(player['Assists_PG'] || '?')}</td>
-                <td class="${savesClass}">${escapeHtml(player['Saves_PG'] || '?')}</td>
-                <td class="${ogClass}">${escapeHtml(player['OwnGoals_PG'] || '?')}</td>
-                <td class="${totalGoalsClass}">${escapeHtml(player['Total_Goals'] || '?')}</td>
-                <td class="${totalAssistsClass}">${escapeHtml(player['Total_Assists'] || '?')}</td>
-                <td class="${totalSavesClass}">${escapeHtml(player['Total_Saves'] || '?')}</td>
-                <td class="${totalOGClass}">${escapeHtml(player['Total_OwnGoals'] || '?')}</td>
-                <td class="${mvpCountClass}">${escapeHtml(player['MVP_Count'] || '?')}</td>
-                <td class="${mvpWinClass}">${escapeHtml(player['MVP_Per_Win'] || '?')}%</td>
-                <td class="${offClass}">${escapeHtml(player['Offensive_Ratio'] || '?')}%</td>
-                <td class="${defClass}">${escapeHtml(player['Defensive_Ratio'] || '?')}%</td>
-                <td class="${playmakerClass}">${escapeHtml(player['Playmaker_Ratio'] || '?')}%</td>
-                <td class="${effClass}">${escapeHtml(player['Efficiency'] || '?')}</td>
-                <td class="${impactClass}">${escapeHtml(player['Impact'] || '?')}</td>
-                <td class="${gkClass}">${escapeHtml(player['Goalkeeping_Index'] || '?')}%</td>
-                <td class="${defRelClass}">${escapeHtml(player['Defense_Reliability'] || '?')}</td>
-                <td class="${totalActionsClass}">${escapeHtml(player['Total_Actions'] || '?')}</td>
-            `;
-            tbody.appendChild(tr);
+            if (isPlayerChanged(player, prev)) {
+                changedPlayers.add(player['Nick']);
+            }
         });
         
-        dataTable = $('#playersTable').DataTable({
-            pageLength: 15, scrollX: false, autoWidth: false,
-            order: [[0, 'asc']], searching: true, columnDefs: [{ type: 'num', targets: 0 }],
-            dom: '<"top"f>rt<"bottom"lip>', pagingType: 'simple_numbers'
-        });
-        
-        $('#customSearch').on('keyup', function() { dataTable.search(this.value).draw(); });
+        document.getElementById('changedCount').textContent = changedPlayers.size;
         document.getElementById('playerCount').textContent = globalPlayers.length;
+        
+        console.log('🔄 TOPLAM DEĞİŞEN OYUNCU SAYISI:', changedPlayers.size);
+        console.log('🔄 Değişen oyuncular:', Array.from(changedPlayers));
+        
+        rebuildTable(false);
         
         try {
             const metaRes = await fetch('data/metadata.json?t=' + new Date().getTime());
@@ -548,6 +798,7 @@ async function loadData() {
         document.getElementById('tableBody').innerHTML = `<tr><td colspan="33" style="padding: 30px; color: #e74c3c; text-align: center;">⚠️ Referee stopped the match! Error loading data.<br><small>${error.message}</small></td></tr>`;
     }
 }
+
 $(document).ready(function() {
     loadData();
     $('#playersTable tbody').on('click', 'tr', function () {
@@ -563,12 +814,19 @@ $(document).ready(function() {
         updateDock();
     });
 });
+
 function updateDock() {
     const dock = document.getElementById('compareDock');
     document.getElementById('selCount').textContent = selectedPlayers.length;
     if(selectedPlayers.length > 0) dock.classList.add('active'); else dock.classList.remove('active');
 }
-function clearSelection() { selectedPlayers = []; $('#playersTable tbody tr').removeClass('selected-player'); updateDock(); }
+
+function clearSelection() { 
+    selectedPlayers = []; 
+    $('#playersTable tbody tr').removeClass('selected-player'); 
+    updateDock(); 
+}
+
 function openArena() {
     if(selectedPlayers.length < 1) { alert("Please select at least 1 player to view stats!"); return; }
     let compData = selectedPlayers.map(nick => globalPlayers.find(p => p['Nick'] === nick));
@@ -614,7 +872,12 @@ function openArena() {
     });
     document.getElementById('arenaModal').style.display = 'block'; document.body.style.overflow = 'hidden';
 }
-function closeArena() { document.getElementById('arenaModal').style.display = 'none'; document.body.style.overflow = 'auto'; }
+
+function closeArena() { 
+    document.getElementById('arenaModal').style.display = 'none'; 
+    document.body.style.overflow = 'auto'; 
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const aramaKutusu = document.getElementById("customSearch"); let bekletmeSayaci;
     if (aramaKutusu) {
@@ -627,7 +890,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-
 </script>
 </body>
 </html>
