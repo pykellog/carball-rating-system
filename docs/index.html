@@ -317,28 +317,41 @@ function isPlayerChanged(current, previous) {
     return false;
 }
 
-function findPreviousPlayer(nick) {
-    if (!nick) return null;
+function findPreviousPlayer(nick, userId) {
+    if (!nick && !userId) return null;
     
-    // 1. Direkt eşleşme
-    if (previousData[nick]) {
-        return previousData[nick];
-    }
-    
-    // 2. Büyük/küçük harf duyarsız
-    const lowerNick = nick.toLowerCase();
-    for (let key in previousData) {
-        if (key.toLowerCase() === lowerNick) {
-            return previousData[key];
+    // 1. UserID ile eşleşme (EN GÜVENİLİR)
+    if (userId) {
+        for (let key in previousData) {
+            if (previousData[key]['UserID'] === userId) {
+                return previousData[key];
+            }
         }
     }
     
-    // 3. Parantez içindeki (XXXK) kısmını yok say (EN ÖNEMLİ KISIM)
-    const baseNick = nick.replace(/ \(\d+K\)/, '').toLowerCase();
-    for (let key in previousData) {
-        const keyBase = key.replace(/ \(\d+K\)/, '').toLowerCase();
-        if (keyBase === baseNick) {
-            return previousData[key];
+    // 2. Direkt nick eşleşme
+    if (nick && previousData[nick]) {
+        return previousData[nick];
+    }
+    
+    // 3. Case-insensitive nick eşleşme
+    if (nick) {
+        const lowerNick = nick.toLowerCase();
+        for (let key in previousData) {
+            if (key.toLowerCase() === lowerNick) {
+                return previousData[key];
+            }
+        }
+    }
+    
+    // 4. Parantez içindeki (XXXK) kısmını yok say
+    if (nick) {
+        const baseNick = nick.replace(/ \(\d+K\)/, '').toLowerCase();
+        for (let key in previousData) {
+            const keyBase = key.replace(/ \(\d+K\)/, '').toLowerCase();
+            if (keyBase === baseNick) {
+                return previousData[key];
+            }
         }
     }
     
@@ -447,7 +460,7 @@ function rebuildTable(onlyChanged) {
         const realRank = globalPlayers.indexOf(player) + 1;
         const tier = player['Tier'] || 'E-Tier'; 
         let tierClass = tier.includes('S') ? 'S' : tier.includes('A') ? 'A' : tier.includes('B') ? 'B' : tier.includes('C') ? 'C' : tier.includes('D') ? 'D' : 'E';
-        let prev = findPreviousPlayer(player['Nick']);
+        let prev = findPreviousPlayer(player['Nick'], player['UserID']);
         const isChanged = changedPlayers.has(player['Nick']);
         
         // Tüm sütunlar için change class'larını hesapla
@@ -605,7 +618,11 @@ async function loadData() {
             globalPlayers.push(p);
         }
         
-        globalPlayers.forEach((p) => { if (isPlayerChanged(p, findPreviousPlayer(p['Nick']))) changedPlayers.add(p['Nick']); });
+        globalPlayers.forEach((p) => { 
+            if (isPlayerChanged(p, findPreviousPlayer(p['Nick'], p['UserID']))) {
+                changedPlayers.add(p['Nick']);
+            }
+        });
         
         document.getElementById('lastUpdate').textContent = updateDate;
         document.getElementById('playerCount').textContent = playerCount;
