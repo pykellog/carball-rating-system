@@ -86,10 +86,10 @@
         .search-box input:focus { outline: none; border-color: var(--accent-green); }
         .search-box::before { content: "🔍"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 0.8rem; }
         
-        .filter-btn { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.45rem 0.9rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.15s ease; display: flex; align-items: center; gap: 0.5rem; text-decoration: none !important; }
+        .filter-btn { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.45rem 0.9rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.15s ease; display: flex; align-items: center; gap: 0.2rem; line-height: 1; text-decoration: none !important; }
         .filter-btn:hover { background: rgba(16, 185, 129, 0.2); }
         .filter-btn.active { background: var(--accent-green); color: #000; }
-        .filter-btn .count { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; }
+        .filter-btn .count { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 10px; line-height: 1; font-size: 0.75rem; }
 
         /* TABLE AREA */
         .table-wrapper { flex-grow: 1; min-height: 0; background: var(--bg-card); border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; transform: translateZ(0); }
@@ -187,8 +187,8 @@
     <div class="hero">
         <h1>CarBall Rankings</h1>
         <div class="hero-stats">
-            <div><strong id="playerCount">0</strong> Players on Field</div>
-            <div>Last Update: <strong id="lastUpdate">-</strong></div>
+            <div><span style="color: #ebebeb;" id="playerCount">0</span> Players on Field</div>
+            <div>Last Update: <span style="color: #ebebeb;" id="lastUpdate">-</span></div>
         </div>
     </div>
 
