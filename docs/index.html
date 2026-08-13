@@ -5,353 +5,259 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FFS Gaming CarBall Player Rankings</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    
     <style>
         :root {
-            --pitch-dark: #0e2012;
-            --pitch-light: #132a18;
-            --line-white: #f5f6fa;
-            --neon-green: #00ff88;
-            --scoreboard-bg: rgba(10, 15, 12, 0.85);
-            --text-light: #dcdde1;
-            --highlight: #2ed573;
+            --bg-base: #09090b; 
+            --bg-card: rgba(18, 18, 20, 0.88);
+            --bg-hover: rgba(28, 28, 32, 0.9);
+            --accent-green: #10b981; 
+            --accent-glow: rgba(16, 185, 129, 0.15);
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: rgba(255, 255, 255, 0.08);
+            
+            --tier-s: #fbbf24; --tier-a: #c084fc; --tier-b: #38bdf8;
+            --tier-c: #4ade80; --tier-d: #f87171; --tier-e: #94a3b8;
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { background-color: var(--pitch-dark); }
-        body {
-            width: 100%; min-height: 100vh;
-            background: repeating-linear-gradient(90deg, var(--pitch-dark) 0px, var(--pitch-dark) 60px, var(--pitch-light) 60px, var(--pitch-light) 120px);
-            background-position: center top; background-repeat: repeat;
-            font-family: 'Inter', sans-serif; color: var(--text-light);
-            margin: 0; padding: 10px 5px 20px;
-        }
-        .container {
-            width: 100%; max-width: 100%; margin: 0 auto; padding: 12px;
-            background: rgba(10, 15, 12, 0.92);
-            border: 2px solid rgba(0, 255, 136, 0.25); border-radius: 12px;
-            box-shadow: 0 0 18px rgba(0, 0, 0, 0.55);
-            display: flex; flex-direction: column;
-        }
-        .header {
+        
+        /* === BACKGROUND & PERFORMANCE LAYOUT === */
+        html, body {
+            width: 100%; height: 100%; margin: 0; padding: 0;
+            overflow: hidden; 
+            background-color: var(--bg-base);
+            font-family: 'Inter', sans-serif; color: var(--text-main); -webkit-font-smoothing: antialiased;
             position: relative;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-            gap: 14px;
-            padding: 12px 14px 14px; margin-bottom: 14px; flex-shrink: 0;
-            border-radius: 16px;
-            background: rgba(7, 14, 10, 0.88);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 6px 20px rgba(0, 0, 0, 0.25);
         }
-        .header-title {
-            flex: 1 1 260px;
-            min-width: 0;
-        }
-        .header h1 {
-            margin: 0;
-            color: #f8fafc;
-            font-family: 'Teko', sans-serif;
-            font-size: clamp(24px, 2.4vw, 30px);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            line-height: 1.05;
-            display: inline-block;
-            padding: 8px 0;
-            background: none;
-            border: none;
-            box-shadow: none;
-            position: relative;
-            max-width: 100%;
-            text-shadow: 0 1px 0 rgba(255,255,255,0.03);
-        }
-        .header h1::after {
+
+        body::before {
             content: "";
-            position: absolute;
-            left: 0; right: 0; bottom: -2px;
-            height: 1px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(0, 255, 136, 0.45), rgba(255,255,255,0.15));
-        }
-        .header .info {
-            color: #bdc3c7; font-size: 13px; background: rgba(0, 0, 0, 0.6); padding: 6px 15px;
-            border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); font-family: 'Teko', sans-serif;
-            font-size: 18px; letter-spacing: 1px;
-            white-space: nowrap;
-        }
-        .header-actions {
-            display: flex; align-items: center; justify-content: flex-end; gap: 10px;
-            flex: 1 1 260px;
-            flex-wrap: wrap;
-        }
-        .header-search {
-            flex: 1 1 320px;
-            min-width: 240px;
-            margin-bottom: 0;
-            justify-content: center;
-        }
-        .header-search input {
-            width: min(100%, 420px);
-        }
-        .github-btn {
-            background: #1e272e; color: white; padding: 6px 15px; border-radius: 30px;
-            text-decoration: none; font-size: 13px; font-weight: 600; display: inline-flex;
-            align-items: center; gap: 6px; transition: all 0.3s ease; border: 1px solid #485460;
-        }
-        .github-btn:hover { background: var(--neon-green) !important; color: #000 !important; border-color: var(--neon-green) !important; transform: none; box-shadow: none; }
-        .github-btn:hover svg { fill: #000; }
-        .github-btn svg { fill: white; height: 16px; width: 16px; transition: fill 0.3s; }
-        
-        /* === FİLTRE BUTONU - STADYUM ANNOUNCEMENT İÇİNE TAŞINDI === */
-        .filter-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-        .filter-btn {
-            background: rgba(0, 255, 136, 0.05);
-            color: #00ff88;
-            padding: 4px 16px;
-            border-radius: 30px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            font-family: 'Teko', sans-serif;
-            font-size: 18px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            letter-spacing: 0.5px;
-        }
-        .filter-btn:hover {
-            background: rgba(0, 255, 136, 0.1);
-            border-color: rgba(0, 255, 136, 0.4);
-        }
-        .filter-btn.active {
-            background: #00ff88;
-            color: #000;
-            border-color: #00ff88;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
-        }
-        .filter-btn .count {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 0 8px;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 600;
-        }
-        .filter-btn.active .count {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .filter-sep {
-            color: rgba(255,255,255,0.05);
-            font-size: 20px;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            background-image: 
+                radial-gradient(circle at center, rgba(9, 9, 11, 0.2) 0%, rgba(9, 9, 11, 0.6) 100%),
+                linear-gradient(to bottom, rgba(9, 9, 11, 0.2), rgba(9, 9, 11, 0.4)),
+                radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, transparent 70%),
+                url('stadium-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transform: translateZ(0);
+            pointer-events: none;
         }
 
-        .stadium-announcement {
-            background: rgba(0, 255, 136, 0.06);
-            border-top: 1px solid rgba(0, 255, 136, 0.15);
-            border-bottom: 1px solid rgba(0, 255, 136, 0.15);
-            color: #dcdde1;
-            text-align: center;
-            padding: 6px 15px;
-            font-family: 'Teko', sans-serif;
-            font-size: 20px;
-            letter-spacing: 1.5px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .stadium-announcement .highlight {
-            color: var(--neon-green);
-            text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
-            font-weight: 600;
-        }
-        .stadium-announcement .sep {
-            color: rgba(255,255,255,0.08);
+        .app-container { 
+            position: relative; z-index: 1;
+            display: flex; flex-direction: column; height: 100vh; max-width: 1400px; margin: 0 auto; padding: 1.25rem; 
         }
 
-        .search-box { margin-bottom: 15px; display: flex; justify-content: center; }
-        .search-box input { width: 100%; max-width: 500px; padding: 10px 20px; font-size: 14px; background: rgba(0, 0, 0, 0.7); color: white; border: 1px solid rgba(0, 255, 136, 0.4); border-radius: 30px; outline: none; transition: 0.3s; font-family: 'Inter', sans-serif; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.5) inset; }
-        .search-box input:focus { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); background: rgba(0, 0, 0, 0.9); }
-        .table-responsive { width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .table-responsive::-webkit-scrollbar { height: 6px; }
-        .table-responsive::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
-        .table-responsive::-webkit-scrollbar-thumb { background: var(--neon-green); border-radius: 10px; }
-        table.dataTable { font-family: 'Inter', sans-serif !important; font-size: 11.5px !important; width: 100% !important; border-collapse: collapse !important; margin: 0 !important; table-layout: auto; }
-        table.dataTable td, table.dataTable th { padding: 5px 3px !important; white-space: nowrap; border-bottom: 1px solid rgba(255,255,255,0.05) !important; text-align: center !important; }
-        table.dataTable th.col-nick, table.dataTable th.col-sitename, table.dataTable th.col-role, table.dataTable td.nick-col, table.dataTable td.sitename-col, table.dataTable td.role-col { text-align: left !important; }
-        table.dataTable th { font-family: 'Teko', sans-serif; font-size: 16px !important; font-weight: 500; background: #09130b !important; color: var(--line-white) !important; letter-spacing: 0.5px; cursor: pointer; }
-        table.dataTable th:hover { color: var(--neon-green) !important; }
-        table.dataTable thead th { background-image: none !important; }
-        table.dataTable thead th::before, table.dataTable thead th::after { display: none !important; content: "" !important; }
-        table.dataTable tbody tr { background-color: rgba(20, 20, 20, 0.6) !important; color: #ecf0f1; transition: none; cursor: pointer; }
-        table.dataTable tbody tr:nth-child(even) { background-color: rgba(30, 30, 30, 0.6) !important; }
-        table.dataTable tbody tr:hover { background-color: rgba(19, 42, 24, 0.9) !important; color: white !important; box-shadow: none; }
-        table.dataTable tbody tr.selected-player { background-color: rgba(0, 255, 136, 0.12) !important; border-left: 4px solid var(--neon-green) !important; box-shadow: none !important; }
-        
-        table.dataTable tbody tr.changed-player {
-            background-color: rgba(241, 196, 15, 0.08) !important;
-            border-left: 3px solid #f1c40f !important;
+        /* HEADER */
+        .hero { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; }
+        .hero h1 { 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 2.3rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            background: linear-gradient(120deg, #e7a922 0%, #ffffff 50%, #4d4d4d 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            filter: drop-shadow(0 2px 10px rgba(251, 191, 36, 0.2));
+            margin: 0; 
         }
-        table.dataTable tbody tr.changed-player:nth-child(even) {
-            background-color: rgba(241, 196, 15, 0.12) !important;
-        }
-        table.dataTable tbody tr.changed-player:hover {
-            background-color: rgba(241, 196, 15, 0.2) !important;
-        }
-        
-        .change-tag {
-            display: inline-block;
-            padding: 1px 8px;
-            border-radius: 12px;
-            font-size: 9px;
-            font-weight: 700;
-            margin-left: 4px;
-            font-family: 'Inter', sans-serif;
-        }
-        .change-tag.up {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.2);
-        }
-        .change-tag.down {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.2);
-        }
-        .change-tag.new {
-            background: rgba(52, 152, 219, 0.2);
-            color: #3498db;
-            border: 1px solid rgba(52, 152, 219, 0.2);
-        }
+        .hero-stats { display: flex; gap: 1rem; background: var(--bg-card); padding: 0.4rem 1rem; border-radius: 100px; border: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        .hero-stats strong { color: var(--text-main); }
 
-        table.dataTable td a { color: #3498db; text-decoration: none; font-weight: 600; }
-        table.dataTable td a:hover { color: var(--neon-green); text-decoration: underline; }
-        .rank-col { font-weight: 800; color: #f1c40f !important; font-size: 13px; }
-        .flag-col { text-align: center !important; vertical-align: middle; font-size: 20px; }
-        .nick-col { font-weight: 700; color: #fff; font-size: 12px; }
-        .sitename-col { font-size: 11.5px; color: #bdc3c7;}
-        .rating-col { font-weight: 800; color: var(--neon-green) !important; font-size: 13px; text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);}
-        .change-up { color: #2ecc71 !important; }
-        .change-down { color: #e74c3c !important; }
-        .role-col { font-size: 10px; color: #95a5a6; text-transform: uppercase; font-weight: 600; letter-spacing: 0px;}
-        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); }
-        .badge-S { background: linear-gradient(135deg, #f1c40f, #e67e22); color: #000; border-color: #f39c12; }
-        .badge-A { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: #fff; }
-        .badge-B { background: linear-gradient(135deg, #3498db, #2980b9); color: #fff; }
-        .badge-C { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; }
-        .badge-D { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; }
-        .badge-E { background: linear-gradient(135deg, #7f8c8d, #34495e); color: #fff; }
-        .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_length { display: none; }
-        .dataTables_wrapper .dataTables_info { color: #7f8fa6 !important; font-size: 13px !important; padding-top: 15px !important; }
-        .dataTables_wrapper .dataTables_paginate { margin-top: 10px !important; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button { color: #dcdde1 !important; border: 1px solid rgba(255,255,255,0.1) !important; background: rgba(0,0,0,0.5) !important; border-radius: 4px !important; margin: 0 3px !important; padding: 4px 10px !important; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: var(--neon-green) !important; color: black !important; border-color: var(--neon-green) !important; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--highlight) !important; color: black !important; border-color: var(--highlight) !important; font-weight: bold; }
-        .footer { margin-top: 10px; text-align: center; color: #7f8fa6; font-size: 12px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px; padding-bottom: 2px; flex-shrink: 0; font-family: 'Teko', sans-serif; font-size: 18px; letter-spacing: 1px; }
-        .footer a { color: #ffffff; text-decoration: none; }
-        .footer a:hover { text-shadow: 0 0 5px rgba(255,255,255,0.5); }
-        @media (max-width: 1400px) { table.dataTable { font-size: 10px !important; } table.dataTable th { font-size: 14px !important; padding: 4px 2px !important; } table.dataTable td { padding: 4px 2px !important; } .badge { font-size: 9px; padding: 1px 4px; } }
-        @media (max-width: 768px) { 
-            table.dataTable { font-size: 9px !important; } 
-            table.dataTable th { font-size: 12px !important; } 
-            .header { justify-content: center; gap: 10px; } 
-            .header-title { flex-basis: 100%; text-align: center; } 
-            .header-search { order: 2; width: 100%; min-width: 100%; } 
-            .header-actions { justify-content: center; flex-basis: 100%; } 
-            .header h1 { font-size: 24px; text-align: center; justify-content: center;} 
-            .filter-btn { font-size: 14px; padding: 3px 12px; }
-            .header .info { font-size: 14px; padding: 4px 10px; }
-            .stadium-announcement { font-size: 16px; gap: 8px; padding: 4px 10px; }
+        /* CONTROLS */
+        .controls-wrapper { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; background: var(--bg-card); padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); }
+        .search-box { position: relative; flex-grow: 1; max-width: 320px; }
+        .search-box input { width: 100%; padding: 0.45rem 1rem 0.45rem 2.2rem; background: rgba(0, 0, 0, 0.6); border: 1px solid var(--border-color); border-radius: 6px; color: white; font-family: 'Inter', sans-serif; font-size: 0.9rem; }
+        .search-box input:focus { outline: none; border-color: var(--accent-green); }
+        .search-box::before { content: "🔍"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 0.8rem; }
+        
+        .filter-btn { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.45rem 0.9rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.15s ease; display: flex; align-items: center; gap: 0.5rem; }
+        .filter-btn:hover { background: rgba(16, 185, 129, 0.2); }
+        .filter-btn.active { background: var(--accent-green); color: #000; }
+        .filter-btn .count { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; }
+
+        /* TABLE AREA */
+        .table-wrapper { flex-grow: 1; min-height: 0; background: var(--bg-card); border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; transform: translateZ(0); }
+        .table-scroll-container { flex-grow: 1; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .table-scroll-container::-webkit-scrollbar { display: none; }
+
+        table.dataTable { width: 100% !important; margin: 0 !important; border-collapse: collapse !important; font-family: 'Inter', sans-serif; }
+        table.dataTable thead { position: sticky; top: 0; z-index: 10; background: #0c0c0e; }
+        table.dataTable thead th { color: var(--text-muted) !important; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem !important; font-weight: 700; text-transform: uppercase; padding: 0.75rem 0.3rem !important; border-bottom: 1px solid var(--border-color) !important; white-space: nowrap; cursor: help; }
+        table.dataTable tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; background: transparent !important; transition: background 0.15s ease; }
+        table.dataTable tbody tr:hover { background-color: var(--bg-hover) !important; }
+        table.dataTable tbody tr.changed-player { 
+            /* border-left: 3px solid #fbbf24 !important; */
+            background-color: rgba(251, 191, 36, 0.05) !important;
         }
+        table.dataTable td { padding: 0.55rem 0.3rem !important; vertical-align: middle; border: none !important; font-size: 0.95rem; font-weight: 500; white-space: nowrap; }
+
+        /* COLUMN SIZES & STYLES */
+        .col-rank { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text-muted); text-align: center !important; width: 30px; }
+        .col-player { display: flex; align-items: center; gap: 6px; }
+        .player-info { display: flex; flex-direction: column; line-height: 1.1; }
+        .player-nick { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 4px; }
+        .player-user { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+        .player-user a { color: var(--text-muted); text-decoration: none; transition: color 0.15s ease; }
+        .player-user a:hover { color: var(--accent-green); }
+
+        .col-rating { 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 1.15rem !important; 
+            font-weight: 700 !important; 
+            color: #10b981 !important; 
+            text-align: center; 
+            width: 85px;
+            letter-spacing: 0.03em;
+        }        
+        .col-skill { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: #f4f4f5; text-align: center; width: 60px; }
+        .col-tier { text-align: center; width: 55px; }
+        .col-role { text-align: center; font-size: 1.2rem; width: 35px; }
+        .col-stat { text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 1.05rem; }
+        .col-win { text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 1.05rem; }
+        .col-loss { text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 1.05rem; }
+        
+        .badge { display: inline-flex; justify-content: center; align-items: center; padding: 2px 5px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
+        .badge-S { background: rgba(251, 191, 36, 0.15); color: var(--tier-s); border: 1px solid rgba(251, 191, 36, 0.3); }
+        .badge-A { background: rgba(192, 132, 252, 0.15); color: var(--tier-a); border: 1px solid rgba(192, 132, 252, 0.3); }
+        .badge-B { background: rgba(56, 189, 248, 0.15); color: var(--tier-b); border: 1px solid rgba(56, 189, 248, 0.3); }
+        .badge-C { background: rgba(74, 222, 128, 0.15); color: var(--tier-c); border: 1px solid rgba(74, 222, 128, 0.3); }
+        .badge-D { background: rgba(248, 113, 113, 0.15); color: var(--tier-d); border: 1px solid rgba(248, 113, 113, 0.3); }
+        .badge-E { background: rgba(148, 163, 184, 0.15); color: var(--tier-e); border: 1px solid rgba(148, 163, 184, 0.3); }
+
+        .change-tag { display: inline-flex; align-items: center; padding: 1px 3px; border-radius: 3px; font-size: 0.65rem; font-weight: 700; }
+        .change-tag.up { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+        .change-tag.down { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+        .change-tag.new { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+        .change-text-up { color: var(--accent-green) !important; }
+        .change-text-down { color: #f87171 !important; }
+
+        /* === DETAILS PANEL === */
+        table.dataTable tbody tr.expanded-row-bg { background-color: rgba(0,0,0,0.75) !important; }
+        .details-wrapper { padding: 1rem 1.25rem; background: rgba(5, 5, 6, 0.6); }
+        .details-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+        
+        .stat-card { background: #121215; border-radius: 8px; border: 1px solid var(--border-color); border-top: 3px solid; padding: 0.85rem; position: relative; overflow: hidden; }
+        
+        .card-core { border-top-color: #fbbf24; }
+        .card-offense { border-top-color: #f87171; }
+        .card-defense { border-top-color: #38bdf8; }
+        .card-support { border-top-color: #c084fc; }
+
+        .card-header { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; }
+        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px dashed rgba(255,255,255,0.03); }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+        .stat-val { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.05rem; }
+
+        /* BOTTOM PAGINATION */
+        .table-footer { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1rem; background: #0c0c0e; border-top: 1px solid var(--border-color); }
+        .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_length, .dataTables_info, .dataTables_paginate { display: none !important; }
+        
+        /* FOOTER */
+        .app-footer { flex-shrink: 0; text-align: center; margin-top: 0.75rem; color: rgba(255,255,255,0.6); font-size: 0.75rem; display: flex; justify-content: space-between; align-items: center;}
+        .app-footer a { color: var(--accent-green); text-decoration: none; font-weight: 500; }
+        .app-footer a:hover { text-decoration: underline; }
+        
+        .expand-icon { font-size: 11px; color: var(--text-muted); transition: transform 0.15s ease; display: inline-block; }
+        tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
     </style>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="adefbdcd-a363-4714-8f6d-86f7cd379c8c"></script>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <div class="header-title"><h1>FFS Gaming CarBall Rankings</h1></div>
-        <div class="search-box header-search"><input type="text" id="customSearch" placeholder="🔍 Search a player... (e.g. fycnamed)"></div>
-        <div class="header-actions">
-            <div class="info">🏟️ <span id="playerCount">0</span> Players on Pitch &nbsp;|&nbsp; ⏱️ <span id="lastUpdate">-</span></div>
-            <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer" class="github-btn">
-                <svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+
+<div class="app-container">
+    
+    <!-- Hero / Header -->
+    <div class="hero">
+        <h1>CarBall Rankings</h1>
+        <div class="hero-stats">
+            <div><strong id="playerCount">0</strong> Players on Field</div>
+            <div>Last Update: <strong id="lastUpdate">-</strong></div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-wrapper">
+        <div class="search-box">
+            <input type="text" id="customSearch" placeholder="Search a player (e.g. fycnamed)...">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="filter-btn" id="filterChangedBtn" onclick="toggleFilter()">
+                📊 Changes <span class="count" id="changedCount">0</span>
+            </button>
+            <a href="https://github.com/pykellog/carball-rating-system" target="_blank" class="filter-btn" style="background: transparent; color: white; border-color: rgba(255,255,255,0.2);">
                 GitHub
             </a>
         </div>
     </div>
-    
-    <!-- STADIUM ANNOUNCEMENT + FILTER BUTONU -->
-    <div class="stadium-announcement">
-        <div class="filter-wrapper" style="width: 100%; justify-content: center;">
-            <button class="filter-btn" id="filterChangedBtn" onclick="toggleFilter()">
-                📊 Show Changes <span class="count" id="changedCount">0</span>
-            </button>
+
+    <!-- MAIN TABLE AREA -->
+    <div class="table-wrapper">
+        <div class="table-scroll-container" id="tableScrollContainer">
+            <table id="playersTable" class="display">
+                <thead>
+                    <tr>
+                        <th class="col-rank" title="Leaderboard Position">#</th>
+                        <th title="Player nickname and forum profile">Player</th>
+                        <th style="text-align: center; cursor: pointer;" title="Primary playstyle role (Click to group roles)">Role</th>
+                        <th style="text-align: center; color: var(--accent-green);" title="Overall Performance Rating (Main score with performance multiplier applied)">Rating</th>
+                        <th style="text-align: center;" title="Raw Skill Rating (Pure statistical score independent of match count)">Skill</th>
+                        <th style="text-align: center;" title="Player skill tier group (S, A, B, C, D, E)">Tier</th>
+                        <th style="text-align: center;" title="Total matches played">Matches</th>
+                        <th style="text-align: center;" title="Total matches won">Wins</th>
+                        <th style="text-align: center;" title="Total matches lost">Losses</th>
+                        <th style="text-align: center;" title="Total goals scored">Goals</th>
+                        <th style="text-align: center;" title="Total assists provided">Assists</th>
+                        <th style="text-align: center;" title="Total saves made">Saves</th>
+                        <th style="text-align: center;" title="Total Most Valuable Player awards won">MVP</th>
+                        <th style="text-align: center;" title="Offensive contribution share (Goal-oriented play style percentage)">OFF %</th>
+                        <th style="text-align: center;" title="Defensive contribution share (Save-oriented play style percentage)">DEF %</th>
+                        <th style="text-align: center;" title="Playmaking contribution share (Assist-oriented play style percentage)">PLAY %</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
         </div>
+        <!-- Custom Pagination -->
+        <div class="table-footer" id="customPagination"></div>
     </div>
     
-    <div class="table-responsive">
-        <table id="playersTable" class="display compact" style="width:100%">
-            <thead>
-                <tr>
-                    <th class="col-rank" title="Rank position">#</th>
-                    <th class="col-flag" title="Country">🌍</th>
-                    <th class="col-nick" title="Player nickname">Nick</th>
-                    <th class="col-sitename" title="Player username">User</th>
-                    <th class="col-rating" title="Final rating score">⭐</th>
-                    <th class="col-skill" title="Raw skill score">Skill</th>
-                    <th class="col-multiplier" title="Experience multiplier">×</th>
-                    <th class="col-role" title="Tactical role">Role</th>
-                    <th class="col-tier" title="Performance tier">Tier</th>
-                    <th class="col-matches" title="Total matches played">M</th>
-                    <th class="col-wins" title="Total wins">W</th>
-                    <th class="col-losses" title="Total losses">L</th>
-                    <th class="col-winrate" title="Win rate percentage">W%</th>
-                    <th class="col-wlratio" title="Win/Loss ratio">W/L</th>
-                    <th class="col-goalspg" title="Goals per game average">G/G</th>
-                    <th class="col-assistspg" title="Assists per game average">A/G</th>
-                    <th class="col-savespg" title="Saves per game average">S/G</th>
-                    <th class="col-ogpg" title="Own goals per game average">OG/G</th>
-                    <th class="col-totalgoals" title="Total goals scored">TG</th>
-                    <th class="col-totalassists" title="Total assists made">TA</th>
-                    <th class="col-totalsaves" title="Total saves made">TS</th>
-                    <th class="col-totalog" title="Total own goals">TOG</th>
-                    <th class="col-mvpcount" title="Total MVP awards">MVP</th>
-                    <th class="col-mvpwin" title="MVP percentage per win">MVP%</th>
-                    <th class="col-offensive" title="Offensive contribution ratio">Off%</th>
-                    <th class="col-defensive" title="Defensive contribution ratio">Def%</th>
-                    <th class="col-playmaker" title="Playmaker contribution ratio">Play%</th>
-                    <th class="col-efficiency" title="Overall efficiency score">Eff</th>
-                    <th class="col-impact" title="Game impact score">Imp</th>
-                    <th class="col-gkindex" title="Goalkeeping index percentage">GK%</th>
-                    <th class="col-defenserel" title="Defense reliability score">DefR</th>
-                    <th class="col-totalactions" title="Total actions performed">Act</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-    </div>
-    <div class="footer">
-        Data sourced from <strong>FFS Gaming</strong> MTA server. <span id="footerUpdate">-</span><br>
-        <a href="https://github.com/pykellog/carball-rating-system" target="_blank" rel="noopener noreferrer">🔗 GitHub Repository</a>
+    <!-- Global Footer -->
+    <div class="app-footer" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px;">
+        <div>Data sourced from <strong>FFS Gaming</strong> MTA server.</div>
+        <div id="footerUpdate">Previous Update: -</div>
+        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.4);">
+            Designed & Built by 
+            <span style="background: linear-gradient(120deg, #465828, #e5f9cf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 600;">"keLLog</span>
+        </div>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <script>
 let dataTable; let globalPlayers = [];
-let previousData = {};
-let changedPlayers = new Set();
-let filterActive = false;
+let previousData = {}; let changedPlayers = new Set(); let filterActive = false;
+let searchTimeout = null;
+let previousUpdateDate = '-';
 
 function escapeHtml(text) {
     if (!text) return '?';
@@ -363,117 +269,63 @@ function parseQuotedCSV(line) {
     const result = []; let current = ''; let inQuotes = false;
     for (let i = 0; i < line.length; i++) {
         const char = line[i];
-        if (char === '"') { inQuotes = !inQuotes; } 
-        else if (char === ',' && !inQuotes) { result.push(current.trim()); current = ''; } 
-        else { current += char; }
+        if (char === '"') { inQuotes = !inQuotes; } else if (char === ',' && !inQuotes) { result.push(current.trim()); current = ''; } else { current += char; }
     }
     result.push(current.trim()); return result;
 }
 
 function getFlagHtml(countryCode) {
     if (!countryCode) return '';
-    
     if (typeof countryCode === 'string' && countryCode.length === 2 && /^[A-Za-z]{2}$/.test(countryCode)) {
-        return `<img src="flags/${countryCode.toLowerCase()}.svg" alt="${countryCode}" width="20" height="13" style="border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); vertical-align: middle;">`;
+        return `<img src="flags/${countryCode.toLowerCase()}.svg" alt="${countryCode}" width="20" height="14" style="border-radius: 2px; display: block;" loading="lazy">`;
     }
-    
     if (countryCode.length >= 2) {
         try {
-            const first = countryCode.codePointAt(0);
-            const second = countryCode.codePointAt(2);
-            
+            const first = countryCode.codePointAt(0); const second = countryCode.codePointAt(2);
             if (first >= 0x1F1E6 && first <= 0x1F1FF && second >= 0x1F1E6 && second <= 0x1F1FF) {
-                const country1 = String.fromCharCode(first - 0x1F1E6 + 65);
-                const country2 = String.fromCharCode(second - 0x1F1E6 + 65);
-                const countryCode2 = country1 + country2;
-                return `<img src="flags/${countryCode2.toLowerCase()}.svg" alt="${countryCode2}" width="20" height="13" style="border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); vertical-align: middle;">`;
+                const country1 = String.fromCharCode(first - 0x1F1E6 + 65); const country2 = String.fromCharCode(second - 0x1F1E6 + 65);
+                return `<img src="flags/${(country1 + country2).toLowerCase()}.svg" alt="${country1+country2}" width="20" height="14" style="border-radius: 2px; display: block;" loading="lazy">`;
             }
-        } catch (e) {
-            console.warn('Bayrak dönüşüm hatası:', countryCode, e);
-        }
+        } catch (e) { }
     }
-    
     return '';
 }
 
 function getChangeClass(current, previous) {
-    if (previous === undefined || previous === null || previous === '') return '';
-    
-    const cleanCurrent = String(current).replace(/,/g, '').trim();
-    const cleanPrev = String(previous).replace(/,/g, '').trim();
-    
-    const currentNum = parseFloat(cleanCurrent);
-    const prevNum = parseFloat(cleanPrev);
-    
-    if (isNaN(currentNum) || isNaN(prevNum)) return '';
-    
-    const diff = currentNum - prevNum;
-    if (Math.abs(diff) < 0.0001) return '';
-    
-    return diff > 0 ? 'change-up' : 'change-down';
+    if (!previous) return '';
+    const diff = parseFloat(String(current).replace(/,/g, '')) - parseFloat(String(previous).replace(/,/g, ''));
+    if (Math.abs(diff) < 0.0001 || isNaN(diff)) return '';
+    return diff > 0 ? 'change-text-up' : 'change-text-down';
 }
 
 function getChangeTag(current, previous, isNew) {
-    if (isNew) {
-        return `<span class="change-tag new">✦ NEW</span>`;
-    }
-    if (previous === undefined || previous === null || previous === '') return '';
-    
-    const cleanCurrent = String(current).replace(/,/g, '').trim();
-    const cleanPrev = String(previous).replace(/,/g, '').trim();
-    
-    const currentNum = parseFloat(cleanCurrent);
-    const prevNum = parseFloat(cleanPrev);
-    
-    if (isNaN(currentNum) || isNaN(prevNum)) return '';
-    
-    const diff = currentNum - prevNum;
-    if (Math.abs(diff) < 0.0001) return '';
-    
-    const sign = diff > 0 ? '↑' : '↓';
-    const cls = diff > 0 ? 'up' : 'down';
-    return `<span class="change-tag ${cls}">${sign}${Math.abs(diff).toFixed(1)}</span>`;
+    if (isNew) return `<span class="change-tag new">NEW</span>`;
+    if (!previous) return '';
+    const diff = parseFloat(String(current).replace(/,/g, '')) - parseFloat(String(previous).replace(/,/g, ''));
+    if (Math.abs(diff) < 0.0001 || isNaN(diff)) return '';
+    return `<span class="change-tag ${diff > 0 ? 'up' : 'down'}">${diff > 0 ? '▲' : '▼'} ${Math.abs(diff).toFixed(1)}</span>`;
 }
 
 function isPlayerChanged(current, previous) {
     if (!previous) return true;
-    
-    const compareFields = [
-        'Rating', 'Raw_Skill', 'Multiplier', 'Matches', 'Wins', 'Losses',
-        'Win_Rate', 'Win_Loss_Ratio', 'Goals_PG', 'Assists_PG', 'Saves_PG',
-        'OwnGoals_PG', 'Total_Goals', 'Total_Assists', 'Total_Saves',
-        'Total_OwnGoals', 'MVP_Count', 'MVP_Per_Win', 'Offensive_Ratio',
-        'Defensive_Ratio', 'Playmaker_Ratio', 'Efficiency', 'Impact',
-        'Goalkeeping_Index', 'Defense_Reliability', 'Total_Actions'
-    ];
-    
-    for (let field of compareFields) {
-        const currentVal = String(current[field] || '').replace(/,/g, '').trim();
-        const prevVal = String(previous[field] || '').replace(/,/g, '').trim();
-        
-        const currentNum = parseFloat(currentVal);
-        const prevNum = parseFloat(prevVal);
-        
-        if (!isNaN(currentNum) && !isNaN(prevNum)) {
-            if (Math.abs(currentNum - prevNum) > 0.0001) {
-                return true;
-            }
-        } else if (currentVal !== prevVal) {
-            return true;
-        }
+    const fields = ['Rating', 'Raw_Skill', 'Multiplier', 'Matches', 'Wins', 'Losses', 'Win_Rate', 'Win_Loss_Ratio', 'Goals_PG', 'Assists_PG', 'Saves_PG', 'OwnGoals_PG', 'Total_Goals', 'Total_Assists', 'Total_Saves', 'Total_OwnGoals', 'MVP_Count', 'MVP_Per_Win', 'Offensive_Ratio', 'Defensive_Ratio', 'Playmaker_Ratio', 'Efficiency', 'Impact', 'Goalkeeping_Index', 'Defense_Reliability', 'Total_Actions'];
+    for (let f of fields) {
+        const c = parseFloat(String(current[f] || '').replace(/,/g, '')); const p = parseFloat(String(previous[f] || '').replace(/,/g, ''));
+        if (!isNaN(c) && !isNaN(p) && Math.abs(c - p) > 0.0001) return true;
+        if (isNaN(c) && isNaN(p) && current[f] !== previous[f]) return true;
     }
-    
     return false;
 }
 
-// ===== ORTAK EŞLEŞTİRME FONKSİYONU =====
 function findPreviousPlayer(nick) {
     if (!nick) return null;
     
+    // 1. Direkt eşleşme
     if (previousData[nick]) {
         return previousData[nick];
     }
     
+    // 2. Büyük/küçük harf duyarsız
     const lowerNick = nick.toLowerCase();
     for (let key in previousData) {
         if (key.toLowerCase() === lowerNick) {
@@ -481,6 +333,7 @@ function findPreviousPlayer(nick) {
         }
     }
     
+    // 3. Parantez içindeki (XXXK) kısmını yok say (EN ÖNEMLİ KISIM)
     const baseNick = nick.replace(/ \(\d+K\)/, '').toLowerCase();
     for (let key in previousData) {
         const keyBase = key.replace(/ \(\d+K\)/, '').toLowerCase();
@@ -497,294 +350,275 @@ async function loadPreviousData() {
         const isLocal = window.location.hostname === 'localhost' || 
                         window.location.hostname === '127.0.0.1' ||
                         window.location.hostname === '';
-
-        const prevCsvUrl = isLocal 
-            ? '../data/players_previous.csv'
-            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players_previous.csv';
-
-        const response = await fetch(prevCsvUrl + '?t=' + new Date().getTime());
-        if (response.ok) {
-            const csvText = await response.text();
-            const lines = csvText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+        
+        const url = isLocal 
+            ? '../data/players_previous.csv?t=' + new Date().getTime()
+            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players_previous.csv?t=' + new Date().getTime();
+        
+        console.log('Loading previous from:', url);
+        const res = await fetch(url);
+        if (res.ok) {
+            const lines = (await res.text()).split('\n').map(l => l.trim()).filter(l => l.length > 0);
             if (lines.length < 3) return;
             
-            // Satır 0: Tarih
-            const updateDate = lines[0].replace(/^"|"$/g, '').trim();
-            
-            // Satır 1: PlayerCount
-            const playerCountLine = lines[1].replace(/^"|"$/g, '').trim();
-            const playerCount = parseInt(playerCountLine.replace('PlayerCount: ', ''));
-            
-            // Satır 2: Header
-            const headerValues = parseQuotedCSV(lines[2]);
-            const headers = headerValues.map(h => h.replace(/^"|"$/g, '').trim());
-            
-            const prevPlayers = {};
-            for (let i = 3; i < lines.length; i++) {
-                const values = parseQuotedCSV(lines[i]);
-                if (values.length < 4) continue;
-                const player = {};
-                headers.forEach((header, index) => { 
-                    player[header] = values[index] ? values[index].replace(/^"|"$/g, '').trim() : ''; 
-                });
-                if (player['Nick']) {
-                    prevPlayers[player['Nick']] = player;
-                }
+            if (lines.length > 0) {
+                previousUpdateDate = lines[0].replace(/^"|"$/g, '').replace(/:(\d{2}) UTC$/, ' UTC');
+                document.getElementById('footerUpdate').textContent = `Previous Update: ${previousUpdateDate}`;
             }
-            previousData = prevPlayers;
-            previousData._updateDate = updateDate;
-            previousData._playerCount = playerCount;
+            
+            const headers = parseQuotedCSV(lines[2]).map(h => h.replace(/^"|"$/g, ''));
+            for (let i = 3; i < lines.length; i++) {
+                const vals = parseQuotedCSV(lines[i]);
+                if (vals.length < 4) continue;
+                const p = {}; headers.forEach((h, idx) => p[h] = vals[idx] ? vals[idx].replace(/^"|"$/g, '') : '');
+                if (p['Nick']) previousData[p['Nick']] = p;
+            }
         }
-    } catch (e) {
-        console.error('Error loading previous data:', e);
-    }
+    } catch (e) {}
 }
 
 function getRoleEmoji(role) {
-    if (!role) return '🔄';
-    if (role.includes('Goalkeeper')) return '🧤';
-    if (role.includes('Striker')) return '⚽';
-    if (role.includes('Playmaker') || role.includes('MVP') || role.includes('Midfielder')) return '🎯';
-    return '🔄';
+    if (!role) return '🔄'; if (role.includes('Goalkeeper')) return '🧤'; if (role.includes('Striker')) return '⚽';
+    if (role.includes('Playmaker') || role.includes('MVP') || role.includes('Midfielder')) return '🎯'; return '🔄';
 }
 
 function toggleFilter() {
     filterActive = !filterActive;
     const btn = document.getElementById('filterChangedBtn');
-    
-    if (filterActive) {
-        btn.classList.add('active');
-        btn.innerHTML = `📊 Show Changes <span class="count" id="changedCount">${changedPlayers.size}</span> ✕`;
-        rebuildTable(true);
-    } else {
-        btn.classList.remove('active');
-        btn.innerHTML = `📊 Show Changes <span class="count" id="changedCount">${changedPlayers.size}</span>`;
-        rebuildTable(false);
-    }
+    if (filterActive) { btn.classList.add('active'); btn.innerHTML = `📊 Changes <span class="count">${changedPlayers.size}</span> ✕`; } 
+    else { btn.classList.remove('active'); btn.innerHTML = `📊 Changes <span class="count">${changedPlayers.size}</span>`; }
+    rebuildTable(filterActive);
+}
+
+function formatChildRow(p, prev) {
+    const r = (emoji, label, valKey, isPercent = false) => {
+        let val = escapeHtml(p[valKey] || '0'); if(isPercent && val !== '0') val += '%';
+        let cls = getChangeClass(p[valKey], prev?.[valKey]);
+        return `<div class="stat-row"><span class="stat-label">${emoji} ${label}</span><span class="stat-val ${cls}">${val}</span></div>`;
+    };
+    return `
+    <div class="details-wrapper">
+        <div class="details-grid">
+            
+            <div class="stat-card card-core">
+                <div class="card-header">👑 MVP & Core</div>
+                ${r('🏆', 'Win Rate', 'Win_Rate', true)}
+                ${r('🏅', 'MVP Count', 'MVP_Count')}
+                ${r('⚡', 'Impact', 'Impact')}
+                ${r('⚙️', 'Efficiency', 'Efficiency')}
+            </div>
+
+            <div class="stat-card card-offense">
+                <div class="card-header" style="color:#f87171;">🔥 Offense</div>
+                ${r('⚽', 'Goals / Game', 'Goals_PG')}
+                ${r('🥅', 'Total Goals', 'Total_Goals')}
+                ${r('🗡️', 'Offensive Ratio', 'Offensive_Ratio', true)}
+                ${r('🎬', 'Total Actions', 'Total_Actions')}
+            </div>
+
+            <div class="stat-card card-defense">
+                <div class="card-header" style="color:#38bdf8;">🛡️ Defense</div>
+                ${r('🧤', 'Saves / Game', 'Saves_PG')}
+                ${r('🧱', 'Total Saves', 'Total_Saves')}
+                ${r('🛡️', 'Def. Reliability', 'Defense_Reliability')}
+                ${r('🏰', 'GK Index', 'Goalkeeping_Index', true)}
+            </div>
+
+            <div class="stat-card card-support">
+                <div class="card-header" style="color:#c084fc;">🤝 Support</div>
+                ${r('🤝', 'Assists / Game', 'Assists_PG')}
+                ${r('➕', 'Total Assists', 'Total_Assists')}
+                ${r('🧠', 'Playmaker Ratio', 'Playmaker_Ratio', true)}
+                ${r('⚠️', 'Own Goals', 'Total_OwnGoals')}
+            </div>
+
+        </div>
+    </div>`;
 }
 
 function rebuildTable(onlyChanged) {
-    if (dataTable) {
-        dataTable.destroy();
-        dataTable = null;
-    }
+    if (dataTable) { $('#playersTable tbody').off('click', 'tr.master-row'); dataTable.destroy(); }
+    const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+    let filteredPlayers = onlyChanged ? globalPlayers.filter(p => changedPlayers.has(p['Nick'])) : globalPlayers;
     
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
-    
-    let filteredPlayers = globalPlayers;
-    if (onlyChanged) {
-        filteredPlayers = globalPlayers.filter(p => changedPlayers.has(p['Nick']));
-    }
-    
-    filteredPlayers.forEach((player, index) => {
+    const fragment = document.createDocumentFragment();
+
+    filteredPlayers.forEach((player) => {
         const realRank = globalPlayers.indexOf(player) + 1;
-        
         const tier = player['Tier'] || 'E-Tier'; 
-        let tierClass = 'E';
-        if (tier.includes('S')) tierClass = 'S'; 
-        else if (tier.includes('A')) tierClass = 'A'; 
-        else if (tier.includes('B')) tierClass = 'B'; 
-        else if (tier.includes('C')) tierClass = 'C'; 
-        else if (tier.includes('D')) tierClass = 'D';
-        
-        const flagHtml = getFlagHtml(player['Country'] || '');
-        const safeNick = escapeHtml(player['Nick'] || '?');
-        const safeSiteName = escapeHtml(player['SiteName'] || '?');
-        const safeRole = escapeHtml(player['Role'] || '?');
-        const roleWithEmoji = getRoleEmoji(player['Role'] || '') + ' ' + safeRole;
-        
+        let tierClass = tier.includes('S') ? 'S' : tier.includes('A') ? 'A' : tier.includes('B') ? 'B' : tier.includes('C') ? 'C' : tier.includes('D') ? 'D' : 'E';
         let prev = findPreviousPlayer(player['Nick']);
-        
         const isChanged = changedPlayers.has(player['Nick']);
-        const isNew = !prev;
         
+        // Tüm sütunlar için change class'larını hesapla
         const ratingClass = getChangeClass(player['Rating'], prev?.['Rating']);
         const skillClass = getChangeClass(player['Raw_Skill'], prev?.['Raw_Skill']);
-        const multiplierClass = getChangeClass(player['Multiplier'], prev?.['Multiplier']);
         const matchesClass = getChangeClass(player['Matches'], prev?.['Matches']);
         const winsClass = getChangeClass(player['Wins'], prev?.['Wins']);
         const lossesClass = getChangeClass(player['Losses'], prev?.['Losses']);
-        const winRateClass = getChangeClass(player['Win_Rate'], prev?.['Win_Rate']);
-        const wlRatioClass = getChangeClass(player['Win_Loss_Ratio'], prev?.['Win_Loss_Ratio']);
-        const goalsClass = getChangeClass(player['Goals_PG'], prev?.['Goals_PG']);
-        const assistsClass = getChangeClass(player['Assists_PG'], prev?.['Assists_PG']);
-        const savesClass = getChangeClass(player['Saves_PG'], prev?.['Saves_PG']);
-        const ogClass = getChangeClass(player['OwnGoals_PG'], prev?.['OwnGoals_PG']);
-        const totalGoalsClass = getChangeClass(player['Total_Goals'], prev?.['Total_Goals']);
-        const totalAssistsClass = getChangeClass(player['Total_Assists'], prev?.['Total_Assists']);
-        const totalSavesClass = getChangeClass(player['Total_Saves'], prev?.['Total_Saves']);
-        const totalOGClass = getChangeClass(player['Total_OwnGoals'], prev?.['Total_OwnGoals']);
-        const mvpCountClass = getChangeClass(player['MVP_Count'], prev?.['MVP_Count']);
-        const mvpWinClass = getChangeClass(player['MVP_Per_Win'], prev?.['MVP_Per_Win']);
+        const goalsClass = getChangeClass(player['Total_Goals'], prev?.['Total_Goals']);
+        const assistsClass = getChangeClass(player['Total_Assists'], prev?.['Total_Assists']);
+        const savesClass = getChangeClass(player['Total_Saves'], prev?.['Total_Saves']);
+        const mvpClass = getChangeClass(player['MVP_Count'], prev?.['MVP_Count']);
         const offClass = getChangeClass(player['Offensive_Ratio'], prev?.['Offensive_Ratio']);
         const defClass = getChangeClass(player['Defensive_Ratio'], prev?.['Defensive_Ratio']);
-        const playmakerClass = getChangeClass(player['Playmaker_Ratio'], prev?.['Playmaker_Ratio']);
-        const effClass = getChangeClass(player['Efficiency'], prev?.['Efficiency']);
-        const impactClass = getChangeClass(player['Impact'], prev?.['Impact']);
-        const gkClass = getChangeClass(player['Goalkeeping_Index'], prev?.['Goalkeeping_Index']);
-        const defRelClass = getChangeClass(player['Defense_Reliability'], prev?.['Defense_Reliability']);
-        const totalActionsClass = getChangeClass(player['Total_Actions'], prev?.['Total_Actions']);
-        
-        const changeTag = getChangeTag(player['Rating'], prev?.['Rating'], isNew);
+        const playClass = getChangeClass(player['Playmaker_Ratio'], prev?.['Playmaker_Ratio']);
         
         const tr = document.createElement('tr');
-        tr.setAttribute('data-nick', player['Nick']);
-        if (isChanged) {
-            tr.classList.add('changed-player');
-        }
-        
+        tr.className = "master-row" + (isChanged ? " changed-player" : "");
+        $(tr).data('player', player); $(tr).data('prev', prev);
+
         tr.innerHTML = `
-            <td class="rank-col">${realRank}</td>
-            <td class="flag-col">${flagHtml}</td>
-            <td class="nick-col" title="${safeNick}">${safeNick} ${changeTag}</td>
-            <td class="sitename-col"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'] || '')}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; cursor: pointer;" title="Click and Open FFS Gaming Profile">${safeSiteName}</a></td>
-            <td class="rating-col ${ratingClass}">${escapeHtml(player['Rating'] || '?')}</td>
-            <td class="${skillClass}">${escapeHtml(player['Raw_Skill'] || '?')}</td>
-            <td class="${multiplierClass}">${escapeHtml(player['Multiplier'] || '?')}</td>
-            <td class="role-col">${roleWithEmoji}</td>
-            <td><span class="badge badge-${tierClass}">${escapeHtml(tier)}</span></td>
-            <td class="${matchesClass}">${escapeHtml(player['Matches'] || '?')}</td>
-            <td class="${winsClass}">${escapeHtml(player['Wins'] || '?')}</td>
-            <td class="${lossesClass}">${escapeHtml(player['Losses'] || '?')}</td>
-            <td class="${winRateClass}">${escapeHtml(player['Win_Rate'] || '?')}%</td>
-            <td class="${wlRatioClass}">${escapeHtml(player['Win_Loss_Ratio'] || '?')}</td>
-            <td class="${goalsClass}">${escapeHtml(player['Goals_PG'] || '?')}</td>
-            <td class="${assistsClass}">${escapeHtml(player['Assists_PG'] || '?')}</td>
-            <td class="${savesClass}">${escapeHtml(player['Saves_PG'] || '?')}</td>
-            <td class="${ogClass}">${escapeHtml(player['OwnGoals_PG'] || '?')}</td>
-            <td class="${totalGoalsClass}">${escapeHtml(player['Total_Goals'] || '?')}</td>
-            <td class="${totalAssistsClass}">${escapeHtml(player['Total_Assists'] || '?')}</td>
-            <td class="${totalSavesClass}">${escapeHtml(player['Total_Saves'] || '?')}</td>
-            <td class="${totalOGClass}">${escapeHtml(player['Total_OwnGoals'] || '?')}</td>
-            <td class="${mvpCountClass}">${escapeHtml(player['MVP_Count'] || '?')}</td>
-            <td class="${mvpWinClass}">${escapeHtml(player['MVP_Per_Win'] || '?')}%</td>
-            <td class="${offClass}">${escapeHtml(player['Offensive_Ratio'] || '?')}%</td>
-            <td class="${defClass}">${escapeHtml(player['Defensive_Ratio'] || '?')}%</td>
-            <td class="${playmakerClass}">${escapeHtml(player['Playmaker_Ratio'] || '?')}%</td>
-            <td class="${effClass}">${escapeHtml(player['Efficiency'] || '?')}</td>
-            <td class="${impactClass}">${escapeHtml(player['Impact'] || '?')}</td>
-            <td class="${gkClass}">${escapeHtml(player['Goalkeeping_Index'] || '?')}%</td>
-            <td class="${defRelClass}">${escapeHtml(player['Defense_Reliability'] || '?')}</td>
-            <td class="${totalActionsClass}">${escapeHtml(player['Total_Actions'] || '?')}</td>
+            <td class="col-rank">${realRank}</td>
+            <td>
+                <div class="col-player">
+                    <div>${getFlagHtml(player['Country'])}</div>
+                    <div class="player-info">
+                        <div class="player-nick">${escapeHtml(player['Nick'])} ${getChangeTag(player['Rating'], prev?.['Rating'], !prev)}</div>
+                        <div class="player-user"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'])}" target="_blank">@${escapeHtml(player['SiteName'])}</a></div>
+                    </div>
+                </div>
+            </td>
+            <td class="col-role" title="${escapeHtml(player['Role'])}">${getRoleEmoji(player['Role'])}</td>
+            <td class="col-rating ${ratingClass}">${escapeHtml(player['Rating'])}</td>
+            <td class="col-skill ${skillClass}">${escapeHtml(player['Raw_Skill'])}</td>
+            <td class="col-tier"><span class="badge badge-${tierClass}">${escapeHtml(tier)}</span></td>
+            <td class="col-stat ${matchesClass}">${escapeHtml(player['Matches'])}</td>
+            <td class="col-win ${winsClass}">${escapeHtml(player['Wins'])}</td>
+            <td class="col-loss ${lossesClass}">${escapeHtml(player['Losses'])}</td>
+            <td class="col-stat ${goalsClass}">${escapeHtml(player['Total_Goals'])}</td>
+            <td class="col-stat ${assistsClass}">${escapeHtml(player['Total_Assists'])}</td>
+            <td class="col-stat ${savesClass}">${escapeHtml(player['Total_Saves'])}</td>
+            <td class="col-stat ${mvpClass}">${escapeHtml(player['MVP_Count'])}</td>
+            <td class="col-stat ${offClass}">${escapeHtml(player['Offensive_Ratio'])}%</td>
+            <td class="col-stat ${defClass}">${escapeHtml(player['Defensive_Ratio'])}%</td>
+            <td class="col-stat ${playClass}">${escapeHtml(player['Playmaker_Ratio'])}%</td>
+            <td style="text-align:center; width: 20px;"><span class="expand-icon">▶</span></td>
         `;
-        tbody.appendChild(tr);
+        fragment.appendChild(tr);
     });
+
+    tbody.appendChild(fragment);
     
-    // === TIER SIRALAMA FONKSİYONU ===
     jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
-        'tier-pre': function(data) {
-            const tierMap = { 'S-Tier': 1, 'A-Tier': 2, 'B-Tier': 3, 'C-Tier': 4, 'D-Tier': 5, 'E-Tier': 6 };
-            const cleanTier = String(data).replace(/<[^>]*>/g, '').trim();
-            return tierMap[cleanTier] || 99;
-        }
-    });
-    
-    // === NICK SIRALAMA FONKSİYONU (parantez içindeki puana göre) ===
-    jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
-        'nick-score-pre': function(data) {
-            // "fycnamed (791K)" içinden 791K veya 791'i bul
-            const match = String(data).match(/\((\d+)(K)?\)/);
-            if (match) {
-                let score = parseInt(match[1]);
-                if (match[2] === 'K') {
-                    score = score * 1000; // K = bin
-                }
-                return score;
-            }
-            return 0; // Puan yoksa 0
-        }
+        'tier-pre': function(data) { const map = { 'S-Tier':1, 'A-Tier':2, 'B-Tier':3, 'C-Tier':4, 'D-Tier':5, 'E-Tier':6 }; return map[String(data).replace(/<[^>]*>/g, '').trim()] || 99; },
+        'nick-score-pre': function(data) { const match = String(data).match(/\((\d+)(K)?\)/); return match ? parseInt(match[1]) * (match[2] === 'K' ? 1000 : 1) : 0; },
+        'num-fmt-pre': function(data) { return parseFloat(String(data).replace(/<[^>]*>/g, '').replace(/,/g, '').replace(/%/g, '')) || 0; }
     });
     
     dataTable = $('#playersTable').DataTable({
-        pageLength: 15, 
-        scrollX: false, 
+        pageLength: 50, 
         autoWidth: false,
         order: [[0, 'asc']], 
-        searching: true, 
         columnDefs: [
             { type: 'num', targets: 0 },
-            { type: 'tier', targets: 8 },
-            { type: 'nick-score', targets: 2 } // Nick sütunu (3. sütun, index 2)
+            { type: 'nick-score', targets: 1 },
+            { type: 'string', targets: 2 },
+            { type: 'num-fmt', targets: 3 },
+            { type: 'num-fmt', targets: 4 },
+            { type: 'tier', targets: 5 },
+            { type: 'num-fmt', targets: 6 },
+            { type: 'num-fmt', targets: 7 },
+            { type: 'num-fmt', targets: 8 },
+            { type: 'num-fmt', targets: 9 },
+            { type: 'num-fmt', targets: 10 },
+            { type: 'num-fmt', targets: 11 },
+            { type: 'num-fmt', targets: 12 },
+            { type: 'num-fmt', targets: 13 },
+            { type: 'num-fmt', targets: 14 },
+            { type: 'num-fmt', targets: 15 },
+            { orderable: false, targets: 16 }
         ],
-        dom: '<"top"f>rt<"bottom"lip>', 
-        pagingType: 'simple_numbers'
+        dom: 'rt' 
     });
-    
-    $('#customSearch').off('keyup').on('keyup', function() { 
-        dataTable.search(this.value).draw(); 
+
+    $('#customSearch').off('input').on('input', function() {
+        const val = this.value;
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            dataTable.search(val).draw();
+            updateCustomPagination();
+            document.getElementById('tableScrollContainer').scrollTop = 0;
+        }, 200);
     });
+
+    $('#playersTable tbody').on('click', 'tr.master-row', function () {
+        var tr = $(this); var row = dataTable.row(tr);
+        if (row.child.isShown()) { row.child.hide(); tr.removeClass('shown expanded-row-bg'); } 
+        else {
+            dataTable.rows('.shown').nodes().to$().each(function() { dataTable.row(this).child.hide(); $(this).removeClass('shown expanded-row-bg'); });
+            row.child(formatChildRow(tr.data('player'), tr.data('prev'))).show(); tr.addClass('shown expanded-row-bg');
+            tr[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+
+    updateCustomPagination();
+    dataTable.on('draw', function () { 
+        updateCustomPagination();
+        document.getElementById('tableScrollContainer').scrollTop = 0;
+    });
+}
+
+function updateCustomPagination() {
+    let info = dataTable.page.info();
+    let container = document.getElementById('customPagination');
+    container.innerHTML = `
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+            Showing ${info.start + 1} to ${info.end} of ${info.recordsDisplay} players
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button onclick="goToPage('previous')" ${info.page === 0 ? 'disabled' : ''} style="background:rgba(24,24,27,0.8); color:white; border:1px solid var(--border-color); padding:4px 12px; border-radius:4px; cursor:${info.page === 0 ? 'not-allowed' : 'pointer'}; opacity:${info.page === 0 ? '0.5' : '1'};">Prev</button>
+            <button onclick="goToPage('next')" ${info.page === info.pages - 1 ? 'disabled' : ''} style="background:rgba(24,24,27,0.8); color:white; border:1px solid var(--border-color); padding:4px 12px; border-radius:4px; cursor:${info.page === info.pages - 1 ? 'not-allowed' : 'pointer'}; opacity:${info.page === info.pages - 1 ? '0.5' : '1'};">Next</button>
+        </div>
+    `;
+}
+
+function goToPage(direction) {
+    dataTable.page(direction).draw('page');
+    document.getElementById('tableScrollContainer').scrollTop = 0;
 }
 
 async function loadData() {
     try {
         await loadPreviousData();
-        
         const isLocal = window.location.hostname === 'localhost' || 
                         window.location.hostname === '127.0.0.1' ||
                         window.location.hostname === '';
-
-        const csvUrl = isLocal 
-            ? '../data/players.csv'
-            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players.csv';
-
-        const response = await fetch(csvUrl);
-        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         
-        const csvText = await response.text();
-        const lines = csvText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-        if (lines.length < 3) throw new Error('CSV file is empty or has only header.');
+        const url = isLocal 
+            ? '../data/players.csv?t=' + new Date().getTime()
+            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players.csv?t=' + new Date().getTime();
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const lines = (await res.text()).split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length < 3) throw new Error('CSV is empty.');
         
-        // Satır 0: Tarih
-        const updateDate = lines[0].replace(/^"|"$/g, '').trim();
+        const updateDate = lines[0].replace(/^"|"$/g, '').replace(/:(\d{2}) UTC$/, ' UTC');
+        const playerCount = parseInt(lines[1].replace(/^"|"$/g, '').replace('PlayerCount: ', ''));
+        const headers = parseQuotedCSV(lines[2]).map(h => h.replace(/^"|"$/g, ''));
         
-        // Satır 1: PlayerCount
-        const playerCountLine = lines[1].replace(/^"|"$/g, '').trim();
-        const playerCount = parseInt(playerCountLine.replace('PlayerCount: ', ''));
-        
-        // Satır 2: Header
-        const headerValues = parseQuotedCSV(lines[2]);
-        const headers = headerValues.map(h => h.replace(/^"|"$/g, '').trim());
-        
-        globalPlayers = [];
-        changedPlayers.clear();
-        
+        globalPlayers = []; changedPlayers.clear();
         for (let i = 3; i < lines.length; i++) {
-            const values = parseQuotedCSV(lines[i]);
-            if (values.length < 4) continue;
-            const player = {};
-            headers.forEach((header, index) => { 
-                player[header] = values[index] ? values[index].replace(/^"|"$/g, '').trim() : ''; 
-            });
-            globalPlayers.push(player);
+            const vals = parseQuotedCSV(lines[i]);
+            if (vals.length < 4) continue;
+            const p = {}; headers.forEach((h, idx) => p[h] = vals[idx] ? vals[idx].replace(/^"|"$/g, '') : '');
+            globalPlayers.push(p);
         }
         
-        if (globalPlayers.length === 0) throw new Error('No data rows found.');
+        globalPlayers.forEach((p) => { if (isPlayerChanged(p, findPreviousPlayer(p['Nick']))) changedPlayers.add(p['Nick']); });
         
-        globalPlayers.forEach((player) => {
-            let prev = findPreviousPlayer(player['Nick']);
-            if (isPlayerChanged(player, prev)) {
-                changedPlayers.add(player['Nick']);
-            }
-        });
-        
-        const formattedDate = updateDate.replace(/:(\d{2}) UTC$/, ' UTC');
-        
-        document.getElementById('lastUpdate').textContent = formattedDate;
-        document.getElementById('footerUpdate').textContent = `Last Update: ${formattedDate}`;
+        document.getElementById('lastUpdate').textContent = updateDate;
         document.getElementById('playerCount').textContent = playerCount;
         document.getElementById('changedCount').textContent = changedPlayers.size;
         
-        rebuildTable(false);
+        if (document.getElementById('footerUpdate').textContent === 'Previous Update: -' && previousUpdateDate !== '-') {
+            document.getElementById('footerUpdate').textContent = `Previous Update: ${previousUpdateDate}`;
+        }
         
-    } catch (error) {
-        document.getElementById('tableBody').innerHTML = `<tr><td colspan="33" style="padding: 30px; color: #e74c3c; text-align: center;">⚠️ Referee stopped the match! Error loading data.<br><small>${error.message}</small></td></tr>`;
-    }
+        rebuildTable(false);
+    } catch (err) { document.getElementById('tableBody').innerHTML = `<tr><td colspan="17" style="padding: 3rem; color: #f87171; text-align: center;">⚠️ Error loading data.<br><small>${err.message}</small></td></tr>`; }
 }
-
-$(document).ready(function() {
-    loadData();
-});
+$(document).ready(function() { loadData(); });
 
 document.addEventListener("DOMContentLoaded", function () {
     const searchBox = document.getElementById("customSearch");
