@@ -140,7 +140,7 @@
             display: flex; 
             align-items: center; 
             gap: 6px; 
-            width: 220px;  /* ✅ Yeterli genişlik, tam isim çıksın */
+            width: 230px;
             min-width: 160px;
             max-width: 280px;
         }
@@ -156,6 +156,11 @@
             align-items: center; 
             gap: 4px; 
             white-space: nowrap;
+        }
+        .player-trend-icon {
+            font-size: 0.85rem;
+            margin-left: 2px;
+            cursor: default;
         }
         .player-user { 
             font-size: 0.7rem; 
@@ -353,6 +358,7 @@
             table.dataTable td { font-size: 0.8rem !important; padding: 0.3rem 0.2rem !important; }
             .player-nick { font-size: 0.7rem; }
             .player-user { font-size: 0.5rem; }
+            .player-trend-icon { font-size: 0.7rem; }
         }
     </style>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="adefbdcd-a363-4714-8f6d-86f7cd379c8c"></script>
@@ -691,6 +697,52 @@ document.addEventListener('mousemove', function(e) {
 });
 
 // ============================================================
+// TREND TESPİT SİSTEMİ (YENİ)
+// ============================================================
+function getPlayerTrend(current, previous) {
+    // Yeni oyuncu
+    if (!previous) return { trend: 'new', icon: '🆕', label: 'New Player', color: '#38bdf8' };
+    
+    let improvements = 0;
+    let declines = 0;
+    
+    const metrics = [
+        { key: 'Win_Rate', higher: true },
+        { key: 'Goals_PG', higher: true },
+        { key: 'Assists_PG', higher: true },
+        { key: 'Saves_PG', higher: true },
+        { key: 'MVP_Win_Rate', higher: true },
+        { key: 'Win_Loss_Ratio', higher: true }
+    ];
+    
+    metrics.forEach(m => {
+        const currentVal = parseFloat(String(current[m.key] || '0').replace(/,/g, ''));
+        const prevVal = parseFloat(String(previous[m.key] || '0').replace(/,/g, ''));
+        
+        if (!isNaN(currentVal) && !isNaN(prevVal) && currentVal !== prevVal) {
+            // Değişim %1'den fazla ise say
+            const changePercent = Math.abs((currentVal - prevVal) / (prevVal || 1) * 100);
+            if (changePercent > 1) {
+                if (currentVal > prevVal) {
+                    improvements++;
+                } else {
+                    declines++;
+                }
+            }
+        }
+    });
+    
+    // En az 2 metrikte belirgin iyileşme/düşüş
+    if (improvements >= 2 && improvements > declines) {
+        return { trend: 'up', icon: '📈', label: 'Performance Improving', color: '#10b981' };
+    } else if (declines >= 2 && declines > improvements) {
+        return { trend: 'down', icon: '📉', label: 'Performance Declining', color: '#f87171' };
+    } else {
+        return { trend: 'stable', icon: '➡️', label: 'Performance Stable', color: '#fbbf24' };
+    }
+}
+
+// ============================================================
 // DATATABLES VE DİĞER FONKSİYONLAR
 // ============================================================
 let dataTable; let globalPlayers = [];
@@ -961,6 +1013,9 @@ function rebuildTable(onlyChanged) {
         let prev = findPreviousPlayer(player['Nick'], player['UserID']);
         const isChanged = changedPlayers.has(player['Nick']);
         
+        // ✅ TREND TESPİTİ (YENİ)
+        const trend = getPlayerTrend(player, prev);
+        
         const top3Roles = getTop3Roles(player['All_Roles']);
         const roleTooltip = top3Roles.map((r, i) => `#${i+1} ${r.name}`).join(' | ');
         const roleEmojisHtml = top3Roles.map(r => `<span>${r.emoji}</span>`).join('');
@@ -981,13 +1036,18 @@ function rebuildTable(onlyChanged) {
         tr.className = "master-row" + (isChanged ? " changed-player" : "");
         $(tr).data('player', player); $(tr).data('prev', prev);
 
+        // ✅ TREND İKONU EKLENDİ (YENİ)
         tr.innerHTML = `
             <td class="col-rank">${realRank}</td>
             <td>
                 <div class="col-player">
                     <div>${getFlagHtml(player['Country'])}</div>
                     <div class="player-info">
-                        <div class="player-nick">${escapeHtml(player['Nick'])} ${getChangeTag(player['Matches'], prev?.['Matches'], !prev)}</div>
+                        <div class="player-nick">
+                            ${escapeHtml(player['Nick'])} 
+                            ${getChangeTag(player['Matches'], prev?.['Matches'], !prev)}
+                            ${trend.trend !== 'stable' ? `<span class="player-trend-icon" style="color: ${trend.color};" title="${trend.label}">${trend.icon}</span>` : ''}
+                        </div>
                         <div class="player-user"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'])}" target="_blank">@${escapeHtml(player['SiteName'])}</a></div>
                     </div>
                 </div>
