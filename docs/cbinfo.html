@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FFS Gaming CarBall Player Rankings</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg-base: #09090b;
+        --bg-card: rgba(18, 18, 20, 0.9);
+        --accent-green: #10b981;
+        --accent-glow: rgba(16, 185, 129, 0.15);
+        --text-main: #f4f4f5;
+        --text-muted: #a1a1aa;
+        --border-color: rgba(255, 255, 255, 0.08);
+        --warn: #f87171;
+        --gold: #fbbf24;
+        --blue: #38bdf8;
+        --purple: #c084fc;
+        --ffs-orange: #f97316;
+        --pink: #ec4899;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    /* === ARKAPLAN (INDEX.HTML İLE AYNI) === */
+    html, body {
+        width: 100%; min-height: 100%; margin: 0; padding: 0;
+        background-color: var(--bg-base);
+        font-family: 'Inter', sans-serif; color: var(--text-main); -webkit-font-smoothing: antialiased;
+        position: relative;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: 0;
+        background-image: 
+            radial-gradient(circle at center, rgba(9, 9, 11, 0.2) 0%, rgba(9, 9, 11, 0.6) 100%),
+            linear-gradient(to bottom, rgba(9, 9, 11, 0.2), rgba(9, 9, 11, 0.4)),
+            radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, transparent 70%),
+            url('bg2.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transform: translateZ(0);
+        pointer-events: none;
+    }
+
+    body {
+        position: relative;
+        z-index: 1;
+    }
+
+    .wrap { 
+        max-width: 1100px; 
+        margin: 0 auto; 
+        padding: 2rem 1rem 4rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header h1 {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: linear-gradient(120deg, #e7a922 0%, #ffffff 50%, #4d4d4d 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    header p { color: var(--text-muted); font-size: 0.95rem; max-width: 850px; margin: 0 auto; }
+    header strong.player-name { color: var(--gold); font-size: 1.05rem; }
+
+    .nav-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+        flex-wrap: wrap;
+    }
+    .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        padding: 0.5rem 1.2rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: rgba(255,255,255,0.03);
+    }
+    .nav-links a:hover {
+        background: rgba(255,255,255,0.08);
+        color: white;
+        border-color: rgba(255,255,255,0.2);
+    }
+    /* Sadece aktif olan sekme altın sarısı temasında açılacak */
+    .nav-links a.active {
+        background: rgba(231, 169, 34, 0.15) !important;
+        border-color: rgba(231, 169, 34, 0.5) !important; /* Görünürlük için çerçeveyi %50 yaptım */
+        color: #e7a922 !important;
+    }
+
+    .base-data {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .base-data h2 {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+    .base-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+        gap: 0.8rem;
+    }
+    .base-item {
+        background: rgba(0,0,0,0.4);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.8rem;
+        text-align: center;
+    }
+    .base-item .val { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.4rem; color: white; }
+    .base-item .lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; margin-top: 0.2rem; }
+    .base-item.total { 
+        background: rgba(231, 169, 34, 0.15) !important; 
+        border-color: rgba(231, 169, 34, 0.5) !important; 
+    }
+    .base-item.total .val { 
+        color: #e7a922 !important; 
+    }
+    .base-item.void { opacity: 0.4; border-color: rgba(255,255,255,0.1); }
+    .base-item.void .val { color: #555; text-decoration: line-through; }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+    }
+
+    .section-title {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin: 3.5rem 0 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        grid-column: 1 / -1;
+    }
+
+    .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 1.4rem;
+        position: relative;
+        border-left: 4px solid var(--accent-green);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .card:hover { background: rgba(28,28,32,0.9); }
+    .card.blue-card { border-left-color: var(--blue); }
+    .card.gold-card { border-left-color: var(--gold); }
+    .card.purple-card { border-left-color: var(--purple); }
+    .card.orange-card { border-left-color: var(--ffs-orange); }
+    .card.pink-card { border-left-color: var(--pink); }
+
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 0.2rem;
+    }
+    .card-title-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+    .card-title {
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 700;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: white;
+    }
+    .card-subtitle {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-style: italic;
+        padding-left: 2.1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .card-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px; height: 26px;
+        background: rgba(16,185,129,0.15);
+        color: var(--accent-green);
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+    .blue-card .card-num { background: rgba(56,189,248,0.15); color: var(--blue); }
+    .gold-card .card-num { background: rgba(251,191,36,0.15); color: var(--gold); }
+    .purple-card .card-num { background: rgba(192,132,252,0.15); color: var(--purple); }
+    .orange-card .card-num { background: rgba(249,115,22,0.15); color: var(--ffs-orange); }
+    .pink-card .card-num { background: rgba(236,72,153,0.15); color: var(--pink); }
+
+    .formula {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 4px;
+        padding: 0.2rem 0.6rem;
+        white-space: nowrap;
+        height: fit-content;
+    }
+    .desc { 
+        color: #d4d4d8; 
+        font-size: 0.9rem; 
+        margin-bottom: 1.5rem; 
+        line-height: 1.6; 
+        background: rgba(0,0,0,0.2);
+        padding: 0.8rem 1rem;
+        border-radius: 6px;
+        border-left: 2px solid rgba(255,255,255,0.1);
+    }
+    .desc strong { color: var(--text-main); }
+
+    .example {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1rem;
+        background: rgba(0,0,0,0.4);
+        border-radius: 6px;
+        padding: 0.6rem 0.8rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    .example .calc { color: var(--text-muted); font-size: 0.85rem; }
+    .example .result { font-weight: 700; font-size: 1.2rem; color: var(--text-main); }
+    
+    .card .example .result { color: var(--accent-green); }
+    .blue-card .example .result { color: var(--blue); }
+    .gold-card .example .result { color: var(--gold); }
+    .purple-card .example .result { color: var(--purple); }
+    .orange-card .example .result { color: var(--ffs-orange); }
+    .pink-card .example .result { color: var(--pink); }
+
+    footer {
+        text-align: center;
+        margin-top: 4rem;
+        color: rgba(255,255,255,0.4);
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 900px) {
+        .grid-container { grid-template-columns: 1fr; }
+        .card-top { flex-direction: column; }
+        .formula { align-self: flex-start; margin-left: 2.1rem; margin-top: -0.5rem; margin-bottom: 0.5rem; }
+    }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <header>
+        <h1>CarBall Metric Guide</h1>
+        <p>Featuring exactly 36 derived formulas from raw data and comprehensive explanations on player analysis.</p>
+		<p>These specific sample data belong to the player <strong class="player-name">"keLLog</strong>.</p>
+    </header>
+
+    <div class="nav-links">
+        <a href="cbinfo.html" class="active">📊 36 Metrics</a>
+        <a href="cbinfo.html">🎯 9 Roles (Updating...)</a>
+    </div>
+
+    <div class="base-data">
+        <h2>📥 Analyzed Raw Data ("keLLog)</h2>
+        <div class="base-grid">
+            <div class="base-item"><div class="val">4,408</div><div class="lbl">🏆 Won</div></div>
+            <div class="base-item"><div class="val">5,865</div><div class="lbl">💀 Lost</div></div>
+            <div class="base-item"><div class="val">1,484</div><div class="lbl">🥇 MVP</div></div>
+            <div class="base-item"><div class="val">6,537</div><div class="lbl">⚽ Goals</div></div>
+            <div class="base-item"><div class="val">3,403</div><div class="lbl">🤝 Assists</div></div>
+            <div class="base-item"><div class="val">19,701</div><div class="lbl">🧤 Saves</div></div>
+            <div class="base-item total"><div class="val">10,273</div><div class="lbl">🎮 Total Matches</div></div>
+            <div class="base-item void"><div class="val">1,627</div><div class="lbl">⚠️ Own Goals</div></div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+
+        <!-- ================= SECTION 1: MATCH RESULTS & GENERAL RATES ================= -->
+        <div class="section-title">📊 1. Match Results & General Rates</div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">1</span>🏆 Win Rate</div>
+                    <div class="card-subtitle">Overall Win Percentage</div>
+                </div>
+                <div class="formula">Won ÷ Total Matches</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Indicates the percentage of all matches the player has won. Since teams are randomly formed in CarBall, a rate around 50% is perfectly normal. Values above 50% prove that the player can change the fate of the match and secure a win even when placed in a poorly-performing team.</div>
+            <div class="example"><span class="calc">4,408 ÷ 10,273</span><span class="result">42.91%</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">2</span>💀 Loss Rate</div>
+                    <div class="card-subtitle">Overall Loss Percentage</div>
+                </div>
+                <div class="formula">Lost ÷ Total Matches</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Indicates the percentage of matches lost. A high rate doesn't necessarily mean the player is "bad"; ping differences or inexperienced teammates directly lead to unavoidable losses. It provides a general picture of how often the player falls victim to bad team draws.</div>
+            <div class="example"><span class="calc">5,865 ÷ 10,273</span><span class="result">57.09%</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">3</span>⚖️ Win / Loss Ratio</div>
+                    <div class="card-subtitle">Win to Loss Ratio</div>
+                </div>
+                <div class="formula">Won ÷ Lost</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Shows how many wins are achieved for every 1 loss. If this number is 1.00, the player wins exactly as much as they lose. If it is below 1, losses outweigh wins in the player's history. It acts as a quick comparison metric between players.</div>
+            <div class="example"><span class="calc">4,408 ÷ 5,865</span><span class="result">0.752</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">4</span>📉 Loss / Win Ratio</div>
+                    <div class="card-subtitle">Loss to Win Ratio</div>
+                </div>
+                <div class="formula">Lost ÷ Won</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Calculates how many losses the player endures on average to secure 1 win. It is essentially a psychological "grind" metric; the higher this number, the more hardships and uncooperative teams the player has had to play through to achieve victory.</div>
+            <div class="example"><span class="calc">5,865 ÷ 4,408</span><span class="result">1.330</span></div>
+        </div>
+
+        <!-- ================= SECTION 2: PER MATCH AVERAGES ================= -->
+        <div class="section-title">⏱️ 2. Per Match Averages</div>
+
+        <div class="card blue-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">5</span>⚽ Goals per Match (GPM)</div>
+                    <div class="card-subtitle">Average Goals per Match</div>
+                </div>
+                <div class="formula">Goals ÷ Total Matches</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Determines the average number of goals the player scores in a standard 9-minute CarBall match. If you are drafting a "Striker" for your team, you should look directly at this number. Players with a GPM of 1.0 and above are considered elite scorers.</div>
+            <div class="example"><span class="calc">6,537 ÷ 10,273</span><span class="result">0.636 Goals</span></div>
+        </div>
+
+        <div class="card blue-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">6</span>🤝 Assists per Match (APM)</div>
+                    <div class="card-subtitle">Average Assists per Match</div>
+                </div>
+                <div class="formula">Assists ÷ Total Matches</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Shows how many scoring opportunities the player creates for teammates per match. It's used to identify team players who prefer passing over selfishly shooting at the goal. A high APM indicates exceptional "Playmaker / Midfielder" vision.</div>
+            <div class="example"><span class="calc">3,403 ÷ 10,273</span><span class="result">0.331 Assists</span></div>
+        </div>
+
+        <div class="card blue-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">7</span>🧤 Saves per Match (SPM)</div>
+                    <div class="card-subtitle">Average Saves per Match (Goalkeeper Score)</div>
+                </div>
+                <div class="formula">Saves ÷ Total Matches</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Shows how many opponent shots are denied per match. In CarBall dynamics, if this number is well above 1.5 (here it is almost 2), it statistically confirms that the player generally takes on the <strong>"Goalkeeper"</strong> role in their teams. It represents defensive reliability.</div>
+            <div class="example"><span class="calc">19,701 ÷ 10,273</span><span class="result">1.918 Saves</span></div>
+        </div>
+
+        <div class="card blue-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">8</span>🎬 Total Actions</div>
+                    <div class="card-subtitle">Total Footprint on the Pitch (Workload)</div>
+                </div>
+                <div class="formula">Goals + Assists + Saves</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> The "gross" total of how many positive, scoreboard-changing moves a player has made throughout their entire CarBall career. Instead of merely looking at the match count, this is a volumetric metric showing the "net effort" and experience left on the field.</div>
+            <div class="example"><span class="calc">6,537 + 3,403 + 19,701</span><span class="result">29,641 Actions</span></div>
+        </div>
+
+        <div class="card blue-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">9</span>⚙️ Actions per Match</div>
+                    <div class="card-subtitle">In-Game Activity (Laziness Test)</div>
+                </div>
+                <div class="formula">Total Actions ÷ Total Matches</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Calculates how much a player stays "active" during a match. A high number (2.5 and above) shows that the player runs everywhere, consistently touches the ball, and doesn't disconnect from the game flow. A low number suggests the player often goes AFK or struggles to get ball touches.</div>
+            <div class="example"><span class="calc">29,641 ÷ 10,273</span><span class="result">2.885 Actions</span></div>
+        </div>
+
+        <!-- ================= SECTION 3: OFFENSIVE DYNAMICS & ROLES ================= -->
+        <div class="section-title">⚔️ 3. Offensive Dynamics & Roles</div>
+
+        <div class="card pink-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">10</span>🎯 Total Contributions</div>
+                    <div class="card-subtitle">Total Offensive Contribution</div>
+                </div>
+                <div class="formula">Goals + Assists</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Provides the gross total of offensive production toward the opponent's goal, completely ignoring defense (saves). When calculating a team's total attacking power, you can sum this statistic for your players to immediately gauge the team's offensive potential.</div>
+            <div class="example"><span class="calc">6,537 + 3,403</span><span class="result">9,940 Contribs</span></div>
+        </div>
+
+        <div class="card pink-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">11</span>🗡️ Contributions per Match</div>
+                    <div class="card-subtitle">Guaranteed Scoring Contribution per Match</div>
+                </div>
+                <div class="formula">Total Contrib ÷ Total Matches</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Answers the ultimate question: "If I take this player on my team, what do they promise me offensively per match?" Regardless of whether it's a goal or an assist, it is the statistical guarantee of them getting their name on the offensive scoreboard at least once per match.</div>
+            <div class="example"><span class="calc">9,940 ÷ 10,273</span><span class="result">0.968 Actions</span></div>
+        </div>
+
+        <div class="card pink-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">12</span>⚽ Striker Ratio</div>
+                    <div class="card-subtitle">Forward Tendency (Selfishness / Finishing)</div>
+                </div>
+                <div class="formula">Goals ÷ (Goals + Assists)</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Shows in how many out of 100 offensive positions the player prefers to shoot rather than pass. If it's over 60%, this player is a pure "Target Striker"; you give them the ball and expect them to run into the penalty box. It clearly reveals their ingame mindset.</div>
+            <div class="example"><span class="calc">6,537 ÷ 9,940</span><span class="result">65.76%</span></div>
+        </div>
+
+        <div class="card pink-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">13</span>🧠 Playmaker Ratio</div>
+                    <div class="card-subtitle">Playmaker (Passer) Tendency</div>
+                </div>
+                <div class="formula">Assists ÷ (Goals + Assists)</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> The exact opposite of the Striker Ratio. It shows what percentage of the chances they create are passed to teammates. Approaching 50% means this player has excellent "Midfielder" skills and immense game vision, ideal for feeding the strikers in the team.</div>
+            <div class="example"><span class="calc">3,403 ÷ 9,940</span><span class="result">34.24%</span></div>
+        </div>
+
+        <div class="card pink-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">14</span>⚖️ Goals-to-Assists Ratio</div>
+                    <div class="card-subtitle">Goals Scored per Assist</div>
+                </div>
+                <div class="formula">Goals ÷ Assists</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Shows how many goals are scored against the opponent for every 1 assist made. It reveals effectiveness in final shots on a clear multiplier level. For example, a result of roughly 2 means they score 2 goals before deciding to make 1 assist.</div>
+            <div class="example"><span class="calc">6,537 ÷ 3,403</span><span class="result">1.921 Goals</span></div>
+        </div>
+
+        <div class="card pink-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">15</span>⚖️ Assists-to-Goals Ratio</div>
+                    <div class="card-subtitle">Assists Made per Goal</div>
+                </div>
+                <div class="formula">Assists ÷ Goals</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> An indicator of how many assists the player provides to their team for every 1 goal they score themselves. It is very effective for measuring the game vision of defensive players who usually make long passes (clears across the stadium) that turn into immediate assists.</div>
+            <div class="example"><span class="calc">3,403 ÷ 6,537</span><span class="result">0.521 Assists</span></div>
+        </div>
+
+        <!-- ================= SECTION 4: OFFENSE VS. DEFENSE ROLE CROSSING ================= -->
+        <div class="section-title">🛡️ 4. Offense vs. Defense Role Crossing</div>
+
+        <div class="card purple-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">16</span>🛡️ Defensive Action Ratio</div>
+                    <div class="card-subtitle">How Much of Their Life is Spent in Goal?</div>
+                </div>
+                <div class="formula">Saves ÷ Total Actions</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Calculates what percentage of the player's total ball touches throughout their career were "Goal Saving" actions. If this ratio exceeds 50%, the player's soul is dedicated to defense. When analyzing the opposing team, it allows you to definitively say, "This guy never leaves the goal."</div>
+            <div class="example"><span class="calc">19,701 ÷ 29,641</span><span class="result">66.47% Defense</span></div>
+        </div>
+
+        <div class="card purple-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">17</span>⚔️ Offensive Action Ratio</div>
+                    <div class="card-subtitle">How Much of Their Life is Spent Upfront?</div>
+                </div>
+                <div class="formula">(Goals+Assists) ÷ Total Actions</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> The opposite of the defensive ratio. It calculates what percentage of the total work done is aimed at finding a goal in the opponent's net. It exposes players who hate staying in goal, always roam upfront, or constantly switch to forward in team rotations.</div>
+            <div class="example"><span class="calc">9,940 ÷ 29,641</span><span class="result">33.53% Offense</span></div>
+        </div>
+
+        <div class="card purple-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">18</span>🧱 Libero Index</div>
+                    <div class="card-subtitle">Defensive Load Compared to Offense (Static Defender)</div>
+                </div>
+                <div class="formula">Saves ÷ Total Contributions</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> The division of saves by offensive actions. If the result is greater than 1.0, the player defends more than they attack. For instance, in this data, the result is almost 2; meaning for every 1 offensive action, the player saves 2 shots. It represents a "Static Goalkeeper" profile.</div>
+            <div class="example"><span class="calc">19,701 ÷ 9,940</span><span class="result">1.982 Ratio</span></div>
+        </div>
+
+        <div class="card purple-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">19</span>🚀 Forward Index</div>
+                    <div class="card-subtitle">Offensive Load Compared to Defense</div>
+                </div>
+                <div class="formula">Total Contributions ÷ Saves</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> The exact opposite of the Libero Index. It measures how often a player rushes forward instead of staying in goal. Numbers over 1 are statistical proof that the player has a heavy tendency to leave their goal empty and join the attack.</div>
+            <div class="example"><span class="calc">9,940 ÷ 19,701</span><span class="result">0.505 Ratio</span></div>
+        </div>
+
+        <div class="card purple-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">20</span>🥅 Saves-to-Goals Ratio</div>
+                    <div class="card-subtitle">Saves Made per Goal Scored</div>
+                </div>
+                <div class="formula">Saves ÷ Goals</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> How many shots must the player save from their own goal until they finally score 1 goal in the opponent's net? In this data, for every 1 goal celebration, 3 dangers were averted in goal. Especially useful for weighing a goalkeeper's offensive capabilities when drafting tactics.</div>
+            <div class="example"><span class="calc">19,701 ÷ 6,537</span><span class="result">3.013 Saves</span></div>
+        </div>
+
+        <div class="card purple-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">21</span>🧤 Saves-to-Assists Ratio</div>
+                    <div class="card-subtitle">Saves Made per Assist</div>
+                </div>
+                <div class="formula">Saves ÷ Assists</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> The absolute best way to measure how much of a "playmaker" a goalkeeper is. Do they just blindly clear the ball out of bounds, or do they make smart, tactical passes (assists) to teammates, turning defenses into instant counter-attacks? Determines goalkeeper vision.</div>
+            <div class="example"><span class="calc">19,701 ÷ 3,403</span><span class="result">5.789 Saves</span></div>
+        </div>
+
+        <!-- ================= SECTION 5: WIN CONDITIONED METRICS ================= -->
+        <div class="section-title">✅ 5. Win Conditioned Effort Metrics</div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">22</span>⚽ Goals per Win</div>
+                    <div class="card-subtitle">Goals Needed to Secure a Victory</div>
+                </div>
+                <div class="formula">Goals ÷ Won</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> A theoretical calculation; it states the minimum average number of goals this specific player statistically needs to score for their team to win the match. If this number is low, it means teammates can effectively share the burden by scoring goals as well.</div>
+            <div class="example"><span class="calc">6,537 ÷ 4,408</span><span class="result">1.483 Goals</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">23</span>🤝 Assists per Win</div>
+                    <div class="card-subtitle">Assist Effort Required to Win</div>
+                </div>
+                <div class="formula">Assists ÷ Won</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> If the team secures a victory, it shows how many "passes/assists" this player contributed on average to that specific win. Used to understand the pass frequency and impact of the unsung heroes who quietly win matches.</div>
+            <div class="example"><span class="calc">3,403 ÷ 4,408</span><span class="result">0.772 Assists</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">24</span>🧤 Saves per Win</div>
+                    <div class="card-subtitle">Goalkeeper Burden Bringing Victory</div>
+                </div>
+                <div class="formula">Saves ÷ Won</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Shows the average number of dangers averted in goal during a won match. If it's a high number (like 4.4), it proves that this player wins matches not "comfortably by a huge margin," but by growing into a giant in goal and resisting until the last second.</div>
+            <div class="example"><span class="calc">19,701 ÷ 4,408</span><span class="result">4.469 Saves</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">25</span>🔥 Total Actions per Win</div>
+                    <div class="card-subtitle">The "Sweat Coefficient" of a Victory</div>
+                </div>
+                <div class="formula">Total Actions ÷ Won</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> One of the most critical "Effort" metrics. How many different actions (Goal/Assist/Save) does this player HAVE TO make on the field just to get a single Win? The higher this number, the worse the team draws have been, forcing the player to put in superhuman solo effort to win.</div>
+            <div class="example"><span class="calc">29,641 ÷ 4,408</span><span class="result">6.724 Actions</span></div>
+        </div>
+
+        <!-- ================= SECTION 6: LOSS RESISTANCE & STUBBORNNESS ================= -->
+        <div class="section-title">🥊 6. Loss Resistance & Stubbornness</div>
+
+        <div class="card orange-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">26</span>⚽ Goals per Loss</div>
+                    <div class="card-subtitle">Goals Scored Despite Defeat</div>
+                </div>
+                <div class="formula">Goals ÷ Lost</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Shows whether this player continues to push the opponent's goal even when their own team is falling apart and the match is a definite loss. Players who can score over 1 goal even when trailing are highly ambitious profiles who don't stop playing even if their morale drops.</div>
+            <div class="example"><span class="calc">6,537 ÷ 5,865</span><span class="result">1.115 Goals</span></div>
+        </div>
+
+        <div class="card orange-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">27</span>🤝 Assists per Loss</div>
+                    <div class="card-subtitle">Passing Effort During Defeat</div>
+                </div>
+                <div class="formula">Assists ÷ Lost</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Measures the willpower to not play selfishly (rage mode) in matches lost by a large margin, maintaining team play and continuing to assist teammates regardless of the score. It is a prime indicator of psychological composure.</div>
+            <div class="example"><span class="calc">3,403 ÷ 5,865</span><span class="result">0.580 Assists</span></div>
+        </div>
+
+        <div class="card orange-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">28</span>🛡️ Saves per Loss</div>
+                    <div class="card-subtitle">Tragic Defensive Resistance (Under Siege)</div>
+                </div>
+                <div class="formula">Saves ÷ Lost</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> A Very Important Goalkeeper Metric! Shows how long they held out alone in that goal when the team was practically non-existent and the opposing team constantly fired shots. It is the mathematical proof of the sentence: "I lost a lot because my team was bad, but I also made incredible saves."</div>
+            <div class="example"><span class="calc">19,701 ÷ 5,865</span><span class="result">3.359 Saves</span></div>
+        </div>
+
+        <div class="card orange-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">29</span>🦍 Actions per Loss</div>
+                    <div class="card-subtitle">The "Never Give Up" Score in Defeats</div>
+                </div>
+                <div class="formula">Total Actions ÷ Lost</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> The pure resilience score of players who don't quit the game (refuse to go AFK) even if the match is 4-0, jumping in goal and seeking goals upfront until the last second. The higher this number, the higher the player's sportsmanship and warrior spirit.</div>
+            <div class="example"><span class="calc">29,641 ÷ 5,865</span><span class="result">5.054 Actions</span></div>
+        </div>
+
+        <!-- ================= SECTION 7: MVP & "CARRY" METRICS ================= -->
+        <div class="section-title">👑 7. MVP & "Carry" Metrics</div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">30</span>🏅 MVP / Total Rate</div>
+                    <div class="card-subtitle">Chance of Being MVP in Any Given Match</div>
+                </div>
+                <div class="formula">MVP ÷ Total Matches</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> If we throw all the matches you played into a pool and pick a random one, what is the probability of you being the MVP? Since only the winning team produces an MVP in FFS and your loss rate is factored in, it is completely normal for this rate to be low (between 10-15%).</div>
+            <div class="example"><span class="calc">1,484 ÷ 10,273</span><span class="result">14.45%</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">31</span>👑 MVP / Win Rate</div>
+                    <div class="card-subtitle">Being the "Star" in Won Matches (Carry Percentage)</div>
+                </div>
+                <div class="formula">MVP ÷ Won</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> ONE OF THE MOST CRITICAL DATA POINTS. Answers the question: "Okay, you won the match, but did your teammates carry you, or were YOU the one who WON the match?" In a 3-player team, if everyone is equal, the rate is 33.3%. This number being 33.67% proves you are the "Alpha" player of the team in victories.</div>
+            <div class="example"><span class="calc">1,484 ÷ 4,408</span><span class="result">33.67%</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">32</span>🤝 Non-MVP Win Rate</div>
+                    <div class="card-subtitle">Victory Rate Brought by Teammates</div>
+                </div>
+                <div class="formula">(Won - MVP) ÷ Won</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> The percentage of matches you won, but someone else in the team (for example, the striker) got the MVP badge. It is the percentage of "harmonious team play" where you successfully played the support or goalkeeper role and allowed your teammate to shine and take the spotlight.</div>
+            <div class="example"><span class="calc">2,924 ÷ 4,408</span><span class="result">66.33%</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">33</span>🎯 MVP to Goal Ratio</div>
+                    <div class="card-subtitle">Ratio of MVP Badges to Goal Frequency</div>
+                </div>
+                <div class="formula">MVP ÷ Goals</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Measures how often scored goals carry the player to MVP status. For players who exclusively wait upfront and score goals, this ratio is extremely high. However, for those who play mostly as a goalkeeper like keLLog, this ratio being low perfectly confirms their defensive role.</div>
+            <div class="example"><span class="calc">1,484 ÷ 6,537</span><span class="result">0.227</span></div>
+        </div>
+
+        <!-- ================= SECTION 8: ADVANCED META-METRICS (OUTPUTS OF OUTPUTS) ================= -->
+        <div class="section-title">🔮 8. Advanced Meta-Metrics (Outputs of Outputs)</div>
+
+        <div class="card blue-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">34</span>🏋️ Carry Index</div>
+                    <div class="card-subtitle">Carrying a Weak Team Score ("Elo Hell" Index)</div>
+                </div>
+                <div class="formula">(MVP÷Won) × (Lost÷Won)</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> A high-level scout formula. It identifies talented and unlucky players who lose many matches because they constantly fall into weak/novice teams (High Loss), but whenever they finally win a match, they are definitively the best of the team and get the MVP badge. It reveals the player's "pure carry" potential.</div>
+            <div class="example"><span class="calc">0.3367 × 1.330</span><span class="result">0.448 Score</span></div>
+        </div>
+
+        <div class="card blue-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">35</span>🎭 Role Balance Index</div>
+                    <div class="card-subtitle">Two-Way Player (Box-to-Box) Index</div>
+                </div>
+                <div class="formula">Offensive Ratio ÷ Defensive Ratio</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Measures whether the player is one-dimensional (only stays in goal or only waits upfront) or a flexible person playing both sides of the pitch. The closer the result is to 1.00, the more this player is a "Versatile All-rounder" Joker. A low number (0.50) proves the player specializes heavily in a specific role (Goalkeeper).</div>
+            <div class="example"><span class="calc">33.53% ÷ 66.47%</span><span class="result">0.504 Index</span></div>
+        </div>
+
+        <div class="card blue-card">
+            <div class="card-top">
+                <div class="card-title-wrap">
+                    <div class="card-title"><span class="card-num">36</span>🌟 OPQI (Overall Player Quality)</div>
+                    <div class="card-subtitle">Ultimate Overall Talent and Quality Score</div>
+                </div>
+                <div class="formula">WinRate × Actions/Match × MVP/Win</div>
+            </div>
+            <div class="desc"><strong>Purpose:</strong> Combines 3 main pillars that seem unrelated but ultimately bring success <em>(Winning Habit × Hard Work on the Pitch × Team Carrying Leadership)</em> into a single formula. When comparing the statistics of two different players, you can directly and flawlessly see who is a more "complete player" just by looking at this OPQI Master Score.</div>
+            <div class="example"><span class="calc">0.429 × 2.885 × 0.3367</span><span class="result">0.417 Master Pts</span></div>
+        </div>
+
+    </div> <!-- Grid End -->
+
+    <footer>
+        This report was prepared with a completely logical, tactical, and mathematical depth, strictly considering FFS CarBall dynamics.<br>
+        <strong>Note:</strong> The unreliable "Own Goal" data has been entirely excluded from all calculations to preserve analytical integrity.
+    </footer>
+
+</div>
+</body>
+</html>

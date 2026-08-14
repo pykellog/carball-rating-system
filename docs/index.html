@@ -24,6 +24,7 @@
             --text-main: #f4f4f5;
             --text-muted: #a1a1aa;
             --border-color: rgba(255, 255, 255, 0.08);
+            --purple: #c084fc;
             
             --tier-s: #fbbf24; --tier-a: #c084fc; --tier-b: #38bdf8;
             --tier-c: #4ade80; --tier-d: #f87171; --tier-e: #94a3b8;
@@ -31,7 +32,6 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* === BACKGROUND & PERFORMANCE LAYOUT === */
         html, body {
             width: 100%; height: 100%; margin: 0; padding: 0;
             overflow: hidden; 
@@ -62,7 +62,6 @@
             display: flex; flex-direction: column; height: 100vh; max-width: 1400px; margin: 0 auto; padding: 1.25rem; 
         }
 
-        /* HEADER */
         .hero { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; }
         .hero h1 { 
             font-family: 'Rajdhani', sans-serif; 
@@ -79,7 +78,6 @@
         .hero-stats { display: flex; gap: 1rem; background: var(--bg-card); padding: 0.4rem 1rem; border-radius: 100px; border: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
         .hero-stats strong { color: var(--text-main); }
 
-        /* CONTROLS */
         .controls-wrapper { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; background: var(--bg-card); padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); }
         .search-box { position: relative; flex-grow: 1; max-width: 320px; }
         .search-box input { width: 100%; padding: 0.45rem 1rem 0.45rem 2.2rem; background: rgba(0, 0, 0, 0.6); border: 1px solid var(--border-color); border-radius: 6px; color: white; font-family: 'Inter', sans-serif; font-size: 0.9rem; }
@@ -90,55 +88,116 @@
         .filter-btn:hover { background: rgba(16, 185, 129, 0.2); }
         .filter-btn.active { background: var(--accent-green); color: #000; }
         .filter-btn .count { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 10px; line-height: 1; font-size: 0.75rem; }
+        
+        .guide-btn {
+            background: rgba(231, 169, 34, 0.15) !important;
+            color: #e7a922 !important;
+            border-color: rgba(231, 169, 34, 0.3) !important;
+        }
+        .guide-btn:hover {
+            background: rgba(231, 169, 34, 0.25) !important;
+            border-color: rgba(231, 169, 34, 0.5) !important;
+        }
 
-        /* TABLE AREA */
         .table-wrapper { flex-grow: 1; min-height: 0; background: var(--bg-card); border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; transform: translateZ(0); }
         .table-scroll-container { flex-grow: 1; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
         .table-scroll-container::-webkit-scrollbar { display: none; }
 
         table.dataTable { width: 100% !important; margin: 0 !important; border-collapse: collapse !important; font-family: 'Inter', sans-serif; }
         table.dataTable thead { position: sticky; top: 0; z-index: 10; background: #0c0c0e; }
-        table.dataTable thead th { color: var(--text-muted) !important; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem !important; font-weight: 700; text-transform: uppercase; padding: 0.75rem 0.3rem !important; border-bottom: 1px solid var(--border-color) !important; white-space: nowrap; cursor: help; }
+        table.dataTable thead th { 
+            color: var(--text-muted) !important; 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 0.9rem !important; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            padding: 0.6rem 0.3rem !important; 
+            border-bottom: 1px solid var(--border-color) !important; 
+            white-space: nowrap; 
+            cursor: default; 
+        }
         table.dataTable tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; background: transparent !important; transition: background 0.15s ease; }
         table.dataTable tbody tr:hover { background-color: var(--bg-hover) !important; }
-        table.dataTable tbody tr.changed-player { 
-            /* border-left: 3px solid #fbbf24 !important; */
-            background-color: rgba(251, 191, 36, 0.05) !important;
+        table.dataTable tbody tr.changed-player { background-color: rgba(251, 191, 36, 0.05) !important; }
+        table.dataTable td { 
+            padding: 0.5rem 0.3rem !important; 
+            vertical-align: middle; 
+            border: none !important; 
+            font-size: 1rem !important;
+            font-weight: 500; 
+            white-space: nowrap; 
         }
-        table.dataTable td { padding: 0.55rem 0.3rem !important; vertical-align: middle; border: none !important; font-size: 0.95rem; font-weight: 500; white-space: nowrap; }
 
-        /* COLUMN SIZES & STYLES */
-        .col-rank { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text-muted); text-align: center !important; width: 30px; }
-        .col-player { display: flex; align-items: center; gap: 6px; }
-        .player-info { display: flex; flex-direction: column; line-height: 1.1; }
-        .player-nick { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 4px; }
-        .player-user { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+        .col-rank { 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 1.15rem; 
+            font-weight: 700; 
+            color: var(--text-muted); 
+            text-align: center !important; 
+            width: 35px; 
+        }
+        .col-player { 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            width: 220px;  /* ✅ Yeterli genişlik, tam isim çıksın */
+            min-width: 160px;
+            max-width: 280px;
+        }
+        .player-info { 
+            display: flex; 
+            flex-direction: column; 
+            line-height: 1.1; 
+        }
+        .player-nick { 
+            font-weight: 700; 
+            font-size: 0.95rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            white-space: nowrap;
+        }
+        .player-user { 
+            font-size: 0.7rem; 
+            color: var(--text-muted); 
+            margin-top: 1px; 
+        }
         .player-user a { color: var(--text-muted); text-decoration: none; transition: color 0.15s ease; }
         .player-user a:hover { color: var(--accent-green); }
 
-        .col-rating { 
-            font-family: 'Rajdhani', sans-serif; 
-            font-size: 1.15rem !important; 
-            font-weight: 700 !important; 
-            color: #10b981 !important; 
+        .col-role-emojis { 
             text-align: center; 
-            width: 85px;
-            letter-spacing: 0.03em;
-        }        
-        .col-skill { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: #f4f4f5; text-align: center; width: 60px; }
-        .col-tier { text-align: center; width: 55px; }
-        .col-role { text-align: center; font-size: 1.2rem; width: 35px; }
-        .col-stat { text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 1.05rem; }
-        .col-win { text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 1.05rem; }
-        .col-loss { text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 1.05rem; }
+            font-size: 1.3rem; 
+            letter-spacing: 3px; 
+            width: 85px; 
+            cursor: default;
+        }
+        .col-role-emojis span { 
+            display: inline-block;
+            transition: transform 0.15s ease;
+        }
+        .col-role-emojis span:hover {
+            transform: scale(1.2);
+        }
         
-        .badge { display: inline-flex; justify-content: center; align-items: center; padding: 2px 5px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
-        .badge-S { background: rgba(251, 191, 36, 0.15); color: var(--tier-s); border: 1px solid rgba(251, 191, 36, 0.3); }
-        .badge-A { background: rgba(192, 132, 252, 0.15); color: var(--tier-a); border: 1px solid rgba(192, 132, 252, 0.3); }
-        .badge-B { background: rgba(56, 189, 248, 0.15); color: var(--tier-b); border: 1px solid rgba(56, 189, 248, 0.3); }
-        .badge-C { background: rgba(74, 222, 128, 0.15); color: var(--tier-c); border: 1px solid rgba(74, 222, 128, 0.3); }
-        .badge-D { background: rgba(248, 113, 113, 0.15); color: var(--tier-d); border: 1px solid rgba(248, 113, 113, 0.3); }
-        .badge-E { background: rgba(148, 163, 184, 0.15); color: var(--tier-e); border: 1px solid rgba(148, 163, 184, 0.3); }
+        .col-stat { 
+            text-align: center; 
+            font-family: 'Rajdhani', sans-serif; 
+            font-weight: 600; 
+            font-size: 1.05rem; 
+        }
+        .col-win { 
+            text-align: center; 
+            font-family: 'Rajdhani', sans-serif; 
+            font-weight: 600; 
+            font-size: 1.05rem; 
+        }
+        .col-loss { 
+            text-align: center; 
+            font-family: 'Rajdhani', sans-serif; 
+            font-weight: 600; 
+            font-size: 1.05rem; 
+        }
 
         .change-tag { display: inline-flex; align-items: center; padding: 1px 3px; border-radius: 3px; font-size: 0.65rem; font-weight: 700; }
         .change-tag.up { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
@@ -149,33 +208,152 @@
 
         /* === DETAILS PANEL === */
         table.dataTable tbody tr.expanded-row-bg { background-color: rgba(0,0,0,0.75) !important; }
-        .details-wrapper { padding: 1rem 1.25rem; background: rgba(5, 5, 6, 0.6); }
-        .details-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+        .details-wrapper { padding: 0.8rem 1rem; background: rgba(5, 5, 6, 0.6); }
+        .details-grid { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 0.8rem; 
+        }
         
-        .stat-card { background: #121215; border-radius: 8px; border: 1px solid var(--border-color); border-top: 3px solid; padding: 0.85rem; position: relative; overflow: hidden; }
+        .stat-card { 
+            background: #121215; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color); 
+            border-top: 3px solid; 
+            padding: 0.7rem; 
+            position: relative; 
+            overflow: hidden;
+        }
         
-        .card-core { border-top-color: #fbbf24; }
-        .card-offense { border-top-color: #f87171; }
+        .card-core { border-top-color: #f97316; }
+        .card-scoring { border-top-color: #f87171; }
+        .card-playmaking { border-top-color: #fbbf24; }
         .card-defense { border-top-color: #38bdf8; }
-        .card-support { border-top-color: #c084fc; }
+        .card-advanced { border-top-color: #c084fc; }
 
-        .card-header { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; }
-        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px dashed rgba(255,255,255,0.03); }
+        .card-header { 
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: 1rem; 
+            font-weight: 700; 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            margin-bottom: 0.4rem; 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            padding-bottom: 0.3rem; 
+        }
+        .stat-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 2px 0; 
+            border-bottom: 1px dashed rgba(255,255,255,0.03); 
+            font-size: 0.85rem; 
+            position: relative;
+            cursor: default;
+        }
         .stat-row:last-child { border-bottom: none; }
-        .stat-label { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
-        .stat-val { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.05rem; }
+        .stat-label { 
+            color: var(--text-muted); 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            font-size: 0.8rem; 
+            cursor: default;
+        }
+        .stat-val { 
+            font-family: 'Rajdhani', sans-serif; 
+            font-weight: 700; 
+            font-size: 0.95rem; 
+        }
 
-        /* BOTTOM PAGINATION */
+        /* === TOOLTIP === */
+        .metric-tooltip {
+            position: fixed;
+            z-index: 9999;
+            background: #1a1a1e;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            max-width: 420px;
+            min-width: 250px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            background: rgba(20, 20, 24, 0.95);
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+            opacity: 0;
+        }
+        .metric-tooltip.visible {
+            opacity: 1;
+        }
+        .metric-tooltip .tt-header {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+        .metric-tooltip .tt-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+        .metric-tooltip .tt-formula-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .metric-tooltip .tt-formula {
+            font-size: 0.7rem;
+            color: var(--blue);
+            font-family: 'Rajdhani', sans-serif;
+            background: rgba(56,189,248,0.08);
+            padding: 2px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            border: 1px solid rgba(56,189,248,0.1);
+        }
+
         .table-footer { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1rem; background: #0c0c0e; border-top: 1px solid var(--border-color); }
         .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_length, .dataTables_info, .dataTables_paginate { display: none !important; }
         
-        /* FOOTER */
         .app-footer { flex-shrink: 0; text-align: center; margin-top: 0.75rem; color: rgba(255,255,255,0.6); font-size: 0.75rem; display: flex; justify-content: space-between; align-items: center;}
         .app-footer a { color: var(--accent-green); text-decoration: none; font-weight: 500; }
         .app-footer a:hover { text-decoration: underline; }
         
         .expand-icon { font-size: 11px; color: var(--text-muted); transition: transform 0.15s ease; display: inline-block; }
         tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
+        
+        @media (max-width: 1100px) {
+            .details-grid { grid-template-columns: repeat(3, 1fr); }
+            .col-player { width: 170px; min-width: 130px; }
+        }
+        @media (max-width: 800px) {
+            .details-grid { grid-template-columns: repeat(2, 1fr); }
+            .col-role-emojis { width: 60px; font-size: 1rem; letter-spacing: 2px; }
+            .col-player { width: 130px; min-width: 100px; }
+            .player-nick { font-size: 0.8rem; }
+            .player-user { font-size: 0.6rem; }
+        }
+        @media (max-width: 600px) {
+            .details-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 1.4rem; }
+            .hero-stats { font-size: 0.65rem; padding: 0.2rem 0.6rem; }
+            .controls-wrapper { flex-wrap: wrap; gap: 0.5rem; }
+            .search-box { max-width: 100%; width: 100%; }
+            .col-role-emojis { width: 50px; font-size: 0.8rem; letter-spacing: 1px; }
+            .metric-tooltip { max-width: 280px; min-width: 200px; }
+            .col-player { width: 100px; min-width: 70px; }
+            table.dataTable td { font-size: 0.8rem !important; padding: 0.3rem 0.2rem !important; }
+            .player-nick { font-size: 0.7rem; }
+            .player-user { font-size: 0.5rem; }
+        }
     </style>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="adefbdcd-a363-4714-8f6d-86f7cd379c8c"></script>
 </head>
@@ -183,7 +361,6 @@
 
 <div class="app-container">
     
-    <!-- Hero / Header -->
     <div class="hero">
         <h1>CarBall Rankings</h1>
         <div class="hero-stats">
@@ -192,54 +369,51 @@
         </div>
     </div>
 
-    <!-- Controls -->
     <div class="controls-wrapper">
         <div class="search-box">
-            <input type="text" id="customSearch" placeholder="Search a player (e.g. fycnamed)...">
+            <input type="text" id="customSearch" placeholder="Search a player...">
         </div>
         <div style="display: flex; gap: 10px;">
             <button class="filter-btn" id="filterChangedBtn" onclick="toggleFilter()">
                 📊 Changes <span class="count" id="changedCount">0</span>
             </button>
+            <a href="cbinfo.html" target="_blank" class="filter-btn guide-btn">
+                📖 Metric Guide
+            </a>
             <a href="https://github.com/pykellog/carball-rating-system" target="_blank" class="filter-btn" style="background: transparent; color: white; border-color: rgba(255,255,255,0.2);">
                 GitHub
             </a>
         </div>
     </div>
 
-    <!-- MAIN TABLE AREA -->
     <div class="table-wrapper">
         <div class="table-scroll-container" id="tableScrollContainer">
             <table id="playersTable" class="display">
                 <thead>
                     <tr>
                         <th class="col-rank" title="Leaderboard Position">#</th>
-                        <th title="Player nickname and forum profile">Player</th>
-                        <th style="text-align: center; cursor: pointer;" title="Primary playstyle role (Click to group roles)">Role</th>
-                        <th style="text-align: center; color: var(--accent-green);" title="Overall Performance Rating (Main score with performance multiplier applied)">Rating</th>
-                        <th style="text-align: center;" title="Raw Skill Rating (Pure statistical score independent of match count)">Skill</th>
-                        <th style="text-align: center;" title="Player skill tier group (S, A, B, C, D, E)">Tier</th>
+                        <th title="Player nickname">Player</th>
+                        <th style="text-align: center;" title="Player's top 3 roles (best to worst)">Role</th>
                         <th style="text-align: center;" title="Total matches played">Matches</th>
                         <th style="text-align: center;" title="Total matches won">Wins</th>
                         <th style="text-align: center;" title="Total matches lost">Losses</th>
+                        <th style="text-align: center;" title="Win Rate (%)">Win %</th>
                         <th style="text-align: center;" title="Total goals scored">Goals</th>
                         <th style="text-align: center;" title="Total assists provided">Assists</th>
                         <th style="text-align: center;" title="Total saves made">Saves</th>
-                        <th style="text-align: center;" title="Total Most Valuable Player awards won">MVP</th>
-                        <th style="text-align: center;" title="Offensive contribution share (Goal-oriented play style percentage)">OFF %</th>
-                        <th style="text-align: center;" title="Defensive contribution share (Save-oriented play style percentage)">DEF %</th>
-                        <th style="text-align: center;" title="Playmaking contribution share (Assist-oriented play style percentage)">PLAY %</th>
+                        <th style="text-align: center;" title="Total Most Valuable Player awards">MVP</th>
+                        <th style="text-align: center;" title="Goals per match">G/M</th>
+                        <th style="text-align: center;" title="Assists per match">A/M</th>
+                        <th style="text-align: center;" title="Saves per match">S/M</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
-        <!-- Custom Pagination -->
         <div class="table-footer" id="customPagination"></div>
     </div>
     
-    <!-- Global Footer -->
     <div class="app-footer" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px;">
         <div>Data sourced from <strong>FFS Gaming</strong> MTA server.</div>
         <div id="footerUpdate">Previous Update: -</div>
@@ -250,10 +424,275 @@
     </div>
 </div>
 
+<!-- Tooltip Container -->
+<div class="metric-tooltip" id="metricTooltip">
+    <div class="tt-header" id="ttHeader">📊 Metric Name</div>
+    <div class="tt-desc" id="ttDesc">Description of the metric</div>
+    <div class="tt-formula-wrapper">
+        <div class="tt-formula" id="ttFormula">Formula: X ÷ Y</div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
+// ============================================================
+// METRİK TANIMLARI (36 Metrik)
+// ============================================================
+const metricDefinitions = {
+    'Win Rate': {
+        icon: '🏆',
+        description: 'Percentage of matches won. Above 50% means you actively change game outcomes.',
+        formula: 'Won ÷ Total Matches'
+    },
+    'Loss Rate': {
+        icon: '📉',
+        description: 'Percentage of matches lost. High rate doesn\'t mean bad player—bad teams happen.',
+        formula: 'Lost ÷ Total Matches'
+    },
+    'Win / Loss Ratio': {
+        icon: '⚖️',
+        description: 'Wins per 1 loss. Below 1 = losing more than winning.',
+        formula: 'Won ÷ Lost'
+    },
+    'Loss / Win Ratio': {
+        icon: '📊',
+        description: 'Losses per 1 win. Shows how much grind is needed for victory.',
+        formula: 'Lost ÷ Won'
+    },
+    'Goals / Match': {
+        icon: '⚽',
+        description: 'Average goals scored per match. 1.0+ is elite striker territory.',
+        formula: 'Total Goals ÷ Total Matches'
+    },
+    'Assists / Match': {
+        icon: '🤝',
+        description: 'Average assists per match. High = playmaker / team player.',
+        formula: 'Total Assists ÷ Total Matches'
+    },
+    'Saves / Match': {
+        icon: '🧤',
+        description: 'Average saves per match. Above 1.5 = goalkeeper / defensive anchor.',
+        formula: 'Total Saves ÷ Total Matches'
+    },
+    'Total Actions': {
+        icon: '🎬',
+        description: 'Total positive contributions (Goals + Assists + Saves). Overall workload.',
+        formula: 'Goals + Assists + Saves'
+    },
+    'Actions / Match': {
+        icon: '⚙️',
+        description: 'Activity level per match. 2.5+ = always involved.',
+        formula: 'Total Actions ÷ Total Matches'
+    },
+    'Total Contributions': {
+        icon: '🎯',
+        description: 'Total offensive production (Goals + Assists). Attacking impact.',
+        formula: 'Goals + Assists'
+    },
+    'Contributions / Match': {
+        icon: '📊',
+        description: 'Offensive contributions per match. Guaranteed scoring involvement.',
+        formula: 'Total Contributions ÷ Total Matches'
+    },
+    'Striker Ratio': {
+        icon: '🗡️',
+        description: 'Percentage of offensive actions that are goals. High = finisher.',
+        formula: 'Goals ÷ (Goals + Assists) × 100'
+    },
+    'Playmaker Ratio': {
+        icon: '🧠',
+        description: 'Percentage of offensive actions that are assists. High = playmaker.',
+        formula: 'Assists ÷ (Goals + Assists) × 100'
+    },
+    'Goals / Assists Ratio': {
+        icon: '⚖️',
+        description: 'Goals per 1 assist. High = selfish finisher, low = playmaker.',
+        formula: 'Goals ÷ Assists'
+    },
+    'Assists / Goals Ratio': {
+        icon: '🔄',
+        description: 'Assists per 1 goal. High = playmaker who creates more than scores.',
+        formula: 'Assists ÷ Goals'
+    },
+    'Defensive Ratio': {
+        icon: '🛡️',
+        description: 'Percentage of actions that are saves. High = defensive specialist.',
+        formula: 'Saves ÷ Total Actions × 100'
+    },
+    'Offensive Ratio': {
+        icon: '⚔️',
+        description: 'Percentage of actions that are offensive. High = attacking player.',
+        formula: 'Total Contributions ÷ Total Actions × 100'
+    },
+    'Libero Index': {
+        icon: '🧱',
+        description: 'Defensive load vs offensive output. >1 = defender who sweeps.',
+        formula: 'Saves ÷ Total Contributions'
+    },
+    'Forward Index': {
+        icon: '🚀',
+        description: 'Offensive load vs defensive output. >1 = attacker who pushes forward.',
+        formula: 'Total Contributions ÷ Saves'
+    },
+    'Saves / Goals Ratio': {
+        icon: '🥅',
+        description: 'Saves needed per 1 goal scored. Shows defensive vs offensive balance.',
+        formula: 'Saves ÷ Goals'
+    },
+    'Saves / Assists Ratio': {
+        icon: '🧤',
+        description: 'Saves per 1 assist. Goalkeeper playmaking vision.',
+        formula: 'Saves ÷ Assists'
+    },
+    'Goals / Win': {
+        icon: '⚡',
+        description: 'Goals scored per win. How much offensive burden is carried.',
+        formula: 'Total Goals ÷ Wins'
+    },
+    'Assists / Win': {
+        icon: '🤝',
+        description: 'Assists per win. Playmaking contribution to victories.',
+        formula: 'Total Assists ÷ Wins'
+    },
+    'Saves / Win': {
+        icon: '💪',
+        description: 'Saves per win. Defensive effort needed to secure victory.',
+        formula: 'Total Saves ÷ Wins'
+    },
+    'Actions / Win': {
+        icon: '🔥',
+        description: 'Total actions per win. Effort coefficient for each victory.',
+        formula: 'Total Actions ÷ Wins'
+    },
+    'Goals / Loss': {
+        icon: '📉',
+        description: 'Goals scored even in losses. Never stops trying.',
+        formula: 'Total Goals ÷ Losses'
+    },
+    'Assists / Loss': {
+        icon: '📊',
+        description: 'Assists even in losses. Team player till the end.',
+        formula: 'Total Assists ÷ Losses'
+    },
+    'Saves / Loss': {
+        icon: '📉',
+        description: 'Saves even in losses. Defensive resistance under siege.',
+        formula: 'Total Saves ÷ Losses'
+    },
+    'Actions / Loss': {
+        icon: '🦍',
+        description: 'Total actions even in losses. Never gives up mentality.',
+        formula: 'Total Actions ÷ Losses'
+    },
+    'MVP / Total Rate': {
+        icon: '👑',
+        description: 'MVP probability per match. Higher = more impactful player.',
+        formula: 'MVP Count ÷ Total Matches × 100'
+    },
+    'MVP / Win Rate': {
+        icon: '🎯',
+        description: 'MVP percentage in wins. Carry indicator.',
+        formula: 'MVP Count ÷ Wins × 100'
+    },
+    'Non-MVP Win Rate': {
+        icon: '🤝',
+        description: 'Wins where teammate was MVP. Team player indicator.',
+        formula: '(Wins - MVP) ÷ Wins × 100'
+    },
+    'MVP to Goal Ratio': {
+        icon: '🎯',
+        description: 'MVP frequency per goal. How often goals become MVP.',
+        formula: 'MVP Count ÷ Total Goals'
+    },
+    'Carry Index': {
+        icon: '📈',
+        description: 'Carry potential. High = player who carries weak teams.',
+        formula: 'MVP/Win Rate × Loss/Win Ratio'
+    },
+    'Role Balance Index': {
+        icon: '🎭',
+        description: 'Offense vs defense balance. 1 = perfect balance, <0.5 = specialist.',
+        formula: 'Offensive Ratio ÷ Defensive Ratio'
+    },
+    'OPQI': {
+        icon: '🌟',
+        description: 'Overall Player Quality Index. Ultimate talent score.',
+        formula: 'Win Rate × Actions/Match × MVP/Win'
+    }
+};
+
+// ============================================================
+// TOOLTIP FONKSİYONLARI
+// ============================================================
+const tooltip = document.getElementById('metricTooltip');
+const ttHeader = document.getElementById('ttHeader');
+const ttDesc = document.getElementById('ttDesc');
+const ttFormula = document.getElementById('ttFormula');
+
+function showMetricTooltip(e, metricName) {
+    const def = metricDefinitions[metricName];
+    if (!def) return;
+    
+    ttHeader.textContent = `${def.icon} ${metricName}`;
+    ttDesc.textContent = def.description;
+    ttFormula.textContent = `Formula: ${def.formula}`;
+    
+    let x = e.clientX + 15;
+    let y = e.clientY + 10;
+    
+    const tw = 420;
+    const th = 160;
+    if (x + tw > window.innerWidth) x = e.clientX - tw - 15;
+    if (y + th > window.innerHeight) y = window.innerHeight - th - 10;
+    if (x < 10) x = 10;
+    if (y < 10) y = 10;
+    
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
+    tooltip.classList.add('visible');
+}
+
+function hideMetricTooltip() {
+    tooltip.classList.remove('visible');
+}
+
+document.addEventListener('mouseover', function(e) {
+    const label = e.target.closest('.stat-label');
+    if (label) {
+        const metricName = label.textContent.trim().replace(/^[^\s]+\s/, '').trim();
+        if (metricName && metricDefinitions[metricName]) {
+            showMetricTooltip(e, metricName);
+        }
+    }
+});
+
+document.addEventListener('mouseout', function(e) {
+    const label = e.target.closest('.stat-label');
+    if (label) {
+        hideMetricTooltip();
+    }
+});
+
+document.addEventListener('mousemove', function(e) {
+    if (tooltip.classList.contains('visible')) {
+        let x = e.clientX + 15;
+        let y = e.clientY + 10;
+        const tw = 380;
+        const th = 150;
+        if (x + tw > window.innerWidth) x = e.clientX - tw - 15;
+        if (y + th > window.innerHeight) y = window.innerHeight - th - 10;
+        if (x < 10) x = 10;
+        if (y < 10) y = 10;
+        tooltip.style.left = x + 'px';
+        tooltip.style.top = y + 'px';
+    }
+});
+
+// ============================================================
+// DATATABLES VE DİĞER FONKSİYONLAR
+// ============================================================
 let dataTable; let globalPlayers = [];
 let previousData = {}; let changedPlayers = new Set(); let filterActive = false;
 let searchTimeout = null;
@@ -306,21 +745,43 @@ function getChangeTag(current, previous, isNew) {
     return `<span class="change-tag ${diff > 0 ? 'up' : 'down'}">${diff > 0 ? '▲' : '▼'} ${Math.abs(diff).toFixed(1)}</span>`;
 }
 
+function getTop3Roles(allRolesStr) {
+    if (!allRolesStr) return [
+        {emoji: '🔄', name: 'Unknown'},
+        {emoji: '🔄', name: 'Unknown'},
+        {emoji: '🔄', name: 'Unknown'}
+    ];
+    
+    const roles = allRolesStr.split(' | ');
+    const top3 = roles.slice(0, 3);
+    
+    const result = top3.map(r => {
+        const emojiMatch = r.match(/^([^\s]+)/);
+        const emoji = emojiMatch ? emojiMatch[1] : '🔄';
+        let name = r.replace(/^[^\s]+\s/, '');
+        name = name.replace(/\([^)]*\)/, '').trim();
+        name = name.replace(/ - .*$/, '').trim();
+        return { emoji: emoji, name: name || 'Unknown' };
+    });
+    
+    while (result.length < 3) {
+        result.push({emoji: '🔄', name: 'Unknown'});
+    }
+    return result;
+}
+
 function isPlayerChanged(current, previous) {
     if (!previous) return true;
-    const fields = ['Rating', 'Raw_Skill', 'Multiplier', 'Matches', 'Wins', 'Losses', 'Win_Rate', 'Win_Loss_Ratio', 'Goals_PG', 'Assists_PG', 'Saves_PG', 'OwnGoals_PG', 'Total_Goals', 'Total_Assists', 'Total_Saves', 'Total_OwnGoals', 'MVP_Count', 'MVP_Per_Win', 'Offensive_Ratio', 'Defensive_Ratio', 'Playmaker_Ratio', 'Efficiency', 'Impact', 'Goalkeeping_Index', 'Defense_Reliability', 'Total_Actions'];
+    const fields = ['Matches', 'Wins', 'Losses', 'Win_Rate', 'Total_Goals', 'Total_Assists', 'Total_Saves', 'Total_OwnGoals', 'MVP_Count'];
     for (let f of fields) {
         const c = parseFloat(String(current[f] || '').replace(/,/g, '')); const p = parseFloat(String(previous[f] || '').replace(/,/g, ''));
         if (!isNaN(c) && !isNaN(p) && Math.abs(c - p) > 0.0001) return true;
-        if (isNaN(c) && isNaN(p) && current[f] !== previous[f]) return true;
     }
     return false;
 }
 
 function findPreviousPlayer(nick, userId) {
     if (!nick && !userId) return null;
-    
-    // 1. UserID ile eşleşme (EN GÜVENİLİR)
     if (userId) {
         for (let key in previousData) {
             if (previousData[key]['UserID'] === userId) {
@@ -328,13 +789,6 @@ function findPreviousPlayer(nick, userId) {
             }
         }
     }
-    
-    // 2. Direkt nick eşleşme
-    if (nick && previousData[nick]) {
-        return previousData[nick];
-    }
-    
-    // 3. Case-insensitive nick eşleşme
     if (nick) {
         const lowerNick = nick.toLowerCase();
         for (let key in previousData) {
@@ -343,18 +797,6 @@ function findPreviousPlayer(nick, userId) {
             }
         }
     }
-    
-    // 4. Parantez içindeki (XXXK) kısmını yok say
-    if (nick) {
-        const baseNick = nick.replace(/ \(\d+K\)/, '').toLowerCase();
-        for (let key in previousData) {
-            const keyBase = key.replace(/ \(\d+K\)/, '').toLowerCase();
-            if (keyBase === baseNick) {
-                return previousData[key];
-            }
-        }
-    }
-    
     return null;
 }
 
@@ -368,17 +810,14 @@ async function loadPreviousData() {
             ? '../data/players_previous.csv?t=' + new Date().getTime()
             : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players_previous.csv?t=' + new Date().getTime();
         
-        console.log('Loading previous from:', url);
         const res = await fetch(url);
         if (res.ok) {
             const lines = (await res.text()).split('\n').map(l => l.trim()).filter(l => l.length > 0);
             if (lines.length < 3) return;
-            
             if (lines.length > 0) {
                 previousUpdateDate = lines[0].replace(/^"|"$/g, '').replace(/:(\d{2}) UTC$/, ' UTC');
                 document.getElementById('footerUpdate').textContent = `Previous Update: ${previousUpdateDate}`;
             }
-            
             const headers = parseQuotedCSV(lines[2]).map(h => h.replace(/^"|"$/g, ''));
             for (let i = 3; i < lines.length; i++) {
                 const vals = parseQuotedCSV(lines[i]);
@@ -390,11 +829,6 @@ async function loadPreviousData() {
     } catch (e) {}
 }
 
-function getRoleEmoji(role) {
-    if (!role) return '🔄'; if (role.includes('Goalkeeper')) return '🧤'; if (role.includes('Striker')) return '⚽';
-    if (role.includes('Playmaker') || role.includes('MVP') || role.includes('Midfielder')) return '🎯'; return '🔄';
-}
-
 function toggleFilter() {
     filterActive = !filterActive;
     const btn = document.getElementById('filterChangedBtn');
@@ -404,45 +838,111 @@ function toggleFilter() {
 }
 
 function formatChildRow(p, prev) {
-    const r = (emoji, label, valKey, isPercent = false) => {
-        let val = escapeHtml(p[valKey] || '0'); if(isPercent && val !== '0') val += '%';
+    const totalGoals = parseFloat(p['Total_Goals'] || 0);
+    const totalAssists = parseFloat(p['Total_Assists'] || 0);
+    const totalSaves = parseFloat(p['Total_Saves'] || 0);
+    const matches = parseFloat(p['Matches'] || 1);
+    const wins = parseFloat(p['Wins'] || 1);
+    const losses = parseFloat(p['Losses'] || 1);
+    const mvp = parseFloat(p['MVP_Count'] || 0);
+    
+    const winRate = parseFloat(p['Win_Rate'] || 0) / 100;
+    const actionsPerMatch = parseFloat(p['Actions_PG'] || 0);
+    const mvpWinRate = parseFloat(p['MVP_Win_Rate'] || 0) / 100;
+    const opqi = winRate * actionsPerMatch * mvpWinRate;
+    
+    const totalContribs = totalGoals + totalAssists;
+    const totalActions = totalGoals + totalAssists + totalSaves;
+    const goalsAssistsRatio = totalAssists > 0 ? (totalGoals / totalAssists) : totalGoals;
+    const assistsGoalsRatio = totalGoals > 0 ? (totalAssists / totalGoals) : totalAssists;
+    const roleBalance = parseFloat(p['Defensive_Ratio'] || 1) > 0 ? 
+        (parseFloat(p['Offensive_Ratio'] || 0) / parseFloat(p['Defensive_Ratio'] || 1)) : 0;
+    
+    const lossRate = losses / matches * 100;
+    const lossWinRatio = wins > 0 ? (losses / wins) : 0;
+    const assistsPerWin = wins > 0 ? (totalAssists / wins) : 0;
+    const assistsPerLoss = losses > 0 ? (totalAssists / losses) : 0;
+    const nonMvpWinRate = wins > 0 ? ((wins - mvp) / wins * 100) : 0;
+    const mvpToGoalRatio = totalGoals > 0 ? (mvp / totalGoals) : 0;
+    
+    const r = (emoji, label, valKey, suffix = '', computed = null, isInteger = false, isPercent = false) => {
+        let val;
+        if (computed !== null) {
+            if (isPercent) {
+                val = computed.toFixed(2) + '%';
+            } else if (isInteger) {
+                val = Math.round(computed).toString();
+            } else {
+                val = computed.toFixed(2);
+            }
+        } else {
+            val = escapeHtml(p[valKey] || '0');
+            if (isPercent && val !== '0') val += '%';
+        }
+        if (suffix && !isPercent) val += suffix;
         let cls = getChangeClass(p[valKey], prev?.[valKey]);
         return `<div class="stat-row"><span class="stat-label">${emoji} ${label}</span><span class="stat-val ${cls}">${val}</span></div>`;
     };
+    
     return `
     <div class="details-wrapper">
         <div class="details-grid">
             
-            <div class="stat-card card-core">
-                <div class="card-header">👑 MVP & Core</div>
-                ${r('🏆', 'Win Rate', 'Win_Rate', true)}
+            <div class="stat-card card-core" style="border-color:#f97316;">
+                <div class="card-header" style="color:#f97316;">📊 Match Core</div>
+                ${r('🏆', 'Win Rate', 'Win_Rate', '', null, false, true)}
+                ${r('📉', 'Loss Rate', '', '', lossRate, false, true)}
+                ${r('⚖️', 'Win / Loss Ratio', 'Win_Loss_Ratio')}
+                ${r('📊', 'Loss / Win Ratio', '', '', lossWinRatio)}
                 ${r('🏅', 'MVP Count', 'MVP_Count')}
-                ${r('⚡', 'Impact', 'Impact')}
-                ${r('⚙️', 'Efficiency', 'Efficiency')}
+                ${r('👑', 'MVP / Total Rate', 'MVP_Rate', '', null, false, true)}
+                ${r('🎯', 'MVP / Win Rate', 'MVP_Win_Rate', '', null, false, true)}
             </div>
 
-            <div class="stat-card card-offense">
-                <div class="card-header" style="color:#f87171;">🔥 Offense</div>
-                ${r('⚽', 'Goals / Game', 'Goals_PG')}
-                ${r('🥅', 'Total Goals', 'Total_Goals')}
-                ${r('🗡️', 'Offensive Ratio', 'Offensive_Ratio', true)}
-                ${r('🎬', 'Total Actions', 'Total_Actions')}
+            <div class="stat-card card-scoring" style="border-color:#f87171;">
+                <div class="card-header" style="color:#f87171;">⚽ Scoring & Finishing</div>
+                ${r('⚽', 'Goals / Match', 'Goals_PG')}
+                ${r('🗡️', 'Striker Ratio', 'Striker_Ratio', '', null, false, true)}
+                ${r('⚡', 'Goals / Win', 'Goals_Per_Win')}
+                ${r('📉', 'Goals / Loss', 'Goals_Per_Loss')}
+                ${r('⚖️', 'Goals / Assists Ratio', '', '', goalsAssistsRatio)}
+                ${r('🚀', 'Forward Index', 'Forward_Index')}
+                ${r('🎯', 'MVP to Goal Ratio', '', '', mvpToGoalRatio)}
             </div>
 
-            <div class="stat-card card-defense">
-                <div class="card-header" style="color:#38bdf8;">🛡️ Defense</div>
-                ${r('🧤', 'Saves / Game', 'Saves_PG')}
-                ${r('🧱', 'Total Saves', 'Total_Saves')}
-                ${r('🛡️', 'Def. Reliability', 'Defense_Reliability')}
-                ${r('🏰', 'GK Index', 'Goalkeeping_Index', true)}
+            <div class="stat-card card-playmaking" style="border-color:#fbbf24;">
+                <div class="card-header" style="color:#fbbf24;">🤝 Playmaking & Teamwork</div>
+                ${r('🤝', 'Assists / Match', 'Assists_PG')}
+                ${r('🧠', 'Playmaker Ratio', 'Playmaker_Ratio', '', null, false, true)}
+                ${r('🤝', 'Assists / Win', '', '', assistsPerWin)}
+                ${r('📊', 'Assists / Loss', '', '', assistsPerLoss)}
+                ${r('🔄', 'Assists / Goals Ratio', '', '', assistsGoalsRatio)}
+                ${r('⚔️', 'Offensive Ratio', 'Offensive_Ratio', '', null, false, true)}
+                ${r('🤝', 'Non-MVP Win Rate', '', '', nonMvpWinRate, false, true)}
             </div>
 
-            <div class="stat-card card-support">
-                <div class="card-header" style="color:#c084fc;">🤝 Support</div>
-                ${r('🤝', 'Assists / Game', 'Assists_PG')}
-                ${r('➕', 'Total Assists', 'Total_Assists')}
-                ${r('🧠', 'Playmaker Ratio', 'Playmaker_Ratio', true)}
-                ${r('⚠️', 'Own Goals', 'Total_OwnGoals')}
+            <div class="stat-card card-defense" style="border-color:#38bdf8;">
+                <div class="card-header" style="color:#38bdf8;">🛡️ Defense & Goalkeeping</div>
+                ${r('🧤', 'Saves / Match', 'Saves_PG')}
+                ${r('🛡️', 'Defensive Ratio', 'Defensive_Ratio', '', null, false, true)}
+                ${r('🧱', 'Libero Index', 'Libero_Index')}
+                ${r('🥅', 'Saves / Goals Ratio', 'Saves_To_Goals_Ratio')}
+                ${r('🧤', 'Saves / Assists Ratio', 'Saves_To_Assists_Ratio')}
+                ${r('💪', 'Saves / Win', 'Saves_Per_Win')}
+                ${r('📉', 'Saves / Loss', 'Saves_Per_Loss')}
+                ${r('📈', 'Carry Index', 'Carry_Index')}
+            </div>
+
+            <div class="stat-card card-advanced" style="border-color:#c084fc;">
+                <div class="card-header" style="color:#c084fc;">⚡ Activity & Advanced</div>
+                ${r('🎬', 'Total Actions', '', '', totalActions, true)}
+                ${r('⚙️', 'Actions / Match', 'Actions_PG')}
+                ${r('🔥', 'Actions / Win', 'Actions_Per_Win')}
+                ${r('🦍', 'Actions / Loss', 'Actions_Per_Loss')}
+                ${r('🎯', 'Total Contributions', '', '', totalContribs, true)}
+                ${r('📊', 'Contributions / Match', 'Contributions_PG')}
+                ${r('🎭', 'Role Balance Index', '', '', roleBalance)}
+                ${r('🌟', 'OPQI', '', '', opqi)}
             </div>
 
         </div>
@@ -458,24 +958,24 @@ function rebuildTable(onlyChanged) {
 
     filteredPlayers.forEach((player) => {
         const realRank = globalPlayers.indexOf(player) + 1;
-        const tier = player['Tier'] || 'E-Tier'; 
-        let tierClass = tier.includes('S') ? 'S' : tier.includes('A') ? 'A' : tier.includes('B') ? 'B' : tier.includes('C') ? 'C' : tier.includes('D') ? 'D' : 'E';
         let prev = findPreviousPlayer(player['Nick'], player['UserID']);
         const isChanged = changedPlayers.has(player['Nick']);
         
-        // Tüm sütunlar için change class'larını hesapla
-        const ratingClass = getChangeClass(player['Rating'], prev?.['Rating']);
-        const skillClass = getChangeClass(player['Raw_Skill'], prev?.['Raw_Skill']);
+        const top3Roles = getTop3Roles(player['All_Roles']);
+        const roleTooltip = top3Roles.map((r, i) => `#${i+1} ${r.name}`).join(' | ');
+        const roleEmojisHtml = top3Roles.map(r => `<span>${r.emoji}</span>`).join('');
+        
         const matchesClass = getChangeClass(player['Matches'], prev?.['Matches']);
         const winsClass = getChangeClass(player['Wins'], prev?.['Wins']);
         const lossesClass = getChangeClass(player['Losses'], prev?.['Losses']);
+        const winRateClass = getChangeClass(player['Win_Rate'], prev?.['Win_Rate']);
         const goalsClass = getChangeClass(player['Total_Goals'], prev?.['Total_Goals']);
         const assistsClass = getChangeClass(player['Total_Assists'], prev?.['Total_Assists']);
         const savesClass = getChangeClass(player['Total_Saves'], prev?.['Total_Saves']);
         const mvpClass = getChangeClass(player['MVP_Count'], prev?.['MVP_Count']);
-        const offClass = getChangeClass(player['Offensive_Ratio'], prev?.['Offensive_Ratio']);
-        const defClass = getChangeClass(player['Defensive_Ratio'], prev?.['Defensive_Ratio']);
-        const playClass = getChangeClass(player['Playmaker_Ratio'], prev?.['Playmaker_Ratio']);
+        const gpmClass = getChangeClass(player['Goals_PG'], prev?.['Goals_PG']);
+        const apmClass = getChangeClass(player['Assists_PG'], prev?.['Assists_PG']);
+        const spmClass = getChangeClass(player['Saves_PG'], prev?.['Saves_PG']);
         
         const tr = document.createElement('tr');
         tr.className = "master-row" + (isChanged ? " changed-player" : "");
@@ -487,25 +987,25 @@ function rebuildTable(onlyChanged) {
                 <div class="col-player">
                     <div>${getFlagHtml(player['Country'])}</div>
                     <div class="player-info">
-                        <div class="player-nick">${escapeHtml(player['Nick'])} ${getChangeTag(player['Rating'], prev?.['Rating'], !prev)}</div>
+                        <div class="player-nick">${escapeHtml(player['Nick'])} ${getChangeTag(player['Matches'], prev?.['Matches'], !prev)}</div>
                         <div class="player-user"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'])}" target="_blank">@${escapeHtml(player['SiteName'])}</a></div>
                     </div>
                 </div>
             </td>
-            <td class="col-role" title="${escapeHtml(player['Role'])}">${getRoleEmoji(player['Role'])}</td>
-            <td class="col-rating ${ratingClass}">${escapeHtml(player['Rating'])}</td>
-            <td class="col-skill ${skillClass}">${escapeHtml(player['Raw_Skill'])}</td>
-            <td class="col-tier"><span class="badge badge-${tierClass}">${escapeHtml(tier)}</span></td>
+            <td class="col-role-emojis" title="${escapeHtml(roleTooltip)}">
+                ${roleEmojisHtml}
+            </td>
             <td class="col-stat ${matchesClass}">${escapeHtml(player['Matches'])}</td>
             <td class="col-win ${winsClass}">${escapeHtml(player['Wins'])}</td>
             <td class="col-loss ${lossesClass}">${escapeHtml(player['Losses'])}</td>
+            <td class="col-stat ${winRateClass}">${escapeHtml(player['Win_Rate'])}%</td>
             <td class="col-stat ${goalsClass}">${escapeHtml(player['Total_Goals'])}</td>
             <td class="col-stat ${assistsClass}">${escapeHtml(player['Total_Assists'])}</td>
             <td class="col-stat ${savesClass}">${escapeHtml(player['Total_Saves'])}</td>
             <td class="col-stat ${mvpClass}">${escapeHtml(player['MVP_Count'])}</td>
-            <td class="col-stat ${offClass}">${escapeHtml(player['Offensive_Ratio'])}%</td>
-            <td class="col-stat ${defClass}">${escapeHtml(player['Defensive_Ratio'])}%</td>
-            <td class="col-stat ${playClass}">${escapeHtml(player['Playmaker_Ratio'])}%</td>
+            <td class="col-stat ${gpmClass}">${escapeHtml(player['Goals_PG'])}</td>
+            <td class="col-stat ${apmClass}">${escapeHtml(player['Assists_PG'])}</td>
+            <td class="col-stat ${spmClass}">${escapeHtml(player['Saves_PG'])}</td>
             <td style="text-align:center; width: 20px;"><span class="expand-icon">▶</span></td>
         `;
         fragment.appendChild(tr);
@@ -514,9 +1014,9 @@ function rebuildTable(onlyChanged) {
     tbody.appendChild(fragment);
     
     jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
-        'tier-pre': function(data) { const map = { 'S-Tier':1, 'A-Tier':2, 'B-Tier':3, 'C-Tier':4, 'D-Tier':5, 'E-Tier':6 }; return map[String(data).replace(/<[^>]*>/g, '').trim()] || 99; },
-        'nick-score-pre': function(data) { const match = String(data).match(/\((\d+)(K)?\)/); return match ? parseInt(match[1]) * (match[2] === 'K' ? 1000 : 1) : 0; },
-        'num-fmt-pre': function(data) { return parseFloat(String(data).replace(/<[^>]*>/g, '').replace(/,/g, '').replace(/%/g, '')) || 0; }
+        'num-fmt-pre': function(data) { 
+            return parseFloat(String(data).replace(/<[^>]*>/g, '').replace(/,/g, '').replace(/%/g, '')) || 0; 
+        }
     });
     
     dataTable = $('#playersTable').DataTable({
@@ -525,11 +1025,11 @@ function rebuildTable(onlyChanged) {
         order: [[0, 'asc']], 
         columnDefs: [
             { type: 'num', targets: 0 },
-            { type: 'nick-score', targets: 1 },
+            { type: 'string', targets: 1 },
             { type: 'string', targets: 2 },
             { type: 'num-fmt', targets: 3 },
             { type: 'num-fmt', targets: 4 },
-            { type: 'tier', targets: 5 },
+            { type: 'num-fmt', targets: 5 },
             { type: 'num-fmt', targets: 6 },
             { type: 'num-fmt', targets: 7 },
             { type: 'num-fmt', targets: 8 },
@@ -538,9 +1038,7 @@ function rebuildTable(onlyChanged) {
             { type: 'num-fmt', targets: 11 },
             { type: 'num-fmt', targets: 12 },
             { type: 'num-fmt', targets: 13 },
-            { type: 'num-fmt', targets: 14 },
-            { type: 'num-fmt', targets: 15 },
-            { orderable: false, targets: 16 }
+            { orderable: false, targets: 14 }
         ],
         dom: 'rt' 
     });
@@ -633,7 +1131,9 @@ async function loadData() {
         }
         
         rebuildTable(false);
-    } catch (err) { document.getElementById('tableBody').innerHTML = `<tr><td colspan="17" style="padding: 3rem; color: #f87171; text-align: center;">⚠️ Error loading data.<br><small>${err.message}</small></td></tr>`; }
+    } catch (err) { 
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="15" style="padding: 3rem; color: #f87171; text-align: center;">⚠️ Error loading data.<br><small>${err.message}</small></td></tr>`; 
+    }
 }
 $(document).ready(function() { loadData(); });
 
