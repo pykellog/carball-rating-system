@@ -919,7 +919,6 @@ function openRadar() {
                             size: 10,
                             weight: '600'
                         },
-                        // === KRİTİK: Etiketlerin grafikten uzaklığı ===
                         padding: 10
                     },
                     ticks: {
@@ -930,7 +929,6 @@ function openRadar() {
                     }
                 }
             },
-            // === KRİTİK: Sol ve sağ padding eşit ===
             layout: {
                 padding: {
                     left: 30,
@@ -1323,25 +1321,24 @@ function rebuildTable(onlyChanged) {
         }
     });
     
+    // ============================================================
+    // === SIRALAMA DAVRANIŞI DEĞİŞTİRİLDİ ===
+    // # ve Player sütunları hariç, ilk tıklamada büyükten küçüğe (desc)
+    // ============================================================
     dataTable = $('#playersTable').DataTable({
         pageLength: 50, 
         autoWidth: false,
-        order: [[0, 'asc']], 
+        order: [[0, 'asc']], // # sütunu her zaman küçükten büyüğe
         columnDefs: [
             { type: 'num', targets: 0 },
             { type: 'string', targets: 1 },
             { type: 'string', targets: 2 },
-            { type: 'num-fmt', targets: 3 },
-            { type: 'num-fmt', targets: 4 },
-            { type: 'num-fmt', targets: 5 },
-            { type: 'num-fmt', targets: 6 },
-            { type: 'num-fmt', targets: 7 },
-            { type: 'num-fmt', targets: 8 },
-            { type: 'num-fmt', targets: 9 },
-            { type: 'num-fmt', targets: 10 },
-            { type: 'num-fmt', targets: 11 },
-            { type: 'num-fmt', targets: 12 },
-            { type: 'num-fmt', targets: 13 },
+            { 
+                type: 'num-fmt', 
+                targets: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                // İLK TIKLAMADA BÜYÜKTEN KÜÇÜĞE (DESC)
+                orderSequence: ['desc', 'asc']
+            },
             { orderable: false, targets: 14 }
         ],
         dom: 'rt' 
