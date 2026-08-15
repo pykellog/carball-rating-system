@@ -972,33 +972,50 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================================
-// TREND TESPİT SİSTEMİ
+// TREND TESPİT SİSTEMİ - ÇOK HASSAS (%0.01)
 // ============================================================
 function getPlayerTrend(current, previous) {
     if (!previous) return { trend: 'new', icon: '🆕', label: 'New Player', color: '#38bdf8' };
-    let improvements = 0, declines = 0;
+    
     const metrics = [
-        { key: 'Win_Rate', higher: true },
-        { key: 'Goals_PG', higher: true },
-        { key: 'Assists_PG', higher: true },
-        { key: 'Saves_PG', higher: true },
-        { key: 'MVP_Win_Rate', higher: true },
-        { key: 'Win_Loss_Ratio', higher: true }
+        { key: 'Win_Rate', weight: 0.30, label: 'Win Rate' },
+        { key: 'MVP_Rate', weight: 0.25, label: 'MVP Rate' },
+        { key: 'Actions_PG', weight: 0.20, label: 'Actions/Match' },
+        { key: 'Goals_PG', weight: 0.15, label: 'Goals/Match' },
+        { key: 'Assists_PG', weight: 0.10, label: 'Assists/Match' }
     ];
+    
+    let totalScore = 0;
+    let totalWeight = 0;
+    let significantChanges = 0;
+    
     metrics.forEach(m => {
         const currentVal = parseFloat(String(current[m.key] || '0').replace(/,/g, ''));
         const prevVal = parseFloat(String(previous[m.key] || '0').replace(/,/g, ''));
-        if (!isNaN(currentVal) && !isNaN(prevVal) && currentVal !== prevVal) {
-            const changePercent = Math.abs((currentVal - prevVal) / (prevVal || 1) * 100);
-            if (changePercent > 1) {
-                if (currentVal > prevVal) improvements++;
-                else declines++;
+        
+        if (!isNaN(currentVal) && !isNaN(prevVal) && prevVal > 0) {
+            const changePercent = ((currentVal - prevVal) / prevVal) * 100;
+            if (Math.abs(changePercent) > 0.01) {
+                significantChanges++;
+                totalScore += changePercent * m.weight;
+                totalWeight += m.weight;
             }
         }
     });
-    if (improvements >= 2 && improvements > declines) return { trend: 'up', icon: '📈', label: 'Performance Improving', color: '#10b981' };
-    else if (declines >= 2 && declines > improvements) return { trend: 'down', icon: '📉', label: 'Performance Declining', color: '#f87171' };
-    else return { trend: 'stable', icon: '➡️', label: 'Performance Stable', color: '#fbbf24' };
+    
+    if (significantChanges < 1 || totalWeight === 0) {
+        return { trend: 'stable', icon: '➡️', label: 'Performance Stable', color: '#fbbf24' };
+    }
+    
+    const avgScore = totalScore / totalWeight;
+    
+    if (avgScore > 0.01) {
+        return { trend: 'up', icon: '📈', label: 'Performance Improving', color: '#10b981' };
+    } else if (avgScore < -0.01) {
+        return { trend: 'down', icon: '📉', label: 'Performance Declining', color: '#f87171' };
+    } else {
+        return { trend: 'stable', icon: '➡️', label: 'Performance Stable', color: '#fbbf24' };
+    }
 }
 
 // ============================================================
@@ -1085,17 +1102,26 @@ function isPlayerChanged(current, previous) {
 
 function findPreviousPlayer(nick, userId) {
     if (!nick && !userId) return null;
+    
+    // Önce userId ile dene (en güvenilir)
     if (userId) {
         for (let key in previousData) {
-            if (previousData[key]['UserID'] === userId) return previousData[key];
+            if (previousData[key]['UserID'] === userId) {
+                return previousData[key];
+            }
         }
     }
+    
+    // Sonra nick ile dene (case-insensitive)
     if (nick) {
         const lowerNick = nick.toLowerCase();
         for (let key in previousData) {
-            if (key.toLowerCase() === lowerNick) return previousData[key];
+            if (key.toLowerCase() === lowerNick) {
+                return previousData[key];
+            }
         }
     }
+    
     return null;
 }
 
@@ -1123,7 +1149,9 @@ async function loadPreviousData() {
                 if (p['Nick']) previousData[p['Nick']] = p;
             }
         }
-    } catch (e) {}
+    } catch (e) {
+        console.error('Error loading previous data:', e);
+    }
 }
 
 function toggleFilter() {
@@ -1287,7 +1315,6 @@ function rebuildTable(onlyChanged) {
                     <div class="player-info">
                         <div class="player-nick">
                             ${escapeHtml(player['Nick'])} 
-                            ${getChangeTag(player['Matches'], prev?.['Matches'], !prev)}
                             ${trend.trend !== 'stable' ? `<span class="player-trend-icon" style="color: ${trend.color};" title="${trend.label}">${trend.icon}</span>` : ''}
                         </div>
                         <div class="player-user"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'])}" target="_blank">@${escapeHtml(player['SiteName'])}</a></div>
