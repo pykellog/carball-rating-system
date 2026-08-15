@@ -1,538 +1,481 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FFS Gaming CarBall Player Rankings</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    
-    <style>
-        :root {
-            --bg-base: #09090b; 
-            --bg-card: rgba(18, 18, 20, 0.88);
-            --bg-hover: rgba(28, 28, 32, 0.9);
-            --accent-green: #10b981; 
-            --accent-glow: rgba(16, 185, 129, 0.15);
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --purple: #c084fc;
-            
-            --tier-s: #fbbf24; --tier-a: #c084fc; --tier-b: #38bdf8;
-            --tier-c: #4ade80; --tier-d: #f87171; --tier-e: #94a3b8;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        html, body {
-            width: 100%; height: 100%; margin: 0; padding: 0;
-            overflow: hidden; 
-            background-color: var(--bg-base);
-            font-family: 'Inter', sans-serif; color: var(--text-main); -webkit-font-smoothing: antialiased;
-            position: relative;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0;
-            background-image: 
-                radial-gradient(circle at center, rgba(9, 9, 11, 0.2) 0%, rgba(9, 9, 11, 0.6) 100%),
-                linear-gradient(to bottom, rgba(9, 9, 11, 0.2), rgba(9, 9, 11, 0.4)),
-                radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, transparent 70%),
-                url('bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            transform: translateZ(0);
-            pointer-events: none;
-        }
-
-        .app-container { 
-            position: relative; z-index: 1;
-            display: flex; flex-direction: column; height: 100vh; max-width: 1400px; margin: 0 auto; padding: 1.25rem; 
-        }
-
-        .hero { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; }
-        .hero h1 { 
-            font-family: 'Rajdhani', sans-serif; 
-            font-size: 2.3rem; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em; 
-            background: linear-gradient(120deg, #e7a922 0%, #ffffff 50%, #4d4d4d 100%); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            filter: drop-shadow(0 2px 10px rgba(251, 191, 36, 0.2));
-            margin: 0; 
-        }
-        .hero-stats { display: flex; gap: 1rem; background: var(--bg-card); padding: 0.4rem 1rem; border-radius: 100px; border: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
-        .hero-stats strong { color: var(--text-main); }
-
-        .controls-wrapper { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; background: var(--bg-card); padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); flex-wrap: wrap; gap: 0.5rem; }
-        .search-box { position: relative; flex-grow: 1; max-width: 320px; }
-        .search-box input { width: 100%; padding: 0.45rem 1rem 0.45rem 2.2rem; background: rgba(0, 0, 0, 0.6); border: 1px solid var(--border-color); border-radius: 6px; color: white; font-family: 'Inter', sans-serif; font-size: 0.9rem; }
-        .search-box input:focus { outline: none; border-color: var(--accent-green); }
-        .search-box::before { content: "🔍"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 0.8rem; }
-        
-        .filter-btn { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.45rem 0.9rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.15s ease; display: flex; align-items: center; gap: 0.2rem; line-height: 1; text-decoration: none !important; }
-        .filter-btn:hover { background: rgba(16, 185, 129, 0.2); }
-        .filter-btn.active { background: var(--accent-green); color: #000; }
-        .filter-btn .count { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 10px; line-height: 1; font-size: 0.75rem; }
-        
-        .guide-btn {
-            background: rgba(231, 169, 34, 0.15) !important;
-            color: #e7a922 !important;
-            border-color: rgba(231, 169, 34, 0.3) !important;
-        }
-        .guide-btn:hover {
-            background: rgba(231, 169, 34, 0.25) !important;
-            border-color: rgba(231, 169, 34, 0.5) !important;
-        }
-
-        /* === COMPARE BUTONU === */
-        .compare-btn {
-            background: rgba(192, 132, 252, 0.15) !important;
-            color: #c084fc !important;
-            border-color: rgba(192, 132, 252, 0.3) !important;
-        }
-        .compare-btn:hover {
-            background: rgba(192, 132, 252, 0.25) !important;
-            border-color: rgba(192, 132, 252, 0.5) !important;
-        }
-        .compare-btn.active {
-            background: #c084fc !important;
-            color: #000 !important;
-        }
-        .compare-btn .sel-count {
-            background: rgba(0,0,0,0.3);
-            padding: 2px 6px;
-            border-radius: 10px;
-            line-height: 1;
-            font-size: 0.75rem;
-        }
-
-        .table-wrapper { flex-grow: 1; min-height: 0; background: var(--bg-card); border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; transform: translateZ(0); }
-        .table-scroll-container { flex-grow: 1; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
-        .table-scroll-container::-webkit-scrollbar { display: none; }
-
-        table.dataTable { width: 100% !important; margin: 0 !important; border-collapse: collapse !important; font-family: 'Inter', sans-serif; }
-        table.dataTable thead { position: sticky; top: 0; z-index: 10; background: #0c0c0e; }
-        table.dataTable thead th { 
-            color: var(--text-muted) !important; 
-            font-family: 'Rajdhani', sans-serif; 
-            font-size: 0.9rem !important; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            padding: 0.6rem 0.3rem !important; 
-            border-bottom: 1px solid var(--border-color) !important; 
-            white-space: nowrap; 
-            cursor: default; 
-        }
-        table.dataTable tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; background: transparent !important; transition: background 0.15s ease; }
-        table.dataTable tbody tr:hover { background-color: var(--bg-hover) !important; }
-        table.dataTable tbody tr.changed-player { background-color: rgba(251, 191, 36, 0.05) !important; }
-        table.dataTable tbody tr.selected-p1 { 
-            background-color: rgba(251, 191, 36, 0.08) !important; 
-            border-left: 3px solid #fbbf24 !important;
-        }
-        table.dataTable tbody tr.selected-p2 { 
-            background-color: rgba(192, 132, 252, 0.08) !important; 
-            border-left: 3px solid #c084fc !important;
-        }
-        table.dataTable td { 
-            padding: 0.5rem 0.3rem !important; 
-            vertical-align: middle; 
-            border: none !important; 
-            font-size: 1rem !important;
-            font-weight: 500; 
-            white-space: nowrap; 
-        }
-
-        .col-rank { 
-            font-family: 'Rajdhani', sans-serif; 
-            font-size: 1.15rem; 
-            font-weight: 700; 
-            color: var(--text-muted); 
-            text-align: center !important; 
-            width: 35px; 
-        }
-        .col-player { 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            width: 230px;
-            min-width: 160px;
-            max-width: 280px;
-        }
-        .player-info { 
-            display: flex; 
-            flex-direction: column; 
-            line-height: 1.1; 
-        }
-        .player-nick { 
-            font-weight: 700; 
-            font-size: 0.95rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 4px; 
-            white-space: nowrap;
-        }
-        .player-trend-icon {
-            font-size: 0.85rem;
-            margin-left: 2px;
-            cursor: default;
-        }
-        .player-user { 
-            font-size: 0.7rem; 
-            color: var(--text-muted); 
-            margin-top: 1px; 
-        }
-        .player-user a { color: var(--text-muted); text-decoration: none; transition: color 0.15s ease; }
-        .player-user a:hover { color: var(--accent-green); }
-
-        .col-role-emojis { 
-            text-align: center; 
-            font-size: 1.3rem; 
-            letter-spacing: 3px; 
-            width: 85px; 
-            cursor: default;
-        }
-        .col-role-emojis span { 
-            display: inline-block;
-            transition: transform 0.15s ease;
-        }
-        .col-role-emojis span:hover {
-            transform: scale(1.2);
-        }
-        
-        .col-stat { 
-            text-align: center; 
-            font-family: 'Rajdhani', sans-serif; 
-            font-weight: 600; 
-            font-size: 1.05rem; 
-        }
-        .col-win { 
-            text-align: center; 
-            font-family: 'Rajdhani', sans-serif; 
-            font-weight: 600; 
-            font-size: 1.05rem; 
-        }
-        .col-loss { 
-            text-align: center; 
-            font-family: 'Rajdhani', sans-serif; 
-            font-weight: 600; 
-            font-size: 1.05rem; 
-        }
-
-        .change-tag { display: inline-flex; align-items: center; padding: 1px 3px; border-radius: 3px; font-size: 0.65rem; font-weight: 700; }
-        .change-tag.up { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
-        .change-tag.down { background: rgba(248, 113, 113, 0.15); color: #f87171; }
-        .change-tag.new { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
-        .change-text-up { color: var(--accent-green) !important; }
-        .change-text-down { color: #f87171 !important; }
-
-        /* === DETAILS PANEL === */
-        table.dataTable tbody tr.expanded-row-bg { background-color: rgba(0,0,0,0.75) !important; }
-        .details-wrapper { padding: 0.8rem 1rem; background: rgba(5, 5, 6, 0.6); }
-        .details-grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 0.8rem; 
-        }
-        
-        .stat-card { 
-            background: #121215; 
-            border-radius: 8px; 
-            border: 1px solid var(--border-color); 
-            border-top: 3px solid; 
-            padding: 0.7rem; 
-            position: relative; 
-            overflow: hidden;
-        }
-        
-        .card-core { border-top-color: #f97316; }
-        .card-scoring { border-top-color: #f87171; }
-        .card-playmaking { border-top-color: #fbbf24; }
-        .card-defense { border-top-color: #38bdf8; }
-        .card-advanced { border-top-color: #c084fc; }
-
-        .card-header { 
-            font-family: 'Rajdhani', sans-serif; 
-            font-size: 1rem; 
-            font-weight: 700; 
-            color: white; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            margin-bottom: 0.4rem; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-            padding-bottom: 0.3rem; 
-        }
-        .stat-row { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 2px 0; 
-            border-bottom: 1px dashed rgba(255,255,255,0.03); 
-            font-size: 0.85rem; 
-            position: relative;
-            cursor: default;
-        }
-        .stat-row:last-child { border-bottom: none; }
-        .stat-label { 
-            color: var(--text-muted); 
-            display: flex; 
-            align-items: center; 
-            gap: 4px; 
-            font-size: 0.8rem; 
-            cursor: default;
-        }
-        .stat-val { 
-            font-family: 'Rajdhani', sans-serif; 
-            font-weight: 700; 
-            font-size: 0.95rem; 
-        }
-
-        /* === TOOLTIP === */
-        .metric-tooltip {
-            position: fixed;
-            z-index: 9999;
-            background: #1a1a1e;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.8rem 1rem;
-            max-width: 420px;
-            min-width: 250px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
-            backdrop-filter: blur(12px);
-            background: rgba(20, 20, 24, 0.95);
-            pointer-events: none;
-            transition: opacity 0.15s ease;
-            opacity: 0;
-        }
-        .metric-tooltip.visible {
-            opacity: 1;
-        }
-        .metric-tooltip .tt-header {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-        .metric-tooltip .tt-desc {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-            margin-bottom: 6px;
-        }
-        .metric-tooltip .tt-formula-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-        .metric-tooltip .tt-formula {
-            font-size: 0.7rem;
-            color: var(--blue);
-            font-family: 'Rajdhani', sans-serif;
-            background: rgba(56,189,248,0.08);
-            padding: 2px 10px;
-            border-radius: 4px;
-            display: inline-block;
-            border: 1px solid rgba(56,189,248,0.1);
-        }
-
-        .table-footer { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1rem; background: #0c0c0e; border-top: 1px solid var(--border-color); }
-        .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_length, .dataTables_info, .dataTables_paginate { display: none !important; }
-        
-        .app-footer { flex-shrink: 0; text-align: center; margin-top: 0.75rem; color: rgba(255,255,255,0.6); font-size: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.3rem;}
-        .app-footer a { color: var(--accent-green); text-decoration: none; font-weight: 500; }
-        .app-footer a:hover { text-decoration: underline; }
-        
-        .expand-icon { font-size: 11px; color: var(--text-muted); transition: transform 0.15s ease; display: inline-block; }
-        tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
-
-        /* === COMPARE ACTION BUTTON === */
-        .compare-action-btn {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #c084fc;
-            color: #000;
-            border: none;
-            padding: 0.7rem 2rem;
-            border-radius: 12px;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
-            box-shadow: 0 8px 32px rgba(192, 132, 252, 0.4);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            z-index: 100;
-            display: none;
-        }
-        .compare-action-btn:hover {
-            transform: translateX(-50%) scale(1.05);
-            box-shadow: 0 8px 40px rgba(192, 132, 252, 0.6);
-        }
-        .compare-action-btn:active {
-            transform: translateX(-50%) scale(0.95);
-        }
-
-        /* === RADAR POPUP - TAM ORTADA, KAYMA YOK === */
-        .radar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.82);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.25s ease;
-        }
-        .radar-overlay.active { display: flex; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .radar-modal {
-            background: rgba(14, 14, 18, 0.95);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 1.2rem 1.2rem 0.8rem;
-            width: min(92vw, 520px);
-            height: min(85vh, 520px);
-            max-height: 85vh;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
-            margin: auto;
-        }
-        .radar-modal .close-btn {
-            position: absolute;
-            top: 0.4rem;
-            right: 0.6rem;
-            background: none;
-            border: none;
-            color: #71717a;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.2s;
-            font-family: 'Inter', sans-serif;
-            line-height: 1;
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            z-index: 10;
-        }
-        .radar-modal .close-btn:hover {
-            color: #f4f4f5;
-            background: rgba(255, 255, 255, 0.04);
-        }
-        .radar-modal .chart-area {
-            flex: 1;
-            min-height: 0;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-        }
-        .radar-modal .chart-area canvas {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100%;
-            max-height: 100%;
-        }
-        .radar-modal .legend-row {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-shrink: 0;
-            padding-top: 0.6rem;
-            margin-top: 0.4rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            flex-wrap: wrap;
-        }
-        .radar-modal .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.7rem;
-            color: #a1a1aa;
-        }
-        .radar-modal .legend-item .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            flex-shrink: 0;
-        }
-        .radar-modal .legend-item .nick {
-            color: #f4f4f5;
-            font-weight: 600;
-        }
-
-        @media (max-width: 1100px) {
-            .details-grid { grid-template-columns: repeat(3, 1fr); }
-            .col-player { width: 170px; min-width: 130px; }
-        }
-        @media (max-width: 800px) {
-            .details-grid { grid-template-columns: repeat(2, 1fr); }
-            .col-role-emojis { width: 60px; font-size: 1rem; letter-spacing: 2px; }
-            .col-player { width: 130px; min-width: 100px; }
-            .player-nick { font-size: 0.8rem; }
-            .player-user { font-size: 0.6rem; }
-            .radar-modal { width: min(95vw, 400px); height: min(80vh, 400px); padding: 0.8rem 0.8rem 0.6rem; }
-        }
-        @media (max-width: 600px) {
-            .details-grid { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 1.4rem; }
-            .hero-stats { font-size: 0.65rem; padding: 0.2rem 0.6rem; }
-            .controls-wrapper { flex-wrap: wrap; gap: 0.5rem; }
-            .search-box { max-width: 100%; width: 100%; }
-            .col-role-emojis { width: 50px; font-size: 0.8rem; letter-spacing: 1px; }
-            .metric-tooltip { max-width: 280px; min-width: 200px; }
-            .col-player { width: 100px; min-width: 70px; }
-            table.dataTable td { font-size: 0.8rem !important; padding: 0.3rem 0.2rem !important; }
-            .player-nick { font-size: 0.7rem; }
-            .player-user { font-size: 0.5rem; }
-            .player-trend-icon { font-size: 0.7rem; }
-            .compare-action-btn { padding: 0.5rem 1.2rem; font-size: 0.8rem; bottom: 70px; }
-            .radar-modal { width: min(98vw, 340px); height: min(75vh, 340px); padding: 0.6rem 0.6rem 0.4rem; }
-            .radar-modal .close-btn { font-size: 1rem; top: 0.2rem; right: 0.3rem; }
-            .radar-modal .legend-item { font-size: 0.5rem; gap: 0.2rem; }
-            .radar-modal .legend-item .dot { width: 10px; height: 10px; }
-        }
-    </style>
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="adefbdcd-a363-4714-8f6d-86f7cd379c8c"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FFS Gaming CarBall Player Rankings</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root {
+    --bg-base: #09090b;
+    --bg-card: rgba(18, 18, 20, 0.88);
+    --bg-hover: rgba(28, 28, 32, 0.9);
+    --accent-green: #10b981;
+    --accent-glow: rgba(16, 185, 129, 0.15);
+    --text-main: #f4f4f5;
+    --text-muted: #a1a1aa;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --purple: #c084fc;
+    --tier-s: #fbbf24;
+    --tier-a: #c084fc;
+    --tier-b: #38bdf8;
+    --tier-c: #4ade80;
+    --tier-d: #f87171;
+    --tier-e: #94a3b8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+    width: 100%; height: 100%; margin: 0; padding: 0;
+    overflow: hidden;
+    background-color: var(--bg-base);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+}
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0;
+    background-image:
+        radial-gradient(circle at center, rgba(9, 9, 11, 0.2) 0%, rgba(9, 9, 11, 0.6) 100%),
+        linear-gradient(to bottom, rgba(9, 9, 11, 0.2), rgba(9, 9, 11, 0.4)),
+        radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, transparent 70%),
+        url('bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: translateZ(0);
+    pointer-events: none;
+}
+.app-container {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    height: 100vh; max-width: 1400px; margin: 0 auto; padding: 1.25rem;
+}
+.hero {
+    flex-shrink: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.85rem;
+}
+.hero h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.3rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    background: linear-gradient(120deg, #e7a922 0%, #ffffff 50%, #4d4d4d 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 10px rgba(251, 191, 36, 0.2));
+    margin: 0;
+}
+.hero-stats {
+    display: flex; gap: 1rem;
+    background: var(--bg-card); padding: 0.4rem 1rem;
+    border-radius: 100px; border: 1px solid var(--border-color);
+    font-size: 0.85rem; color: var(--text-muted); font-weight: 500;
+}
+.hero-stats strong { color: var(--text-main); }
+.controls-wrapper {
+    flex-shrink: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.85rem;
+    background: var(--bg-card); padding: 0.6rem 1rem;
+    border-radius: 10px; border: 1px solid var(--border-color);
+    flex-wrap: wrap; gap: 0.5rem;
+}
+.search-box {
+    position: relative; flex-grow: 1; max-width: 320px;
+}
+.search-box input {
+    width: 100%; padding: 0.45rem 1rem 0.45rem 2.2rem;
+    background: rgba(0, 0, 0, 0.6); border: 1px solid var(--border-color);
+    border-radius: 6px; color: white; font-family: 'Inter', sans-serif; font-size: 0.9rem;
+}
+.search-box input:focus { outline: none; border-color: var(--accent-green); }
+.search-box::before {
+    content: "🔍"; position: absolute; left: 10px; top: 50%;
+    transform: translateY(-50%); opacity: 0.5; font-size: 0.8rem;
+}
+.filter-btn {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 0.45rem 0.9rem; border-radius: 6px;
+    font-weight: 600; font-size: 0.85rem; cursor: pointer;
+    transition: background 0.15s ease;
+    display: flex; align-items: center; gap: 0.2rem;
+    line-height: 1; text-decoration: none !important;
+}
+.filter-btn:hover { background: rgba(16, 185, 129, 0.2); }
+.filter-btn.active { background: var(--accent-green); color: #000; }
+.filter-btn .count {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px; border-radius: 10px;
+    line-height: 1; font-size: 0.75rem;
+}
+.guide-btn {
+    background: rgba(231, 169, 34, 0.15) !important;
+    color: #e7a922 !important;
+    border-color: rgba(231, 169, 34, 0.3) !important;
+}
+.guide-btn:hover {
+    background: rgba(231, 169, 34, 0.25) !important;
+    border-color: rgba(231, 169, 34, 0.5) !important;
+}
+.compare-btn {
+    background: rgba(192, 132, 252, 0.15) !important;
+    color: #c084fc !important;
+    border-color: rgba(192, 132, 252, 0.3) !important;
+}
+.compare-btn:hover {
+    background: rgba(192, 132, 252, 0.25) !important;
+    border-color: rgba(192, 132, 252, 0.5) !important;
+}
+.compare-btn.active {
+    background: #c084fc !important;
+    color: #000 !important;
+}
+.compare-btn .sel-count {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px; border-radius: 10px;
+    line-height: 1; font-size: 0.75rem;
+}
+.table-wrapper {
+    flex-grow: 1; min-height: 0;
+    background: var(--bg-card);
+    border-radius: 10px; border: 1px solid var(--border-color);
+    display: flex; flex-direction: column; overflow: hidden;
+    transform: translateZ(0);
+}
+.table-scroll-container {
+    flex-grow: 1; overflow-y: auto;
+    scrollbar-width: none; -ms-overflow-style: none;
+}
+.table-scroll-container::-webkit-scrollbar { display: none; }
+table.dataTable {
+    width: 100% !important; margin: 0 !important;
+    border-collapse: collapse !important;
+    font-family: 'Inter', sans-serif;
+}
+table.dataTable thead {
+    position: sticky; top: 0; z-index: 10;
+    background: #0c0c0e;
+}
+table.dataTable thead th {
+    color: var(--text-muted) !important;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem !important; font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.6rem 0.3rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    white-space: nowrap; cursor: default;
+}
+table.dataTable tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    cursor: pointer; background: transparent !important;
+    transition: background 0.15s ease;
+}
+table.dataTable tbody tr:hover { background-color: var(--bg-hover) !important; }
+table.dataTable tbody tr.changed-player {
+    background-color: rgba(251, 191, 36, 0.05) !important;
+}
+table.dataTable tbody tr.selected-p1 {
+    background-color: rgba(251, 191, 36, 0.08) !important;
+    border-left: 3px solid #fbbf24 !important;
+}
+table.dataTable tbody tr.selected-p2 {
+    background-color: rgba(192, 132, 252, 0.08) !important;
+    border-left: 3px solid #c084fc !important;
+}
+table.dataTable td {
+    padding: 0.5rem 0.3rem !important;
+    vertical-align: middle; border: none !important;
+    font-size: 1rem !important; font-weight: 500;
+    white-space: nowrap;
+}
+.col-rank {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.15rem; font-weight: 700;
+    color: var(--text-muted);
+    text-align: center !important;
+    width: 35px;
+}
+.col-player {
+    display: flex; align-items: center; gap: 6px;
+    width: 230px; min-width: 160px; max-width: 280px;
+}
+.player-info { display: flex; flex-direction: column; line-height: 1.1; }
+.player-nick {
+    font-weight: 700; font-size: 0.95rem;
+    display: flex; align-items: center; gap: 4px;
+    white-space: nowrap;
+}
+.player-trend-icon { font-size: 0.85rem; margin-left: 2px; cursor: default; }
+.player-user {
+    font-size: 0.7rem; color: var(--text-muted);
+    margin-top: 1px;
+}
+.player-user a { color: var(--text-muted); text-decoration: none; transition: color 0.15s ease; }
+.player-user a:hover { color: var(--accent-green); }
+.col-role-emojis {
+    text-align: center; font-size: 1.3rem; letter-spacing: 3px;
+    width: 85px; cursor: default;
+}
+.col-role-emojis span { display: inline-block; transition: transform 0.15s ease; }
+.col-role-emojis span:hover { transform: scale(1.2); }
+.col-stat, .col-win, .col-loss {
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+.change-tag {
+    display: inline-flex; align-items: center;
+    padding: 1px 3px; border-radius: 3px;
+    font-size: 0.65rem; font-weight: 700;
+}
+.change-tag.up { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+.change-tag.down { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+.change-tag.new { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+.change-text-up { color: var(--accent-green) !important; }
+.change-text-down { color: #f87171 !important; }
+table.dataTable tbody tr.expanded-row-bg {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+.details-wrapper { padding: 0.8rem 1rem; background: rgba(5, 5, 6, 0.6); }
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.8rem;
+}
+.stat-card {
+    background: #121215;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    border-top: 3px solid;
+    padding: 0.7rem;
+    position: relative;
+    overflow: hidden;
+}
+.card-core { border-top-color: #f97316; }
+.card-scoring { border-top-color: #f87171; }
+.card-playmaking { border-top-color: #fbbf24; }
+.card-defense { border-top-color: #38bdf8; }
+.card-advanced { border-top-color: #c084fc; }
+.card-header {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    color: white;
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.3rem;
+}
+.stat-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 2px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.03);
+    font-size: 0.85rem;
+    position: relative; cursor: default;
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-label {
+    color: var(--text-muted);
+    display: flex; align-items: center; gap: 4px;
+    font-size: 0.8rem; cursor: default;
+}
+.stat-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+.metric-tooltip {
+    position: fixed; z-index: 9999;
+    background: #1a1a1e;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    max-width: 420px; min-width: 250px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(12px);
+    background: rgba(20, 20, 24, 0.95);
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    opacity: 0;
+}
+.metric-tooltip.visible { opacity: 1; }
+.metric-tooltip .tt-header {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    color: white;
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 4px;
+}
+.metric-tooltip .tt-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+.metric-tooltip .tt-formula-wrapper {
+    display: flex; justify-content: flex-end; align-items: center;
+}
+.metric-tooltip .tt-formula {
+    font-size: 0.7rem; color: #38bdf8;
+    font-family: 'Rajdhani', sans-serif;
+    background: rgba(56, 189, 248, 0.08);
+    padding: 2px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    border: 1px solid rgba(56, 189, 248, 0.1);
+}
+.table-footer {
+    flex-shrink: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.6rem 1rem;
+    background: #0c0c0e;
+    border-top: 1px solid var(--border-color);
+}
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_length,
+.dataTables_info,
+.dataTables_paginate { display: none !important; }
+.app-footer {
+    flex-shrink: 0;
+    text-align: center; margin-top: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 0.3rem;
+}
+.app-footer a { color: var(--accent-green); text-decoration: none; font-weight: 500; }
+.app-footer a:hover { text-decoration: underline; }
+.expand-icon { font-size: 11px; color: var(--text-muted); transition: transform 0.15s ease; display: inline-block; }
+tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
+.compare-action-btn {
+    position: fixed; bottom: 80px; left: 50%;
+    transform: translateX(-50%);
+    background: #c084fc; color: #000; border: none;
+    padding: 0.7rem 2rem; border-radius: 12px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 1rem;
+    box-shadow: 0 8px 32px rgba(192, 132, 252, 0.4);
+    cursor: pointer; transition: all 0.2s ease;
+    z-index: 100; display: none;
+}
+.compare-action-btn:hover {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 8px 40px rgba(192, 132, 252, 0.6);
+}
+.compare-action-btn:active { transform: translateX(-50%) scale(0.95); }
+.radar-overlay {
+    display: none;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    justify-content: center; align-items: center;
+    animation: fadeIn 0.25s ease;
+}
+.radar-overlay.active { display: flex; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+.radar-modal {
+    background: rgba(14, 14, 18, 0.95);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 1.2rem 1.2rem 0.8rem;
+    width: min(92vw, 520px);
+    height: min(85vh, 520px);
+    max-height: 85vh;
+    position: relative;
+    display: flex; flex-direction: column;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+    margin: auto;
+}
+.radar-modal .close-btn {
+    position: absolute; top: 0.4rem; right: 0.6rem;
+    background: none; border: none;
+    color: #71717a; font-size: 1.2rem;
+    cursor: pointer; transition: color 0.2s;
+    font-family: 'Inter', sans-serif;
+    line-height: 1; padding: 0.2rem 0.4rem;
+    border-radius: 4px; z-index: 10;
+}
+.radar-modal .close-btn:hover {
+    color: #f4f4f5;
+    background: rgba(255, 255, 255, 0.04);
+}
+.radar-modal .chart-area {
+    flex: 1; min-height: 0; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    width: 100%;
+}
+.radar-modal .chart-area canvas {
+    width: 100% !important; height: 100% !important;
+    max-width: 100%; max-height: 100%;
+}
+.radar-modal .legend-row {
+    display: flex; justify-content: center; gap: 1.5rem;
+    flex-shrink: 0; padding-top: 0.6rem; margin-top: 0.4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    flex-wrap: wrap;
+}
+.radar-modal .legend-item {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.7rem; color: #a1a1aa;
+}
+.radar-modal .legend-item .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+}
+.radar-modal .legend-item .nick { color: #f4f4f5; font-weight: 600; }
+@media (max-width: 1100px) {
+    .details-grid { grid-template-columns: repeat(3, 1fr); }
+    .col-player { width: 170px; min-width: 130px; }
+}
+@media (max-width: 800px) {
+    .details-grid { grid-template-columns: repeat(2, 1fr); }
+    .col-role-emojis { width: 60px; font-size: 1rem; letter-spacing: 2px; }
+    .col-player { width: 130px; min-width: 100px; }
+    .player-nick { font-size: 0.8rem; }
+    .player-user { font-size: 0.6rem; }
+    .radar-modal { width: min(95vw, 400px); height: min(80vh, 400px); padding: 0.8rem 0.8rem 0.6rem; }
+}
+@media (max-width: 600px) {
+    .details-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.4rem; }
+    .hero-stats { font-size: 0.65rem; padding: 0.2rem 0.6rem; }
+    .controls-wrapper { flex-wrap: wrap; gap: 0.5rem; }
+    .search-box { max-width: 100%; width: 100%; }
+    .col-role-emojis { width: 50px; font-size: 0.8rem; letter-spacing: 1px; }
+    .metric-tooltip { max-width: 280px; min-width: 200px; }
+    .col-player { width: 100px; min-width: 70px; }
+    table.dataTable td { font-size: 0.8rem !important; padding: 0.3rem 0.2rem !important; }
+    .player-nick { font-size: 0.7rem; }
+    .player-user { font-size: 0.5rem; }
+    .player-trend-icon { font-size: 0.7rem; }
+    .compare-action-btn { padding: 0.5rem 1.2rem; font-size: 0.8rem; bottom: 70px; }
+    .radar-modal { width: min(98vw, 340px); height: min(75vh, 340px); padding: 0.6rem 0.6rem 0.4rem; }
+    .radar-modal .close-btn { font-size: 1rem; top: 0.2rem; right: 0.3rem; }
+    .radar-modal .legend-item { font-size: 0.5rem; gap: 0.2rem; }
+    .radar-modal .legend-item .dot { width: 10px; height: 10px; }
+}
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="adefbdcd-a363-4714-8f6d-86f7cd379c8c"></script>
 </head>
 <body>
 
 <div class="app-container">
-    
+
     <div class="hero">
         <h1>CarBall Rankings</h1>
         <div class="hero-stats">
@@ -552,12 +495,8 @@
             <button class="filter-btn compare-btn" id="compareToggleBtn" onclick="toggleCompareMode()">
                 Compare <span class="sel-count" id="selCount">0</span>
             </button>
-            <a href="cbinfo.html" target="_blank" class="filter-btn guide-btn">
-                Metric Guide
-            </a>
-            <a href="https://github.com/pykellog/carball-rating-system" target="_blank" class="filter-btn" style="background: transparent; color: white; border-color: rgba(255,255,255,0.2);">
-                GitHub
-            </a>
+            <a href="cbinfo.html" target="_blank" class="filter-btn guide-btn">Metric Guide</a>
+            <a href="https://github.com/pykellog/carball-rating-system" target="_blank" class="filter-btn" style="background: transparent; color: white; border-color: rgba(255,255,255,0.2);">GitHub</a>
         </div>
     </div>
 
@@ -588,23 +527,19 @@
         </div>
         <div class="table-footer" id="customPagination"></div>
     </div>
-    
+
     <div class="app-footer" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px;">
         <div>Data sourced from <strong>FFS Gaming</strong> MTA server.</div>
         <div id="footerUpdate">Previous Update: -</div>
         <div style="font-size: 0.7rem; color: rgba(255,255,255,0.4);">
-            Designed & Built by 
+            Designed & Built by
             <span style="background: linear-gradient(120deg, #465828, #e5f9cf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 600;">"keLLog</span>
         </div>
     </div>
 </div>
 
-<!-- COMPARE ACTION BUTTON -->
-<button class="compare-action-btn" id="compareActionBtn" onclick="openRadar()">
-    Compare Selected Players
-</button>
+<button class="compare-action-btn" id="compareActionBtn" onclick="openRadar()">Compare Selected Players</button>
 
-<!-- RADAR POPUP - TAM ORTADA -->
 <div class="radar-overlay" id="radarOverlay">
     <div class="radar-modal">
         <button class="close-btn" id="closeRadar">✕</button>
@@ -615,7 +550,6 @@
     </div>
 </div>
 
-<!-- Tooltip Container -->
 <div class="metric-tooltip" id="metricTooltip">
     <div class="tt-header" id="ttHeader">📊 Metric Name</div>
     <div class="tt-desc" id="ttDesc">Description of the metric</div>
@@ -628,51 +562,46 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
-// ============================================================
-// METRİK TANIMLARI (36 Metrik)
-// ============================================================
 const metricDefinitions = {
-    'Win Rate': { icon: '🏆', description: 'Percentage of matches won. Above 50% means you actively change game outcomes.', formula: 'Won ÷ Total Matches' },
-    'Loss Rate': { icon: '📉', description: 'Percentage of matches lost. High rate doesn\'t mean bad player—bad teams happen.', formula: 'Lost ÷ Total Matches' },
+    'Win Rate': { icon: '📈', description: 'Percentage of matches won. Above 50% means you actively change game outcomes.', formula: 'Won ÷ Total Matches' },
+    'Loss Rate': { icon: '💀', description: 'Percentage of matches lost. High rate doesn\'t mean bad player—bad teams happen.', formula: 'Lost ÷ Total Matches' },
     'Win / Loss Ratio': { icon: '⚖️', description: 'Wins per 1 loss. Below 1 = losing more than winning.', formula: 'Won ÷ Lost' },
-    'Loss / Win Ratio': { icon: '📊', description: 'Losses per 1 win. Shows how much grind is needed for victory.', formula: 'Lost ÷ Won' },
-    'Goals / Match': { icon: '⚽', description: 'Average goals scored per match. 1.0+ is elite striker territory.', formula: 'Total Goals ÷ Total Matches' },
-    'Assists / Match': { icon: '🤝', description: 'Average assists per match. High = playmaker / team player.', formula: 'Total Assists ÷ Total Matches' },
+    'Loss / Win Ratio': { icon: '🔃', description: 'Losses per 1 win. Shows how much grind is needed for victory.', formula: 'Lost ÷ Won' },
+    'MVP Count': { icon: '🥇', description: 'Total Most Valuable Player awards received.', formula: 'Total MVP Awards' },
+    'MVP / Total Rate': { icon: '👑', description: 'MVP probability per match. Higher = more impactful player.', formula: 'MVP Count ÷ Total Matches × 100' },
+    'MVP / Win Rate': { icon: '🎖️', description: 'MVP percentage in wins. Carry indicator.', formula: 'MVP Count ÷ Wins × 100' },
+    'Non-MVP Win Rate': { icon: '🤝', description: 'Wins where teammate was MVP. Team player indicator.', formula: '(Wins - MVP) ÷ Wins × 100' },
+    'Goals / Match': { icon: '🎯', description: 'Average goals scored per match. 1.0+ is elite striker territory.', formula: 'Total Goals ÷ Total Matches' },
+    'Striker Ratio': { icon: '🗡️', description: 'Percentage of offensive actions that are goals. High = finisher.', formula: 'Goals ÷ (Goals + Assists) × 100' },
+    'Goals / Win': { icon: '🚀', description: 'Goals scored per win. How much offensive burden is carried.', formula: 'Total Goals ÷ Wins' },
+    'Goals / Loss': { icon: '🥀', description: 'Goals scored even in losses. Never stops trying.', formula: 'Total Goals ÷ Losses' },
+    'Goals / Assists Ratio': { icon: '🔢', description: 'Goals per 1 assist. High = selfish finisher, low = playmaker.', formula: 'Goals ÷ Assists' },
+    'Forward Index': { icon: '🏹', description: 'Offensive load vs defensive output. >1 = attacker who pushes forward.', formula: 'Total Contributions ÷ Saves' },
+    'Offensive Ratio': { icon: '⚔️', description: 'Percentage of actions that are offensive. High = attacking player.', formula: 'Total Contributions ÷ Total Actions × 100' },
+    'MVP to Goal Ratio': { icon: '🌟', description: 'MVP frequency per goal. How often goals become MVP.', formula: 'MVP Count ÷ Total Goals' },
+    'Assists / Match': { icon: '🅰️', description: 'Average assists per match. High = playmaker / team player.', formula: 'Total Assists ÷ Total Matches' },
+    'Playmaker Ratio': { icon: '🧠', description: 'Percentage of offensive actions that are assists. High = playmaker.', formula: 'Assists ÷ (Goals + Assists) × 100' },
+    'Assists / Win': { icon: '🪄', description: 'Assists per win. Playmaking contribution to victories.', formula: 'Total Assists ÷ Wins' },
+    'Assists / Loss': { icon: '🫂', description: 'Assists even in losses. Team player till the end.', formula: 'Total Assists ÷ Losses' },
+    'Assists / Goals Ratio': { icon: '🔄', description: 'Assists per 1 goal. High = playmaker who creates more than scores.', formula: 'Assists ÷ Goals' },
     'Saves / Match': { icon: '🧤', description: 'Average saves per match. Above 1.5 = goalkeeper / defensive anchor.', formula: 'Total Saves ÷ Total Matches' },
+    'Defensive Ratio': { icon: '🧱', description: 'Percentage of actions that are saves. High = defensive specialist.', formula: 'Saves ÷ Total Actions × 100' },
+    'Libero Index': { icon: '🧹', description: 'Defensive load vs offensive output. >1 = defender who sweeps.', formula: 'Saves ÷ Total Contributions' },
+    'Saves / Goals Ratio': { icon: '🥅', description: 'Saves needed per 1 goal scored. Shows defensive vs offensive balance.', formula: 'Saves ÷ Goals' },
+    'Saves / Assists Ratio': { icon: '👁️', description: 'Saves per 1 assist. Goalkeeper playmaking vision.', formula: 'Saves ÷ Assists' },
+    'Saves / Win': { icon: '💪', description: 'Saves per win. Defensive effort needed to secure victory.', formula: 'Total Saves ÷ Wins' },
+    'Saves / Loss': { icon: '🧊', description: 'Saves even in losses. Defensive resistance under siege.', formula: 'Total Saves ÷ Losses' },
     'Total Actions': { icon: '🎬', description: 'Total positive contributions (Goals + Assists + Saves). Overall workload.', formula: 'Goals + Assists + Saves' },
     'Actions / Match': { icon: '⚙️', description: 'Activity level per match. 2.5+ = always involved.', formula: 'Total Actions ÷ Total Matches' },
-    'Total Contributions': { icon: '🎯', description: 'Total offensive production (Goals + Assists). Attacking impact.', formula: 'Goals + Assists' },
-    'Contributions / Match': { icon: '📊', description: 'Offensive contributions per match. Guaranteed scoring involvement.', formula: 'Total Contributions ÷ Total Matches' },
-    'Striker Ratio': { icon: '🗡️', description: 'Percentage of offensive actions that are goals. High = finisher.', formula: 'Goals ÷ (Goals + Assists) × 100' },
-    'Playmaker Ratio': { icon: '🧠', description: 'Percentage of offensive actions that are assists. High = playmaker.', formula: 'Assists ÷ (Goals + Assists) × 100' },
-    'Goals / Assists Ratio': { icon: '⚖️', description: 'Goals per 1 assist. High = selfish finisher, low = playmaker.', formula: 'Goals ÷ Assists' },
-    'Assists / Goals Ratio': { icon: '🔄', description: 'Assists per 1 goal. High = playmaker who creates more than scores.', formula: 'Assists ÷ Goals' },
-    'Defensive Ratio': { icon: '🛡️', description: 'Percentage of actions that are saves. High = defensive specialist.', formula: 'Saves ÷ Total Actions × 100' },
-    'Offensive Ratio': { icon: '⚔️', description: 'Percentage of actions that are offensive. High = attacking player.', formula: 'Total Contributions ÷ Total Actions × 100' },
-    'Libero Index': { icon: '🧱', description: 'Defensive load vs offensive output. >1 = defender who sweeps.', formula: 'Saves ÷ Total Contributions' },
-    'Forward Index': { icon: '🚀', description: 'Offensive load vs defensive output. >1 = attacker who pushes forward.', formula: 'Total Contributions ÷ Saves' },
-    'Saves / Goals Ratio': { icon: '🥅', description: 'Saves needed per 1 goal scored. Shows defensive vs offensive balance.', formula: 'Saves ÷ Goals' },
-    'Saves / Assists Ratio': { icon: '🧤', description: 'Saves per 1 assist. Goalkeeper playmaking vision.', formula: 'Saves ÷ Assists' },
-    'Goals / Win': { icon: '⚡', description: 'Goals scored per win. How much offensive burden is carried.', formula: 'Total Goals ÷ Wins' },
-    'Assists / Win': { icon: '🤝', description: 'Assists per win. Playmaking contribution to victories.', formula: 'Total Assists ÷ Wins' },
-    'Saves / Win': { icon: '💪', description: 'Saves per win. Defensive effort needed to secure victory.', formula: 'Total Saves ÷ Wins' },
     'Actions / Win': { icon: '🔥', description: 'Total actions per win. Effort coefficient for each victory.', formula: 'Total Actions ÷ Wins' },
-    'Goals / Loss': { icon: '📉', description: 'Goals scored even in losses. Never stops trying.', formula: 'Total Goals ÷ Losses' },
-    'Assists / Loss': { icon: '📊', description: 'Assists even in losses. Team player till the end.', formula: 'Total Assists ÷ Losses' },
-    'Saves / Loss': { icon: '📉', description: 'Saves even in losses. Defensive resistance under siege.', formula: 'Total Saves ÷ Losses' },
     'Actions / Loss': { icon: '🦍', description: 'Total actions even in losses. Never gives up mentality.', formula: 'Total Actions ÷ Losses' },
-    'MVP / Total Rate': { icon: '👑', description: 'MVP probability per match. Higher = more impactful player.', formula: 'MVP Count ÷ Total Matches × 100' },
-    'MVP / Win Rate': { icon: '🎯', description: 'MVP percentage in wins. Carry indicator.', formula: 'MVP Count ÷ Wins × 100' },
-    'Non-MVP Win Rate': { icon: '🤝', description: 'Wins where teammate was MVP. Team player indicator.', formula: '(Wins - MVP) ÷ Wins × 100' },
-    'MVP to Goal Ratio': { icon: '🎯', description: 'MVP frequency per goal. How often goals become MVP.', formula: 'MVP Count ÷ Total Goals' },
-    'Carry Index': { icon: '📈', description: 'Carry potential. High = player who carries weak teams.', formula: 'MVP/Win Rate × Loss/Win Ratio' },
+    'Total Contributions': { icon: '💎', description: 'Total offensive production (Goals + Assists). Attacking impact.', formula: 'Goals + Assists' },
+    'Contributions / Match': { icon: '📊', description: 'Offensive contributions per match. Guaranteed scoring involvement.', formula: 'Total Contributions ÷ Total Matches' },
     'Role Balance Index': { icon: '🎭', description: 'Offense vs defense balance. 1 = perfect balance, <0.5 = specialist.', formula: 'Offensive Ratio ÷ Defensive Ratio' },
-    'OPQI': { icon: '🌟', description: 'Overall Player Quality Index. Ultimate talent score.', formula: 'Win Rate × Actions/Match × MVP/Win' }
+    'Carry Index': { icon: '📡', description: 'Carry potential. High = player who carries weak teams.', formula: 'MVP/Win Rate × Loss/Win Ratio' },
+    'OPQI': { icon: '🏅', description: 'Overall Player Quality Index. Ultimate talent score.', formula: 'Win Rate × Actions/Match × MVP/Win' }
 };
 
-// ============================================================
-// TOOLTIP FONKSİYONLARI
-// ============================================================
 const tooltip = document.getElementById('metricTooltip');
 const ttHeader = document.getElementById('ttHeader');
 const ttDesc = document.getElementById('ttDesc');
@@ -693,7 +622,10 @@ function showMetricTooltip(e, metricName) {
     tooltip.style.top = y + 'px';
     tooltip.classList.add('visible');
 }
-function hideMetricTooltip() { tooltip.classList.remove('visible'); }
+
+function hideMetricTooltip() {
+    tooltip.classList.remove('visible');
+}
 
 document.addEventListener('mouseover', function(e) {
     const label = e.target.closest('.stat-label');
@@ -702,10 +634,12 @@ document.addEventListener('mouseover', function(e) {
         if (metricName && metricDefinitions[metricName]) showMetricTooltip(e, metricName);
     }
 });
+
 document.addEventListener('mouseout', function(e) {
     const label = e.target.closest('.stat-label');
     if (label) hideMetricTooltip();
 });
+
 document.addEventListener('mousemove', function(e) {
     if (tooltip.classList.contains('visible')) {
         let x = e.clientX + 15, y = e.clientY + 10;
@@ -718,9 +652,6 @@ document.addEventListener('mousemove', function(e) {
     }
 });
 
-// ============================================================
-// COMPARE MODE
-// ============================================================
 let compareModeActive = false;
 let selectedP1 = null;
 let selectedP2 = null;
@@ -730,13 +661,13 @@ function toggleCompareMode() {
     compareModeActive = !compareModeActive;
     const btn = document.getElementById('compareToggleBtn');
     const selCount = document.getElementById('selCount');
-    
+
     if (compareModeActive) {
         btn.classList.add('active');
         btn.innerHTML = `Compare <span class="sel-count" id="selCount">0</span> ✕`;
-        dataTable.rows('.shown').nodes().to$().each(function() { 
-            dataTable.row(this).child.hide(); 
-            $(this).removeClass('shown expanded-row-bg'); 
+        dataTable.rows('.shown').nodes().to$().each(function() {
+            dataTable.row(this).child.hide();
+            $(this).removeClass('shown expanded-row-bg');
         });
         selectedP1 = null;
         selectedP2 = null;
@@ -762,9 +693,9 @@ function togglePlayerSelection(nick, event) {
     if (!compareModeActive) return;
     if (event.target.closest('.expand-icon')) return;
     if (event.target.closest('.details-wrapper')) return;
-    
+
     const tr = event.currentTarget;
-    
+
     if (selectedP1 === nick) {
         selectedP1 = null;
         tr.classList.remove('selected-p1');
@@ -802,7 +733,7 @@ function togglePlayerSelection(nick, event) {
 function updateSelectionUI() {
     const count = document.getElementById('selCount');
     if (count) count.textContent = (selectedP1 ? 1 : 0) + (selectedP2 ? 1 : 0);
-    
+
     const actionBtn = document.getElementById('compareActionBtn');
     if (selectedP1 && selectedP2) {
         actionBtn.style.display = 'block';
@@ -812,17 +743,13 @@ function updateSelectionUI() {
     }
 }
 
-// ============================================================
-// RADAR FONKSİYONLARI - DÜZELTİLMİŞ (KAYMA YOK)
-// ============================================================
 function openRadar() {
     if (!selectedP1 || !selectedP2) return;
-    
+
     const p1 = globalPlayers.find(p => p['Nick'] === selectedP1);
     const p2 = globalPlayers.find(p => p['Nick'] === selectedP2);
     if (!p1 || !p2) return;
-    
-    // === ETİKETLER ÇOK KISA (KAYMAYI ÖNLEMEK İÇİN) ===
+
     const radarMetrics = [
         { key: 'Win_Rate', label: 'Win%', icon: '🏆', scale: 1, isPercent: true },
         { key: 'Goals_PG', label: 'G/M', icon: '⚽', scale: 20, isPercent: false },
@@ -835,19 +762,19 @@ function openRadar() {
         { key: 'Playmaker_Ratio', label: 'Play%', icon: '🧠', scale: 1, isPercent: true },
         { key: 'Defensive_Ratio', label: 'Def%', icon: '🛡️', scale: 1, isPercent: true }
     ];
-    
+
     const labels = radarMetrics.map(m => m.icon + ' ' + m.label);
     const data1 = radarMetrics.map(m => parseFloat(p1[m.key] || 0) * m.scale);
     const data2 = radarMetrics.map(m => parseFloat(p2[m.key] || 0) * m.scale);
-    
+
     const color1 = '#fbbf24';
     const color2 = '#c084fc';
     const bg1 = 'rgba(251, 191, 36, 0.12)';
     const bg2 = 'rgba(192, 132, 252, 0.12)';
-    
+
     const ctx = document.getElementById('radarChart').getContext('2d');
     if (radarChartInstance) radarChartInstance.destroy();
-    
+
     radarChartInstance = new Chart(ctx, {
         type: 'radar',
         data: {
@@ -890,12 +817,12 @@ function openRadar() {
                     callbacks: {
                         label: function(ctx) {
                             const metric = radarMetrics[ctx.dataIndex];
-                            const raw = ctx.datasetIndex === 0 ? 
-                                parseFloat(p1[metric.key] || 0) : 
+                            const raw = ctx.datasetIndex === 0 ?
+                                parseFloat(p1[metric.key] || 0) :
                                 parseFloat(p2[metric.key] || 0);
                             const label = ctx.dataset.label || '';
-                            return metric.isPercent ? 
-                                label + ': ' + raw.toFixed(1) + '%' : 
+                            return metric.isPercent ?
+                                label + ': ' + raw.toFixed(1) + '%' :
                                 label + ': ' + raw.toFixed(2);
                         }
                     }
@@ -905,20 +832,11 @@ function openRadar() {
                 r: {
                     beginAtZero: true,
                     backgroundColor: 'rgba(255,255,255,0.015)',
-                    grid: {
-                        color: 'rgba(255,255,255,0.06)',
-                        circular: true
-                    },
-                    angleLines: {
-                        color: 'rgba(255,255,255,0.04)'
-                    },
+                    grid: { color: 'rgba(255,255,255,0.06)', circular: true },
+                    angleLines: { color: 'rgba(255,255,255,0.04)' },
                     pointLabels: {
                         color: '#a1a1aa',
-                        font: {
-                            family: 'Inter',
-                            size: 10,
-                            weight: '600'
-                        },
+                        font: { family: 'Inter', size: 10, weight: '600' },
                         padding: 10
                     },
                     ticks: {
@@ -930,16 +848,11 @@ function openRadar() {
                 }
             },
             layout: {
-                padding: {
-                    left: 30,
-                    right: 30,
-                    top: 10,
-                    bottom: 10
-                }
+                padding: { left: 30, right: 30, top: 10, bottom: 10 }
             }
         }
     });
-    
+
     document.getElementById('radarLegend').innerHTML = `
         <div class="legend-item">
             <span class="dot" style="background:${color1};"></span>
@@ -950,7 +863,7 @@ function openRadar() {
             <span class="nick">${p2['Nick']}</span>
         </div>
     `;
-    
+
     document.getElementById('radarOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -964,6 +877,7 @@ document.getElementById('closeRadar').addEventListener('click', closeRadar);
 document.getElementById('radarOverlay').addEventListener('click', function(e) {
     if (e.target === this) closeRadar();
 });
+
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeRadar();
@@ -971,28 +885,25 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// ============================================================
-// TREND TESPİT SİSTEMİ - ÇOK HASSAS (%0.01)
-// ============================================================
 function getPlayerTrend(current, previous) {
     if (!previous) return { trend: 'new', icon: '🆕', label: 'New Player', color: '#38bdf8' };
-    
+
     const metrics = [
-        { key: 'Win_Rate', weight: 0.30, label: 'Win Rate' },
-        { key: 'MVP_Rate', weight: 0.25, label: 'MVP Rate' },
-        { key: 'Actions_PG', weight: 0.20, label: 'Actions/Match' },
-        { key: 'Goals_PG', weight: 0.15, label: 'Goals/Match' },
-        { key: 'Assists_PG', weight: 0.10, label: 'Assists/Match' }
+        { key: 'Win_Rate', weight: 0.30 },
+        { key: 'MVP_Rate', weight: 0.25 },
+        { key: 'Actions_PG', weight: 0.20 },
+        { key: 'Goals_PG', weight: 0.15 },
+        { key: 'Assists_PG', weight: 0.10 }
     ];
-    
+
     let totalScore = 0;
     let totalWeight = 0;
     let significantChanges = 0;
-    
+
     metrics.forEach(m => {
         const currentVal = parseFloat(String(current[m.key] || '0').replace(/,/g, ''));
         const prevVal = parseFloat(String(previous[m.key] || '0').replace(/,/g, ''));
-        
+
         if (!isNaN(currentVal) && !isNaN(prevVal) && prevVal > 0) {
             const changePercent = ((currentVal - prevVal) / prevVal) * 100;
             if (Math.abs(changePercent) > 0.01) {
@@ -1002,13 +913,13 @@ function getPlayerTrend(current, previous) {
             }
         }
     });
-    
+
     if (significantChanges < 1 || totalWeight === 0) {
         return { trend: 'stable', icon: '➡️', label: 'Performance Stable', color: '#fbbf24' };
     }
-    
+
     const avgScore = totalScore / totalWeight;
-    
+
     if (avgScore > 0.01) {
         return { trend: 'up', icon: '📈', label: 'Performance Improving', color: '#10b981' };
     } else if (avgScore < -0.01) {
@@ -1018,11 +929,11 @@ function getPlayerTrend(current, previous) {
     }
 }
 
-// ============================================================
-// DATATABLES VE DİĞER FONKSİYONLAR
-// ============================================================
-let dataTable; let globalPlayers = [];
-let previousData = {}; let changedPlayers = new Set(); let filterActive = false;
+let dataTable;
+let globalPlayers = [];
+let previousData = {};
+let changedPlayers = new Set();
+let filterActive = false;
 let searchTimeout = null;
 let previousUpdateDate = '-';
 
@@ -1033,12 +944,22 @@ function escapeHtml(text) {
 }
 
 function parseQuotedCSV(line) {
-    const result = []; let current = ''; let inQuotes = false;
+    const result = [];
+    let current = '';
+    let inQuotes = false;
     for (let i = 0; i < line.length; i++) {
         const char = line[i];
-        if (char === '"') { inQuotes = !inQuotes; } else if (char === ',' && !inQuotes) { result.push(current.trim()); current = ''; } else { current += char; }
+        if (char === '"') {
+            inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+        } else {
+            current += char;
+        }
     }
-    result.push(current.trim()); return result;
+    result.push(current.trim());
+    return result;
 }
 
 function getFlagHtml(countryCode) {
@@ -1048,12 +969,14 @@ function getFlagHtml(countryCode) {
     }
     if (countryCode.length >= 2) {
         try {
-            const first = countryCode.codePointAt(0); const second = countryCode.codePointAt(2);
+            const first = countryCode.codePointAt(0);
+            const second = countryCode.codePointAt(2);
             if (first >= 0x1F1E6 && first <= 0x1F1FF && second >= 0x1F1E6 && second <= 0x1F1FF) {
-                const country1 = String.fromCharCode(first - 0x1F1E6 + 65); const country2 = String.fromCharCode(second - 0x1F1E6 + 65);
-                return `<img src="flags/${(country1 + country2).toLowerCase()}.svg" alt="${country1+country2}" width="20" height="14" style="border-radius: 2px; display: block;" loading="lazy">`;
+                const country1 = String.fromCharCode(first - 0x1F1E6 + 65);
+                const country2 = String.fromCharCode(second - 0x1F1E6 + 65);
+                return `<img src="flags/${(country1 + country2).toLowerCase()}.svg" alt="${country1 + country2}" width="20" height="14" style="border-radius: 2px; display: block;" loading="lazy">`;
             }
-        } catch (e) { }
+        } catch (e) {}
     }
     return '';
 }
@@ -1074,7 +997,7 @@ function getChangeTag(current, previous, isNew) {
 }
 
 function getTop3Roles(allRolesStr) {
-    if (!allRolesStr) return [{emoji: '🔄', name: 'Unknown'}, {emoji: '🔄', name: 'Unknown'}, {emoji: '🔄', name: 'Unknown'}];
+    if (!allRolesStr) return [{ emoji: '🔄', name: 'Unknown' }, { emoji: '🔄', name: 'Unknown' }, { emoji: '🔄', name: 'Unknown' }];
     const roles = allRolesStr.split(' | ');
     const top3 = roles.slice(0, 3);
     const result = top3.map(r => {
@@ -1085,7 +1008,7 @@ function getTop3Roles(allRolesStr) {
         name = name.replace(/ - .*$/, '').trim();
         return { emoji: emoji, name: name || 'Unknown' };
     });
-    while (result.length < 3) result.push({emoji: '🔄', name: 'Unknown'});
+    while (result.length < 3) result.push({ emoji: '🔄', name: 'Unknown' });
     return result;
 }
 
@@ -1093,7 +1016,7 @@ function isPlayerChanged(current, previous) {
     if (!previous) return true;
     const fields = ['Matches', 'Wins', 'Losses', 'Win_Rate', 'Total_Goals', 'Total_Assists', 'Total_Saves', 'Total_OwnGoals', 'MVP_Count'];
     for (let f of fields) {
-        const c = parseFloat(String(current[f] || '').replace(/,/g, '')); 
+        const c = parseFloat(String(current[f] || '').replace(/,/g, ''));
         const p = parseFloat(String(previous[f] || '').replace(/,/g, ''));
         if (!isNaN(c) && !isNaN(p) && Math.abs(c - p) > 0.0001) return true;
     }
@@ -1102,8 +1025,7 @@ function isPlayerChanged(current, previous) {
 
 function findPreviousPlayer(nick, userId) {
     if (!nick && !userId) return null;
-    
-    // Önce userId ile dene (en güvenilir)
+
     if (userId) {
         for (let key in previousData) {
             if (previousData[key]['UserID'] === userId) {
@@ -1111,8 +1033,7 @@ function findPreviousPlayer(nick, userId) {
             }
         }
     }
-    
-    // Sonra nick ile dene (case-insensitive)
+
     if (nick) {
         const lowerNick = nick.toLowerCase();
         for (let key in previousData) {
@@ -1121,31 +1042,32 @@ function findPreviousPlayer(nick, userId) {
             }
         }
     }
-    
+
     return null;
 }
 
 async function loadPreviousData() {
     try {
-        const isLocal = window.location.hostname === 'localhost' || 
+        const isLocal = window.location.hostname === 'localhost' ||
                         window.location.hostname === '127.0.0.1' ||
                         window.location.hostname === '';
-        const url = isLocal 
-            ? '../data/players_previous.csv?t=' + new Date().getTime()
-            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players_previous.csv?t=' + new Date().getTime();
+        const url = isLocal ?
+            '../data/players_previous.csv?t=' + new Date().getTime() :
+            'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players_previous.csv?t=' + new Date().getTime();
         const res = await fetch(url);
         if (res.ok) {
             const lines = (await res.text()).split('\n').map(l => l.trim()).filter(l => l.length > 0);
             if (lines.length < 3) return;
             if (lines.length > 0) {
                 previousUpdateDate = lines[0].replace(/^"|"$/g, '').replace(/:(\d{2}) UTC$/, ' UTC');
-                document.getElementById('footerUpdate').textContent = `Previous Update: ${previousUpdateDate}`;
+                document.getElementById('footerUpdate').textContent = 'Previous Update: ' + previousUpdateDate;
             }
             const headers = parseQuotedCSV(lines[2]).map(h => h.replace(/^"|"$/g, ''));
             for (let i = 3; i < lines.length; i++) {
                 const vals = parseQuotedCSV(lines[i]);
                 if (vals.length < 4) continue;
-                const p = {}; headers.forEach((h, idx) => p[h] = vals[idx] ? vals[idx].replace(/^"|"$/g, '') : '');
+                const p = {};
+                headers.forEach((h, idx) => p[h] = vals[idx] ? vals[idx].replace(/^"|"$/g, '') : '');
                 if (p['Nick']) previousData[p['Nick']] = p;
             }
         }
@@ -1157,122 +1079,94 @@ async function loadPreviousData() {
 function toggleFilter() {
     filterActive = !filterActive;
     const btn = document.getElementById('filterChangedBtn');
-    if (filterActive) { btn.classList.add('active'); btn.innerHTML = `📊 Changes <span class="count">${changedPlayers.size}</span> ✕`; } 
-    else { btn.classList.remove('active'); btn.innerHTML = `📊 Changes <span class="count">${changedPlayers.size}</span>`; }
+    if (filterActive) {
+        btn.classList.add('active');
+        btn.innerHTML = `📊 Changes <span class="count">${changedPlayers.size}</span> ✕`;
+    } else {
+        btn.classList.remove('active');
+        btn.innerHTML = `📊 Changes <span class="count">${changedPlayers.size}</span>`;
+    }
     rebuildTable(filterActive);
 }
 
 function formatChildRow(p, prev) {
-    const totalGoals = parseFloat(p['Total_Goals'] || 0);
-    const totalAssists = parseFloat(p['Total_Assists'] || 0);
-    const totalSaves = parseFloat(p['Total_Saves'] || 0);
-    const matches = parseFloat(p['Matches'] || 1);
-    const wins = parseFloat(p['Wins'] || 1);
-    const losses = parseFloat(p['Losses'] || 1);
-    const mvp = parseFloat(p['MVP_Count'] || 0);
-    
-    const winRate = parseFloat(p['Win_Rate'] || 0) / 100;
-    const actionsPerMatch = parseFloat(p['Actions_PG'] || 0);
-    const mvpWinRate = parseFloat(p['MVP_Win_Rate'] || 0) / 100;
-    const opqi = winRate * actionsPerMatch * mvpWinRate;
-    
-    const totalContribs = totalGoals + totalAssists;
-    const totalActions = totalGoals + totalAssists + totalSaves;
-    const goalsAssistsRatio = totalAssists > 0 ? (totalGoals / totalAssists) : totalGoals;
-    const assistsGoalsRatio = totalGoals > 0 ? (totalAssists / totalGoals) : totalAssists;
-    const roleBalance = parseFloat(p['Defensive_Ratio'] || 1) > 0 ? 
-        (parseFloat(p['Offensive_Ratio'] || 0) / parseFloat(p['Defensive_Ratio'] || 1)) : 0;
-    
-    const lossRate = losses / matches * 100;
-    const lossWinRatio = wins > 0 ? (losses / wins) : 0;
-    const assistsPerWin = wins > 0 ? (totalAssists / wins) : 0;
-    const assistsPerLoss = losses > 0 ? (totalAssists / losses) : 0;
-    const nonMvpWinRate = wins > 0 ? ((wins - mvp) / wins * 100) : 0;
-    const mvpToGoalRatio = totalGoals > 0 ? (mvp / totalGoals) : 0;
-    
-    const r = (emoji, label, valKey, suffix = '', computed = null, isInteger = false, isPercent = false) => {
-        let val;
-        if (computed !== null) {
-            if (isPercent) val = computed.toFixed(2) + '%';
-            else if (isInteger) val = Math.round(computed).toString();
-            else val = computed.toFixed(2);
-        } else {
-            val = escapeHtml(p[valKey] || '0');
-            if (isPercent && val !== '0') val += '%';
-        }
+    const r = (emoji, label, valKey, suffix = '', isPercent = false, isInteger = false) => {
+        let val = escapeHtml(p[valKey] || '0');
+        if (isPercent && val !== '0') val += '%';
         if (suffix && !isPercent) val += suffix;
         let cls = getChangeClass(p[valKey], prev?.[valKey]);
         return `<div class="stat-row"><span class="stat-label">${emoji} ${label}</span><span class="stat-val ${cls}">${val}</span></div>`;
     };
-    
+
     return `
     <div class="details-wrapper">
         <div class="details-grid">
             <div class="stat-card card-core" style="border-color:#f97316;">
-                <div class="card-header" style="color:#f97316;">📊 Match Core</div>
-                ${r('🏆', 'Win Rate', 'Win_Rate', '', null, false, true)}
-                ${r('📉', 'Loss Rate', '', '', lossRate, false, true)}
+                <div class="card-header" style="color:#f97316;">🏆 Match Results & Awards</div>
+                ${r('📈', 'Win Rate', 'Win_Rate', '', true)}
+                ${r('💀', 'Loss Rate', 'Loss_Rate', '', true)}
                 ${r('⚖️', 'Win / Loss Ratio', 'Win_Loss_Ratio')}
-                ${r('📊', 'Loss / Win Ratio', '', '', lossWinRatio)}
-                ${r('🏅', 'MVP Count', 'MVP_Count')}
-                ${r('👑', 'MVP / Total Rate', 'MVP_Rate', '', null, false, true)}
-                ${r('🎯', 'MVP / Win Rate', 'MVP_Win_Rate', '', null, false, true)}
+                ${r('🔃', 'Loss / Win Ratio', 'Loss_Win_Ratio')}
+                ${r('🥇', 'MVP Count', 'MVP_Count')}
+                ${r('👑', 'MVP / Total Rate', 'MVP_Rate', '', true)}
+                ${r('🎖️', 'MVP / Win Rate', 'MVP_Win_Rate', '', true)}
+                ${r('🤝', 'Non-MVP Win Rate', 'Non_MVP_Win_Rate', '', true)}
             </div>
             <div class="stat-card card-scoring" style="border-color:#f87171;">
-                <div class="card-header" style="color:#f87171;">⚽ Scoring & Finishing</div>
-                ${r('⚽', 'Goals / Match', 'Goals_PG')}
-                ${r('🗡️', 'Striker Ratio', 'Striker_Ratio', '', null, false, true)}
-                ${r('⚡', 'Goals / Win', 'Goals_Per_Win')}
-                ${r('📉', 'Goals / Loss', 'Goals_Per_Loss')}
-                ${r('⚖️', 'Goals / Assists Ratio', '', '', goalsAssistsRatio)}
-                ${r('🚀', 'Forward Index', 'Forward_Index')}
-                ${r('🎯', 'MVP to Goal Ratio', '', '', mvpToGoalRatio)}
+                <div class="card-header" style="color:#f87171;">⚽ Scoring & Attack</div>
+                ${r('🗡️', 'Striker Ratio', 'Striker_Ratio', '', true)}
+                ${r('⚔️', 'Offensive Ratio', 'Offensive_Ratio', '', true)}
+                ${r('🏹', 'Forward Index', 'Forward_Index')}
+                ${r('🎯', 'Goals / Match', 'Goals_PG')}
+                ${r('🚀', 'Goals / Win', 'Goals_Per_Win')}
+                ${r('🥀', 'Goals / Loss', 'Goals_Per_Loss')}
+                ${r('🔢', 'Goals / Assists Ratio', 'Goals_To_Assists_Ratio')}
+                ${r('🌟', 'MVP to Goal Ratio', 'MVP_To_Goal_Ratio')}
             </div>
             <div class="stat-card card-playmaking" style="border-color:#fbbf24;">
-                <div class="card-header" style="color:#fbbf24;">🤝 Playmaking & Teamwork</div>
-                ${r('🤝', 'Assists / Match', 'Assists_PG')}
-                ${r('🧠', 'Playmaker Ratio', 'Playmaker_Ratio', '', null, false, true)}
-                ${r('🤝', 'Assists / Win', '', '', assistsPerWin)}
-                ${r('📊', 'Assists / Loss', '', '', assistsPerLoss)}
-                ${r('🔄', 'Assists / Goals Ratio', '', '', assistsGoalsRatio)}
-                ${r('⚔️', 'Offensive Ratio', 'Offensive_Ratio', '', null, false, true)}
-                ${r('🤝', 'Non-MVP Win Rate', '', '', nonMvpWinRate, false, true)}
+                <div class="card-header" style="color:#fbbf24;">🧩 Playmaking & Support</div>
+                ${r('🧠', 'Playmaker Ratio', 'Playmaker_Ratio', '', true)}
+                ${r('🅰️', 'Assists / Match', 'Assists_PG')}
+                ${r('🪄', 'Assists / Win', 'Assists_Per_Win')}
+                ${r('🫂', 'Assists / Loss', 'Assists_Per_Loss')}
+                ${r('🔄', 'Assists / Goals Ratio', 'Assists_To_Goals_Ratio')}
             </div>
             <div class="stat-card card-defense" style="border-color:#38bdf8;">
                 <div class="card-header" style="color:#38bdf8;">🛡️ Defense & Goalkeeping</div>
+                ${r('🧱', 'Defensive Ratio', 'Defensive_Ratio', '', true)}
+                ${r('🧹', 'Libero Index', 'Libero_Index')}
                 ${r('🧤', 'Saves / Match', 'Saves_PG')}
-                ${r('🛡️', 'Defensive Ratio', 'Defensive_Ratio', '', null, false, true)}
-                ${r('🧱', 'Libero Index', 'Libero_Index')}
                 ${r('🥅', 'Saves / Goals Ratio', 'Saves_To_Goals_Ratio')}
-                ${r('🧤', 'Saves / Assists Ratio', 'Saves_To_Assists_Ratio')}
+                ${r('👁️', 'Saves / Assists Ratio', 'Saves_To_Assists_Ratio')}
                 ${r('💪', 'Saves / Win', 'Saves_Per_Win')}
-                ${r('📉', 'Saves / Loss', 'Saves_Per_Loss')}
-                ${r('📈', 'Carry Index', 'Carry_Index')}
+                ${r('🧊', 'Saves / Loss', 'Saves_Per_Loss')}
             </div>
             <div class="stat-card card-advanced" style="border-color:#c084fc;">
-                <div class="card-header" style="color:#c084fc;">⚡ Activity & Advanced</div>
-                ${r('🎬', 'Total Actions', '', '', totalActions, true)}
+                <div class="card-header" style="color:#c084fc;">⚡ Activity & Impact</div>
+                ${r('🎬', 'Total Actions', 'Total_Actions', '', false, true)}
                 ${r('⚙️', 'Actions / Match', 'Actions_PG')}
                 ${r('🔥', 'Actions / Win', 'Actions_Per_Win')}
                 ${r('🦍', 'Actions / Loss', 'Actions_Per_Loss')}
-                ${r('🎯', 'Total Contributions', '', '', totalContribs, true)}
+                ${r('💎', 'Total Contributions', 'Total_Contributions', '', false, true)}
                 ${r('📊', 'Contributions / Match', 'Contributions_PG')}
-                ${r('🎭', 'Role Balance Index', '', '', roleBalance)}
-                ${r('🌟', 'OPQI', '', '', opqi)}
+                ${r('🎭', 'Role Balance Index', 'Role_Balance_Index')}
+                ${r('📡', 'Carry Index', 'Carry_Index')}
+                ${r('🏅', 'OPQI', 'OPQI')}
             </div>
         </div>
     </div>`;
 }
 
 function rebuildTable(onlyChanged) {
-    if (dataTable) { 
-        $('#playersTable tbody').off('click', 'tr.master-row'); 
-        dataTable.destroy(); 
+    if (dataTable) {
+        $('#playersTable tbody').off('click', 'tr.master-row');
+        dataTable.destroy();
     }
-    const tbody = document.getElementById('tableBody'); 
+
+    const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
     let filteredPlayers = onlyChanged ? globalPlayers.filter(p => changedPlayers.has(p['Nick'])) : globalPlayers;
-    
+
     const fragment = document.createDocumentFragment();
 
     filteredPlayers.forEach((player) => {
@@ -1280,11 +1174,11 @@ function rebuildTable(onlyChanged) {
         let prev = findPreviousPlayer(player['Nick'], player['UserID']);
         const isChanged = changedPlayers.has(player['Nick']);
         const trend = getPlayerTrend(player, prev);
-        
+
         const top3Roles = getTop3Roles(player['All_Roles']);
-        const roleTooltip = top3Roles.map((r, i) => `#${i+1} ${r.name}`).join(' | ');
+        const roleTooltip = top3Roles.map((r, i) => `#${i + 1} ${r.name}`).join(' | ');
         const roleEmojisHtml = top3Roles.map(r => `<span>${r.emoji}</span>`).join('');
-        
+
         const matchesClass = getChangeClass(player['Matches'], prev?.['Matches']);
         const winsClass = getChangeClass(player['Wins'], prev?.['Wins']);
         const lossesClass = getChangeClass(player['Losses'], prev?.['Losses']);
@@ -1296,16 +1190,17 @@ function rebuildTable(onlyChanged) {
         const gpmClass = getChangeClass(player['Goals_PG'], prev?.['Goals_PG']);
         const apmClass = getChangeClass(player['Assists_PG'], prev?.['Assists_PG']);
         const spmClass = getChangeClass(player['Saves_PG'], prev?.['Saves_PG']);
-        
+
         const isP1 = selectedP1 === player['Nick'];
         const isP2 = selectedP2 === player['Nick'];
         let selClass = '';
         if (isP1) selClass = ' selected-p1';
         else if (isP2) selClass = ' selected-p2';
-        
+
         const tr = document.createElement('tr');
         tr.className = "master-row" + (isChanged ? " changed-player" : "") + selClass;
-        $(tr).data('player', player); $(tr).data('prev', prev);
+        $(tr).data('player', player);
+        $(tr).data('prev', prev);
 
         tr.innerHTML = `
             <td class="col-rank">${realRank}</td>
@@ -1314,7 +1209,7 @@ function rebuildTable(onlyChanged) {
                     <div>${getFlagHtml(player['Country'])}</div>
                     <div class="player-info">
                         <div class="player-nick">
-                            ${escapeHtml(player['Nick'])} 
+                            ${escapeHtml(player['Nick'])}
                             ${trend.trend !== 'stable' ? `<span class="player-trend-icon" style="color: ${trend.color};" title="${trend.label}">${trend.icon}</span>` : ''}
                         </div>
                         <div class="player-user"><a href="https://ffs.gg/members/${escapeHtml(player['UserID'])}" target="_blank">@${escapeHtml(player['SiteName'])}</a></div>
@@ -1341,34 +1236,29 @@ function rebuildTable(onlyChanged) {
     });
 
     tbody.appendChild(fragment);
-    
+
     jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
-        'num-fmt-pre': function(data) { 
-            return parseFloat(String(data).replace(/<[^>]*>/g, '').replace(/,/g, '').replace(/%/g, '')) || 0; 
+        'num-fmt-pre': function(data) {
+            return parseFloat(String(data).replace(/<[^>]*>/g, '').replace(/,/g, '').replace(/%/g, '')) || 0;
         }
     });
-    
-    // ============================================================
-    // === SIRALAMA DAVRANIŞI DEĞİŞTİRİLDİ ===
-    // # ve Player sütunları hariç, ilk tıklamada büyükten küçüğe (desc)
-    // ============================================================
+
     dataTable = $('#playersTable').DataTable({
-        pageLength: 50, 
+        pageLength: 50,
         autoWidth: false,
-        order: [[0, 'asc']], // # sütunu her zaman küçükten büyüğe
+        order: [[0, 'asc']],
         columnDefs: [
             { type: 'num', targets: 0 },
             { type: 'string', targets: 1 },
             { type: 'string', targets: 2 },
-            { 
-                type: 'num-fmt', 
+            {
+                type: 'num-fmt',
                 targets: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-                // İLK TIKLAMADA BÜYÜKTEN KÜÇÜĞE (DESC)
                 orderSequence: ['desc', 'asc']
             },
             { orderable: false, targets: 14 }
         ],
-        dom: 'rt' 
+        dom: 'rt'
     });
 
     $('#customSearch').off('input').on('input', function() {
@@ -1381,30 +1271,31 @@ function rebuildTable(onlyChanged) {
         }, 200);
     });
 
-    $('#playersTable tbody').on('click', 'tr.master-row', function (e) {
+    $('#playersTable tbody').on('click', 'tr.master-row', function(e) {
         if (compareModeActive) {
             const nick = $(this).data('player')?.['Nick'];
             if (nick) togglePlayerSelection(nick, e);
             return;
         }
-        
-        var tr = $(this); var row = dataTable.row(tr);
-        if (row.child.isShown()) { 
-            row.child.hide(); 
-            tr.removeClass('shown expanded-row-bg'); 
+
+        var tr = $(this);
+        var row = dataTable.row(tr);
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown expanded-row-bg');
         } else {
-            dataTable.rows('.shown').nodes().to$().each(function() { 
-                dataTable.row(this).child.hide(); 
-                $(this).removeClass('shown expanded-row-bg'); 
+            dataTable.rows('.shown').nodes().to$().each(function() {
+                dataTable.row(this).child.hide();
+                $(this).removeClass('shown expanded-row-bg');
             });
-            row.child(formatChildRow(tr.data('player'), tr.data('prev'))).show(); 
+            row.child(formatChildRow(tr.data('player'), tr.data('prev'))).show();
             tr.addClass('shown expanded-row-bg');
             tr[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     });
 
     updateCustomPagination();
-    dataTable.on('draw', function () { 
+    dataTable.on('draw', function() {
         updateCustomPagination();
         document.getElementById('tableScrollContainer').scrollTop = 0;
         if (selectedP1) {
@@ -1442,58 +1333,63 @@ function goToPage(direction) {
 async function loadData() {
     try {
         await loadPreviousData();
-        const isLocal = window.location.hostname === 'localhost' || 
+        const isLocal = window.location.hostname === 'localhost' ||
                         window.location.hostname === '127.0.0.1' ||
                         window.location.hostname === '';
-        
-        const url = isLocal 
-            ? '../data/players.csv?t=' + new Date().getTime()
-            : 'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players.csv?t=' + new Date().getTime();
+
+        const url = isLocal ?
+            '../data/players.csv?t=' + new Date().getTime() :
+            'https://raw.githubusercontent.com/pykellog/carball-rating-system/refs/heads/main/data/players.csv?t=' + new Date().getTime();
         const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const lines = (await res.text()).split('\n').map(l => l.trim()).filter(l => l.length > 0);
         if (lines.length < 3) throw new Error('CSV is empty.');
-        
+
         const updateDate = lines[0].replace(/^"|"$/g, '').replace(/:(\d{2}) UTC$/, ' UTC');
         const playerCount = parseInt(lines[1].replace(/^"|"$/g, '').replace('PlayerCount: ', ''));
         const headers = parseQuotedCSV(lines[2]).map(h => h.replace(/^"|"$/g, ''));
-        
-        globalPlayers = []; changedPlayers.clear();
+
+        globalPlayers = [];
+        changedPlayers.clear();
         for (let i = 3; i < lines.length; i++) {
             const vals = parseQuotedCSV(lines[i]);
             if (vals.length < 4) continue;
-            const p = {}; headers.forEach((h, idx) => p[h] = vals[idx] ? vals[idx].replace(/^"|"$/g, '') : '');
+            const p = {};
+            headers.forEach((h, idx) => p[h] = vals[idx] ? vals[idx].replace(/^"|"$/g, '') : '');
             globalPlayers.push(p);
         }
-        
-        globalPlayers.forEach((p) => { 
+
+        globalPlayers.forEach((p) => {
             if (isPlayerChanged(p, findPreviousPlayer(p['Nick'], p['UserID']))) {
                 changedPlayers.add(p['Nick']);
             }
         });
-        
+
         document.getElementById('lastUpdate').textContent = updateDate;
         document.getElementById('playerCount').textContent = playerCount;
         document.getElementById('changedCount').textContent = changedPlayers.size;
-        
+
         if (document.getElementById('footerUpdate').textContent === 'Previous Update: -' && previousUpdateDate !== '-') {
             document.getElementById('footerUpdate').textContent = `Previous Update: ${previousUpdateDate}`;
         }
-        
+
         rebuildTable(false);
-    } catch (err) { 
-        document.getElementById('tableBody').innerHTML = `<tr><td colspan="15" style="padding: 3rem; color: #f87171; text-align: center;">⚠️ Error loading data.<br><small>${err.message}</small></td></tr>`; 
+    } catch (err) {
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="15" style="padding: 3rem; color: #f87171; text-align: center;">⚠️ Error loading data.<br><small>${err.message}</small></td></tr>`;
     }
 }
-$(document).ready(function() { loadData(); });
 
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function() {
+    loadData();
+});
+
+document.addEventListener("DOMContentLoaded", function() {
     const searchBox = document.getElementById("customSearch");
     let searchTimer;
     if (searchBox) {
-        searchBox.addEventListener("input", function () {
+        searchBox.addEventListener("input", function() {
             clearTimeout(searchTimer);
-            searchTimer = setTimeout(function () {
+            searchTimer = setTimeout(function() {
                 const searchTerm = searchBox.value.trim().toLowerCase();
                 if (searchTerm.length >= 2 && window.umami) {
                     umami.track("Canlı Arama", { kelime: searchTerm });
@@ -1503,5 +1399,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
+
 </body>
 </html>
