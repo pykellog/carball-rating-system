@@ -1390,8 +1390,8 @@ function updateCustomPagination() {
                     <option value="200">200</option>
                     <option value="500">500</option>
                 </select>
-                <span>per page</span>
-                <span style="margin-left: 0.5rem;">Showing ${info.start + 1} to ${info.end} of ${info.recordsDisplay} players</span>
+                <span>Per Page</span>
+                <span style="margin-left: 0.5rem;">Showing ${info.start + 1} to ${info.end} of ${info.recordsDisplay} Players</span>
             </div>
             <div style="display:flex; gap:10px; flex-shrink: 0;">
                 <button onclick="goToPage('previous')" ${info.page === 0 ? 'disabled' : ''} style="background:rgba(24,24,27,0.8); color:white; border:1px solid var(--border-color); padding:4px 12px; border-radius:4px; cursor:${info.page === 0 ? 'not-allowed' : 'pointer'}; opacity:${info.page === 0 ? '0.5' : '1'};">Prev</button>
