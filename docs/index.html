@@ -325,8 +325,29 @@ table.dataTable tbody tr.expanded-row-bg {
 .metric-tooltip .tt-formula-wrapper {
     display: flex; justify-content: flex-end; align-items: center;
 }
+.metric-tooltip .tt-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.metric-tooltip .tt-prev {
+    font-size: 0.7rem;
+    color: #fbbf24;
+    font-family: 'Rajdhani', sans-serif;
+    background: rgba(251, 191, 36, 0.08);
+    padding: 2px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    border: 1px solid rgba(251, 191, 36, 0.1);
+}
+
 .metric-tooltip .tt-formula {
-    font-size: 0.7rem; color: #38bdf8;
+    font-size: 0.7rem;
+    color: #38bdf8;
     font-family: 'Rajdhani', sans-serif;
     background: rgba(56, 189, 248, 0.08);
     padding: 2px 10px;
@@ -553,8 +574,9 @@ tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
 <div class="metric-tooltip" id="metricTooltip">
     <div class="tt-header" id="ttHeader">📊 Metric Name</div>
     <div class="tt-desc" id="ttDesc">Description of the metric</div>
-    <div class="tt-formula-wrapper">
-        <div class="tt-formula" id="ttFormula">Formula: X ÷ Y</div>
+    <div class="tt-footer">
+        <span class="tt-prev" id="ttPrev"></span>
+        <span class="tt-formula" id="ttFormula">Formula: X ÷ Y</span>
     </div>
 </div>
 
@@ -607,14 +629,27 @@ const ttHeader = document.getElementById('ttHeader');
 const ttDesc = document.getElementById('ttDesc');
 const ttFormula = document.getElementById('ttFormula');
 
-function showMetricTooltip(e, metricName) {
+function showMetricTooltip(e, metricName, prevValue) {
     const def = metricDefinitions[metricName];
     if (!def) return;
+    
     ttHeader.textContent = `${def.icon} ${metricName}`;
     ttDesc.textContent = def.description;
+    
+    // Formula her zaman sağda
     ttFormula.textContent = `Formula: ${def.formula}`;
+    
+    // Previous değer varsa sol alt köşeye ekle
+    const prevEl = document.getElementById('ttPrev');
+    if (prevValue) {
+        prevEl.textContent = `Previous: ${prevValue}`;
+        prevEl.style.display = 'inline-block';
+    } else {
+        prevEl.style.display = 'none';
+    }
+    
     let x = e.clientX + 15, y = e.clientY + 10;
-    const tw = 420, th = 160;
+    const tw = 420, th = 180;
     if (x + tw > window.innerWidth) x = e.clientX - tw - 15;
     if (y + th > window.innerHeight) y = window.innerHeight - th - 10;
     if (x < 10) x = 10; if (y < 10) y = 10;
@@ -628,16 +663,24 @@ function hideMetricTooltip() {
 }
 
 document.addEventListener('mouseover', function(e) {
-    const label = e.target.closest('.stat-label');
-    if (label) {
-        const metricName = label.textContent.trim().replace(/^[^\s]+\s/, '').trim();
-        if (metricName && metricDefinitions[metricName]) showMetricTooltip(e, metricName);
+    const row = e.target.closest('.stat-row');
+    if (row) {
+        const label = row.querySelector('.stat-label');
+        if (label) {
+            const metricName = label.textContent.trim().replace(/^[^\s]+\s/, '').trim();
+            const prevValue = row.getAttribute('data-prev');
+            if (metricName && metricDefinitions[metricName]) {
+                showMetricTooltip(e, metricName, prevValue);
+            }
+        }
     }
 });
 
 document.addEventListener('mouseout', function(e) {
-    const label = e.target.closest('.stat-label');
-    if (label) hideMetricTooltip();
+    const row = e.target.closest('.stat-row');
+    if (row) {
+        hideMetricTooltip();
+    }
 });
 
 document.addEventListener('mousemove', function(e) {
@@ -1095,7 +1138,16 @@ function formatChildRow(p, prev) {
         if (isPercent && val !== '0') val += '%';
         if (suffix && !isPercent) val += suffix;
         let cls = getChangeClass(p[valKey], prev?.[valKey]);
-        return `<div class="stat-row"><span class="stat-label">${emoji} ${label}</span><span class="stat-val ${cls}">${val}</span></div>`;
+
+        let prevVal = '';
+        if (prev && prev[valKey] !== undefined && prev[valKey] !== p[valKey]) {
+            let pv = escapeHtml(prev[valKey] || '0');
+            if (isPercent && pv !== '0') pv += '%';
+            if (suffix && !isPercent) pv += suffix;
+            prevVal = pv;
+        }
+
+        return `<div class="stat-row" data-prev="${prevVal}"><span class="stat-label">${emoji} ${label}</span><span class="stat-val ${cls}">${val}</span></div>`;
     };
 
     return `
