@@ -198,6 +198,30 @@ table.dataTable td {
     font-size: 1rem !important; font-weight: 500;
     white-space: nowrap;
 }
+.table-scroll-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.table-scroll-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    margin: 4px 0;
+}
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: #4d4d4d;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #6b6b6b;
+}
+.table-scroll-container::-webkit-scrollbar-thumb:active {
+    background: #8a8a8a;
+}
+.table-scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: #4d4d4d rgba(255, 255, 255, 0.03);
+}
 .col-rank {
     font-family: 'Rajdhani', sans-serif;
     font-size: 1.15rem; font-weight: 700;
