@@ -535,7 +535,7 @@ tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
             <button class="filter-btn" id="filterChangedBtn" onclick="toggleFilter()">
-                Changes <span class="count" id="changedCount">0</span>
+                Stats Updated <span class="count" id="changedCount">0</span>
             </button>
             <button class="filter-btn compare-btn" id="compareToggleBtn" onclick="toggleCompareMode()">
                 Compare <span class="sel-count" id="selCount">0</span>
@@ -1148,10 +1148,10 @@ function toggleFilter() {
     const btn = document.getElementById('filterChangedBtn');
     if (filterActive) {
         btn.classList.add('active');
-        btn.innerHTML = `Changes <span class="count">${changedPlayers.size}</span> ✕`;
+        btn.innerHTML = `Stats Updated <span class="count">${changedPlayers.size}</span> ✕`;
     } else {
         btn.classList.remove('active');
-        btn.innerHTML = `Changes <span class="count">${changedPlayers.size}</span>`;
+        btn.innerHTML = `Stats Updated <span class="count">${changedPlayers.size}</span>`;
     }
     rebuildTable(filterActive);
 }
