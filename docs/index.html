@@ -145,6 +145,136 @@ body::before {
     padding: 2px 6px; border-radius: 10px;
     line-height: 1; font-size: 0.75rem;
 }
+.stats-btn {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: #fbbf24 !important;
+    border-color: rgba(251, 191, 36, 0.3) !important;
+}
+.stats-btn:hover {
+    background: rgba(251, 191, 36, 0.25) !important;
+    border-color: rgba(251, 191, 36, 0.5) !important;
+}
+.stats-btn.active {
+    background: #fbbf24 !important;
+    color: #000 !important;
+}
+.stats-grid-container {
+    flex-grow: 1;
+    min-height: 0;
+    background: var(--bg-card);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    padding: 0.8rem;
+    overflow-y: auto;
+    display: none;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    align-content: start;
+}
+.stats-grid-container.active {
+    display: grid;
+}
+.stats-grid-container .champion-card {
+    background: linear-gradient(145deg, #141418, #0e0e12);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 1.2rem 1rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 180px;
+    justify-content: center;
+}
+.stats-grid-container .champion-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #fbbf24, #e7a922, #fbbf24);
+    opacity: 0.8;
+}
+.stats-grid-container .champion-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    border-color: rgba(251, 191, 36, 0.2);
+    box-shadow: 0 8px 30px rgba(251, 191, 36, 0.06);
+}
+.stats-grid-container .champion-card .champion-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.8rem;
+    font-size: 1.2rem;
+    opacity: 0.6;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+.stats-grid-container .champion-card .champion-rank {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.4rem;
+    background: rgba(251, 191, 36, 0.08);
+    padding: 0.15rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid rgba(251, 191, 36, 0.1);
+}
+.stats-grid-container .champion-card .champion-flag {
+    font-size: 2.4rem;
+    margin-bottom: 0.2rem;
+    line-height: 1.2;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+}
+.stats-grid-container .champion-card .champion-nick {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: 0.02em;
+    margin-top: 0.1rem;
+}
+.stats-grid-container .champion-card .champion-user {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+    opacity: 0.7;
+}
+.stats-grid-container .champion-card .champion-metric {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fbbf24, #e7a922);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0.3rem 0 0.1rem;
+    padding: 0.1rem 1rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+}
+.stats-grid-container .champion-card .champion-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.stats-grid-container .champion-card .champion-arrow {
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    opacity: 0.3;
+    margin-top: 0.3rem;
+    transition: opacity 0.3s ease;
+}
+.stats-grid-container .champion-card:hover .champion-arrow {
+    opacity: 0.7;
+}
 .table-wrapper {
     flex-grow: 1; min-height: 0;
     background: var(--bg-card);
@@ -346,9 +476,6 @@ table.dataTable tbody tr.expanded-row-bg {
     line-height: 1.5;
     margin-bottom: 6px;
 }
-.metric-tooltip .tt-formula-wrapper {
-    display: flex; justify-content: flex-end; align-items: center;
-}
 .metric-tooltip .tt-footer {
     display: flex;
     justify-content: space-between;
@@ -357,7 +484,6 @@ table.dataTable tbody tr.expanded-row-bg {
     padding-top: 6px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
-
 .metric-tooltip .tt-prev {
     font-size: 0.7rem;
     color: #fbbf24;
@@ -368,7 +494,6 @@ table.dataTable tbody tr.expanded-row-bg {
     display: inline-block;
     border: 1px solid rgba(251, 191, 36, 0.1);
 }
-
 .metric-tooltip .tt-formula {
     font-size: 0.7rem;
     color: #38bdf8;
@@ -486,6 +611,7 @@ tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
 @media (max-width: 1100px) {
     .details-grid { grid-template-columns: repeat(3, 1fr); }
     .col-player { width: 170px; min-width: 130px; }
+    .stats-grid-container { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 800px) {
     .details-grid { grid-template-columns: repeat(2, 1fr); }
@@ -494,6 +620,7 @@ tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
     .player-nick { font-size: 0.8rem; }
     .player-user { font-size: 0.6rem; }
     .radar-modal { width: min(95vw, 400px); height: min(80vh, 400px); padding: 0.8rem 0.8rem 0.6rem; }
+    .stats-grid-container { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 600px) {
     .details-grid { grid-template-columns: 1fr; }
@@ -513,6 +640,7 @@ tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
     .radar-modal .close-btn { font-size: 1rem; top: 0.2rem; right: 0.3rem; }
     .radar-modal .legend-item { font-size: 0.5rem; gap: 0.2rem; }
     .radar-modal .legend-item .dot { width: 10px; height: 10px; }
+    .stats-grid-container { grid-template-columns: 1fr; }
 }
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="adefbdcd-a363-4714-8f6d-86f7cd379c8c"></script>
@@ -537,6 +665,9 @@ tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
             <button class="filter-btn" id="filterChangedBtn" onclick="toggleFilter()">
                 Stats Updated <span class="count" id="changedCount">0</span>
             </button>
+            <button class="filter-btn stats-btn" id="statsToggleBtn" onclick="toggleStatsView()">
+                <span id="statsBtnIcon"></span> <span id="statsBtnText">Leaders</span>
+            </button>
             <button class="filter-btn compare-btn" id="compareToggleBtn" onclick="toggleCompareMode()">
                 Compare <span class="sel-count" id="selCount">0</span>
             </button>
@@ -545,7 +676,7 @@ tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
         </div>
     </div>
 
-    <div class="table-wrapper">
+    <div class="table-wrapper" id="tableWrapper">
         <div class="table-scroll-container" id="tableScrollContainer">
             <table id="playersTable" class="display">
                 <thead>
@@ -572,6 +703,8 @@ tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
         </div>
         <div class="table-footer" id="customPagination"></div>
     </div>
+
+    <div class="stats-grid-container" id="statsGridContainer" style="display: none;"></div>
 
     <div class="app-footer" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px;">
         <div>Data sourced from <strong>FFS Gaming</strong> MTA server.</div>
@@ -659,11 +792,8 @@ function showMetricTooltip(e, metricName, prevValue) {
     
     ttHeader.textContent = `${def.icon} ${metricName}`;
     ttDesc.textContent = def.description;
-    
-    // Formula her zaman sağda
     ttFormula.textContent = `Formula: ${def.formula}`;
     
-    // Previous değer varsa sol alt köşeye ekle
     const prevEl = document.getElementById('ttPrev');
     if (prevValue) {
         prevEl.textContent = `Previous: ${prevValue}`;
@@ -719,6 +849,159 @@ document.addEventListener('mousemove', function(e) {
     }
 });
 
+// ============================================================
+// STATS VIEW - LEADERS CARDS (Min 5000 Matches)
+// ============================================================
+let statsViewActive = false;
+
+function toggleStatsView() {
+    statsViewActive = !statsViewActive;
+    const btn = document.getElementById('statsToggleBtn');
+    const tableWrapper = document.getElementById('tableWrapper');
+    const statsContainer = document.getElementById('statsGridContainer');
+    const btnIcon = document.getElementById('statsBtnIcon');
+    const btnText = document.getElementById('statsBtnText');
+
+    if (statsViewActive) {
+        btn.classList.add('active');
+        btnIcon.textContent = '';
+        btnText.textContent = 'Leaders ✕';
+        tableWrapper.style.display = 'none';
+        statsContainer.style.display = 'grid';
+        statsContainer.classList.add('active');
+        renderChampionCards();
+    } else {
+        btn.classList.remove('active');
+        btnIcon.textContent = '';
+        btnText.textContent = 'Leaders';
+        tableWrapper.style.display = 'flex';
+        statsContainer.style.display = 'none';
+        statsContainer.classList.remove('active');
+    }
+}
+
+function renderChampionCards() {
+    if (!globalPlayers || globalPlayers.length === 0) return;
+
+    const container = document.getElementById('statsGridContainer');
+
+    const getChampion = (key, format = 'int', minMatches = 5000) => {
+        const sorted = [...globalPlayers]
+            .filter(p => {
+                const matches = parseFloat(p['Matches'] || 0);
+                const value = parseFloat(p[key] || 0);
+                return matches >= minMatches && value > 0;
+            })
+            .sort((a, b) => parseFloat(b[key] || 0) - parseFloat(a[key] || 0));
+
+        if (sorted.length === 0) return null;
+
+        const champ = sorted[0];
+        let value = parseFloat(champ[key] || 0);
+        let displayValue;
+        if (format === 'percent') {
+            displayValue = value.toFixed(1) + '%';
+        } else if (format === 'int') {
+            displayValue = Math.round(value).toLocaleString();
+        } else {
+            displayValue = value.toFixed(2);
+        }
+
+        return {
+            nick: champ['Nick'],
+            siteName: champ['SiteName'] || '',
+            userID: champ['UserID'] || '',
+            country: champ['Country'] || '',
+            matches: parseFloat(champ['Matches'] || 0),
+            value: displayValue,
+            rawValue: value
+        };
+    };
+
+    // 🏆 YENİ KART DÜZENİ
+    const configs = [
+        // 1. SATIR - İLK 5 (Açıklama yok)
+        { key: 'Matches', label: 'Most Matches', icon: '📊', format: 'int', desc: 'Matches Played' },
+        { key: 'Total_Goals', label: 'Top Scorer', icon: '⚽', format: 'int', desc: 'Goals Scored' },
+        { key: 'Total_Assists', label: 'Top Assister', icon: '🎯', format: 'int', desc: 'Assists Provided' },
+        { key: 'Total_Saves', label: 'Top Saver', icon: '🧤', format: 'int', desc: 'Saves Made' },
+        { key: 'MVP_Count', label: 'Most Valuable', icon: '👑', format: 'int', desc: 'MVP Awards' },
+
+        // 2. SATIR - 6-10 (Açıklamalı)
+        { key: 'MVP_Rate', label: 'Best MVP Rate', icon: '💎', format: 'percent', desc: 'MVP per Match' },
+        { key: 'Actions_PG', label: 'Most Active', icon: '⚡', format: 'float', desc: 'Actions per Match' },
+        { key: 'Goals_PG', label: 'Best Finisher', icon: '🔥', format: 'float', desc: 'Goals per Match' },
+        { key: 'Assists_PG', label: 'Best Assister', icon: '🎯', format: 'float', desc: 'Assists per Match' }, // YENİ
+        { key: 'Saves_PG', label: 'Best Keeper', icon: '🛡️', format: 'float', desc: 'Saves per Match' },
+
+        // 3. SATIR - 11-15 (Açıklamalı)
+        { key: 'Carry_Index', label: 'Top Carry', icon: '📈', format: 'float', desc: 'Carry Potential' },
+        { key: 'Role_Balance_Index', label: 'Most Versatile', icon: '🎭', format: 'float', desc: 'Offense/Defense Balance' },
+        { key: 'OPQI', label: 'Elite Player', icon: '🌟', format: 'float', desc: 'Overall Player Quality' },
+        { key: 'Actions_Per_Win', label: 'Actions per Win', icon: '⚡', format: 'float', desc: 'Actions per Win' }, // YENİ
+        { key: 'Contributions_PG', label: 'Top Contributor', icon: '🎯', format: 'float', desc: 'Contributions per Match' }
+    ];
+
+    const colors = [
+        '#f97316', '#f87171', '#fbbf24', '#38bdf8', '#c084fc',
+        '#10b981', '#f472b6', '#22d3ee', '#f97316', '#f43f5e',
+        '#8b5cf6', '#14b8a6', '#eab308', '#6366f1', '#ec4899'
+    ];
+
+    let html = '';
+    configs.forEach((config, index) => {
+        const champ = getChampion(config.key, config.format, 5000);
+        const color = colors[index % colors.length];
+        const isFirstFive = index < 5; // İlk 5 kart mı?
+
+        if (!champ) {
+            html += `
+                <div class="champion-card" style="opacity: 0.3; border-top-color: ${color};">
+                    <div class="champion-badge">${config.icon}</div>
+                    <div class="champion-rank" style="color: ${color};">#1 ${config.label}</div>
+                    <div style="color: var(--text-muted); font-size: 0.65rem; padding: 0.4rem 0;">Min 5,000 matches required</div>
+                    <div class="champion-label">${config.desc}</div>
+                </div>
+            `;
+            return;
+        }
+
+        const countryFlag = getFlagHtml(champ.country) || '🌍';
+
+        html += `
+            <div class="champion-card" onclick="selectPlayer('${escapeHtml(champ.nick)}')" style="border-top-color: ${color};">
+                <div class="champion-badge">${config.icon}</div>
+                <div class="champion-rank" style="color: ${color};">#1 ${config.label}</div>
+                <div class="champion-flag">${countryFlag}</div>
+                <div class="champion-nick">${escapeHtml(champ.nick)}</div>
+                <div class="champion-user">@${escapeHtml(champ.siteName || champ.userID)}</div>
+                <div class="champion-metric" style="background: linear-gradient(135deg, ${color}, ${color}cc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${champ.value}</div>
+                <div class="champion-label">${config.desc}</div>
+                <div class="champion-arrow">${champ.matches.toLocaleString()} matches • Click to view →</div>
+                ${!isFirstFive ? `<div style="font-size: 0.55rem; color: var(--text-muted); opacity: 0.5; margin-top: 0.3rem; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 0.3rem;">Minimum 5,000 matches required for eligibility</div>` : ''}
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+function selectPlayer(nick) {
+    const row = document.querySelector(`tr.master-row[data-player-nick="${nick}"]`);
+    if (row) {
+        if (statsViewActive) {
+            toggleStatsView();
+        }
+        setTimeout(() => {
+            row.click();
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+    }
+}
+
+// ============================================================
+// COMPARE MODE
+// ============================================================
 let compareModeActive = false;
 let selectedP1 = null;
 let selectedP2 = null;
@@ -1277,6 +1560,7 @@ function rebuildTable(onlyChanged) {
         tr.className = "master-row" + (isChanged ? " changed-player" : "") + selClass;
         $(tr).data('player', player);
         $(tr).data('prev', prev);
+        tr.dataset.playerNick = player['Nick'];
 
         tr.innerHTML = `
             <td class="col-rank">${realRank}</td>
@@ -1323,7 +1607,7 @@ function rebuildTable(onlyChanged) {
     const pageLength = parseInt(pageLengthSelect ? pageLengthSelect.value : 50);
 
     dataTable = $('#playersTable').DataTable({
-        pageLength: pageLength,  // ← Dinamik
+        pageLength: pageLength,
         autoWidth: false,
         order: [[0, 'asc']],
         columnDefs: [
@@ -1340,7 +1624,6 @@ function rebuildTable(onlyChanged) {
         dom: 'rt'
     });
 
-    // Dropdown değişince DataTable'ı yenile
     if (pageLengthSelect) {
         pageLengthSelect.onchange = function() {
             dataTable.page.len(parseInt(this.value)).draw();
@@ -1424,7 +1707,6 @@ function updateCustomPagination() {
         </div>
     `;
 
-    // Dropdown event listener
     const select = document.getElementById('pageLengthSelect');
     if (select) {
         select.value = dataTable.page.len();
