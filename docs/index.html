@@ -1124,10 +1124,10 @@ function toggleFilter() {
     const btn = document.getElementById('filterChangedBtn');
     if (filterActive) {
         btn.classList.add('active');
-        btn.innerHTML = `📊 Changes <span class="count">${changedPlayers.size}</span> ✕`;
+        btn.innerHTML = `Changes <span class="count">${changedPlayers.size}</span> ✕`;
     } else {
         btn.classList.remove('active');
-        btn.innerHTML = `📊 Changes <span class="count">${changedPlayers.size}</span>`;
+        btn.innerHTML = `Changes <span class="count">${changedPlayers.size}</span>`;
     }
     rebuildTable(filterActive);
 }
