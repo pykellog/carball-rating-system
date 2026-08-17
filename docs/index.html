@@ -958,14 +958,14 @@ function renderChampionCards() {
         { key: 'MVP_Rate', label: 'Best MVP Rate', icon: '💎', format: 'percent', desc: 'MVP per Match' },
         { key: 'Actions_PG', label: 'Most Active', icon: '⚡', format: 'float', desc: 'Actions per Match' },
         { key: 'Goals_PG', label: 'Best Finisher', icon: '🔥', format: 'float', desc: 'Goals per Match' },
-        { key: 'Assists_PG', label: 'Best Assister', icon: '🎯', format: 'float', desc: 'Assists per Match' }, // YENİ
+        { key: 'Assists_PG', label: 'Best Assister', icon: '🎯', format: 'float', desc: 'Assists per Match' },
         { key: 'Saves_PG', label: 'Best Keeper', icon: '🛡️', format: 'float', desc: 'Saves per Match' },
 
         // 3. SATIR - 11-15 (Açıklamalı)
         { key: 'Carry_Index', label: 'Top Carry', icon: '📈', format: 'float', desc: 'Carry Potential' },
         { key: 'Role_Balance_Index', label: 'Most Versatile', icon: '🎭', format: 'float', desc: 'Offense/Defense Balance' },
         { key: 'OPQI', label: 'Elite Player', icon: '🌟', format: 'float', desc: 'Overall Player Quality' },
-        { key: 'Actions_Per_Win', label: 'Actions per Win', icon: '⚡', format: 'float', desc: 'Actions per Win' }, // YENİ
+        { key: 'Actions_Per_Win', label: 'Actions per Win', icon: '⚡', format: 'float', desc: 'Actions per Win' },
         { key: 'Contributions_PG', label: 'Top Contributor', icon: '🎯', format: 'float', desc: 'Contributions per Match' }
     ];
 
@@ -979,7 +979,7 @@ function renderChampionCards() {
     configs.forEach((config, index) => {
         const champ = getChampion(config.key, config.format, 5000);
         const color = colors[index % colors.length];
-        const isFirstFive = index < 5; // İlk 5 kart mı?
+        const isFirstFive = index < 5;
 
         if (!champ) {
             html += `
