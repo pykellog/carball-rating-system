@@ -282,6 +282,30 @@ body::before {
     display: flex; flex-direction: column; overflow: hidden;
     transform: translateZ(0);
 }
+#tableWrapper, #statsGridContainer {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+#tableWrapper.visible, #statsGridContainer.visible {
+    opacity: 1;
+}
+
+/* Yükleniyor mesajı */
+.loading-message {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+    font-size: 1.1rem;
+}
+.loading-message .spinner {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 .table-scroll-container {
     flex-grow: 1; overflow-y: auto;
     scrollbar-width: none; -ms-overflow-style: none;
@@ -677,7 +701,10 @@ tr.shown .expand-icon { transform: rotate(90deg); color: var(--accent-green); }
     </div>
 
     <div class="table-wrapper" id="tableWrapper">
-        <div class="table-scroll-container" id="tableScrollContainer">
+        <div id="loadingMessage" class="loading-message">
+            <span class="spinner">🔄</span> Loading player data...
+        </div>
+        <div class="table-scroll-container" id="tableScrollContainer" style="display:none;">
             <table id="playersTable" class="display">
                 <thead>
                     <tr>
@@ -1766,7 +1793,16 @@ async function loadData() {
         }
 
         rebuildTable(false);
+        document.getElementById('loadingMessage').style.display = 'none';
+        document.getElementById('tableScrollContainer').style.display = 'block';
+        document.getElementById('tableWrapper').classList.add('visible');
+        document.getElementById('statsGridContainer').classList.add('visible');
+
     } catch (err) {
+        document.getElementById('loadingMessage').innerHTML = `
+            <span style="color: #f87171;">⚠️ Error loading data.</span><br>
+            <small style="color: var(--text-muted);">${err.message}</small>
+        `;
         document.getElementById('tableBody').innerHTML = `<tr><td colspan="15" style="padding: 3rem; color: #f87171; text-align: center;">⚠️ Error loading data.<br><small>${err.message}</small></td></tr>`;
     }
 }
